@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import "../../styles/layout/sidebar.css";
 
@@ -38,9 +39,11 @@ const Sidebar = () => {
       <div className="sidebar-section">
         <div className="sidebar-section-title">Tổng quan</div>
         <ul className="sidebar-menu">
-          <li className="sidebar-menu-item active">
-            <span className="icon"></span>
-            Dashboard
+          <li className="sidebar-menu-item">
+            <Link to="/admin" className="sidebar-link">
+              <span className="icon"></span>
+              Dashboard
+            </Link>
           </li>
           <li className="sidebar-menu-item">
             <span className="icon"></span>
@@ -57,8 +60,10 @@ const Sidebar = () => {
         <div className="sidebar-section-title">Quản lý</div>
         <ul className="sidebar-menu">
           <li className="sidebar-menu-item">
-            <span className="icon"></span>
-            Sản phẩm
+            <Link to="/admin/products" className="sidebar-link">
+              <span className="icon"></span>
+              Sản phẩm
+            </Link>
           </li>
           <li className="sidebar-menu-item">
             <span className="icon"></span>
@@ -75,8 +80,8 @@ const Sidebar = () => {
         </ul>
       </div>
 
-      <div className="admin-section">
-        <div className="admin-avatar">AD</div>
+      <div className="admin-section" onClick={toggleLogout}>
+        <div className="admin-avatar">{getInitials()}</div>
         <div className="admin-info">
           <div style={{ fontWeight: "500" }}>
             {user?.firstName || "Admin"} {user?.lastName || ""}
@@ -87,7 +92,13 @@ const Sidebar = () => {
         </div>
         {showLogout && (
           <div className="logout-dropdown">
-            <button className="logout-button" onClick={handleLogout}>
+            <button
+              className="logout-button"
+              onClick={(e) => {
+                e.stopPropagation(); // Ngăn sự kiện click lan tỏa lên admin-section
+                handleLogout();
+              }}
+            >
               Đăng xuất
             </button>
           </div>

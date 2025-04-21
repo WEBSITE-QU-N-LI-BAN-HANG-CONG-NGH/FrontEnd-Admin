@@ -3,12 +3,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 // Import các pages
-// import AdminCategories from "../pages/admin/AdminCategories";
 import AdminDashboard from "../pages/admin/AdminDashboard";
-// import AdminOrders from "../pages/admin/AdminOrders";
-// import AdminProducts from "../pages/admin/AdminProducts";
-// import AdminReports from "../pages/admin/AdminReports";
-// import AdminUsers from "../pages/admin/AdminUsers";
+import ProductManagement from "../pages/admin/ProductManagement";
 import Login from "../pages/auth/Login";
 import NotFound from "../pages/NotFound";
 
@@ -47,39 +43,12 @@ const AppRouter = () => {
           <ProtectedRoute element={<AdminDashboard />} requiredRole="ADMIN" />
         }
       />
-      {/* <Route
-        path="/admin/users"
-        element={
-          <ProtectedRoute element={<AdminUsers />} requiredRole="ADMIN" />
-        }
-      />
       <Route
         path="/admin/products"
         element={
-          <ProtectedRoute element={<AdminProducts />} requiredRole="ADMIN" />
+          <ProtectedRoute element={<ProductManagement />} requiredRole="ADMIN" />
         }
       />
-      <Route
-        path="/admin/orders"
-        element={
-          <ProtectedRoute element={<AdminOrders />} requiredRole="ADMIN" />
-        }
-      />
-      <Route
-        path="/admin/categories"
-        element={
-          <ProtectedRoute
-            element={<AdminCategories />}
-            requiredRole="ADMIN"
-          />
-        }
-      />
-      <Route
-        path="/admin/reports"
-        element={
-          <ProtectedRoute element={<AdminReports />} requiredRole="ADMIN" />
-        }
-      /> */}
 
       {/* Redirect root to admin dashboard if logged in */}
       <Route path="/" element={<Navigate to="/admin" replace />} />
