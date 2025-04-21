@@ -6,7 +6,7 @@ const Header = () => {
     <div className="header">
       <div>
         <h1 className="header-title">Dashboard</h1>
-        <div className="header-subtitle">Tổng quan về cửa hàng công nghệ của bạn</div>
+        <div className="header-subtitle">Tổng quan về cửa hàng công nghệ </div>
       </div>
       
       <div className="header-actions">
