@@ -83,3 +83,37 @@
     color: white;
     font-weight: 600;
   }
+
+  .admin-info {
+    flex: 1;
+  }
+
+  /* CSS mới cho dropdown logout */
+  .logout-dropdown {
+    position: absolute;
+    top: -50px;
+    left: 20px;
+    width: 120px;
+    background-color: var(--white-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 100;
+  }
+
+  .logout-button {
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+
+  .logout-button:hover {
+    background-color: var(--light-gray);
+    color: var(--primary-color);
+  }

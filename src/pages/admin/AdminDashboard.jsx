@@ -25,13 +25,18 @@ const AdminDashboard = () => {
         setIsLoading(true);
         setError(null);
 
-        // Kiểm tra bằng cách log để đảm bảo function được gọi
         console.log("Fetching dashboard data...");
-
-        // Lấy dữ liệu tổng quan cho dashboard
         const response = await dashboardService.getOverview();
-        console.log("API response:", response); // Log response để kiểm tra
-        setDashboardData(response.data.data);
+        console.log("API response:", response);
+
+        // Đảm bảo dữ liệu được trích xuất đúng cách
+        const responseData = response.data?.data;
+        if (responseData) {
+          setDashboardData(responseData);
+        } else {
+          console.error("Invalid response structure:", response);
+          setError("Cấu trúc phản hồi không hợp lệ");
+        }
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
         setError("Không thể tải dữ liệu dashboard. Vui lòng thử lại sau.");

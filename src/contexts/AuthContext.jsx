@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { authService } from "../services/api";
 
 const AuthContext = createContext(null);
@@ -7,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Kiểm tra người dùng đã đăng nhập hay chưa
@@ -58,6 +60,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       localStorage.removeItem("accessToken");
       setUser(null);
+      navigate("/login");
     }
   };
 
