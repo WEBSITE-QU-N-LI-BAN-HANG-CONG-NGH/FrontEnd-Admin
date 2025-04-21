@@ -1,6 +1,5 @@
-// src/contexts/AuthContext.jsx
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { authService } from '../services/api';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { authService } from "../services/api";
 
 const AuthContext = createContext(null);
 
@@ -14,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     const checkLoggedIn = async () => {
       try {
         // Kiểm tra token trong localStorage
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem("accessToken");
         if (!token) {
           setLoading(false);
           return;
@@ -24,8 +23,8 @@ export const AuthProvider = ({ children }) => {
         const response = await authService.getCurrentUser();
         setUser(response.data);
       } catch (err) {
-        console.error('Failed to fetch user:', err);
-        localStorage.removeItem('accessToken');
+        console.error("Failed to fetch user:", err);
+        localStorage.removeItem("accessToken");
       } finally {
         setLoading(false);
       }
@@ -40,11 +39,12 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const response = await authService.login(credentials);
       const { accessToken, user } = response.data.data;
-      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem("accessToken", accessToken);
       setUser(user);
       return user;
     } catch (err) {
-      setError(err.response?.data?.message || 'Đăng nhập thất bại');
+      console.error("Login error details:", err);
+      setError(err.response?.data?.message || "Đăng nhập thất bại");
       throw err;
     }
   };
@@ -54,9 +54,9 @@ export const AuthProvider = ({ children }) => {
     try {
       await authService.logout();
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
-      localStorage.removeItem('accessToken');
+      localStorage.removeItem("accessToken");
       setUser(null);
     }
   };
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
     return user.role === role;
   };
 
-  const isAdmin = () => hasRole('ADMIN');
+  const isAdmin = () => hasRole("ADMIN");
 
   const value = {
     user,
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

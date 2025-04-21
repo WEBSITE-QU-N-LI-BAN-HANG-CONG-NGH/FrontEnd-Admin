@@ -1,20 +1,20 @@
 // src/pages/admin/AdminDashboard.jsx
-import React, { useState, useEffect } from 'react';
-import Layout from '../../components/layout/Layout';
-import DashboardTabs from '../../components/dashboard/DashboardTabs';
-import RevenueOverview from '../../components/dashboard/RevenueOverview';
-import RevenueBreakdown from '../../components/dashboard/RevenueBreakdown';
-import StoreRevenue from '../../components/dashboard/StoreRevenue';
-import { dashboardService } from '../../services/api';
-import { useAuth } from '../../contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import DashboardTabs from "../../components/dashboard/DashboardTabs";
+import RevenueBreakdown from "../../components/dashboard/RevenueBreakdown";
+import RevenueOverview from "../../components/dashboard/RevenueOverview";
+import StoreRevenue from "../../components/dashboard/StoreRevenue";
+import Layout from "../../components/layout/Layout";
+import { useAuth } from "../../contexts/AuthContext";
+import { dashboardService } from "../../services/api";
 
 const AdminDashboard = () => {
   const { user, loading, isAdmin } = useAuth();
   const [dashboardData, setDashboardData] = useState({
     revenue: {},
     topSellers: [],
-    distribution: {}
+    distribution: {},
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,13 +24,17 @@ const AdminDashboard = () => {
       try {
         setIsLoading(true);
         setError(null);
-        
+
+        // Kiểm tra bằng cách log để đảm bảo function được gọi
+        console.log("Fetching dashboard data...");
+
         // Lấy dữ liệu tổng quan cho dashboard
         const response = await dashboardService.getOverview();
+        console.log("API response:", response); // Log response để kiểm tra
         setDashboardData(response.data.data);
       } catch (err) {
-        console.error('Error fetching dashboard data:', err);
-        setError('Không thể tải dữ liệu dashboard. Vui lòng thử lại sau.');
+        console.error("Error fetching dashboard data:", err);
+        setError("Không thể tải dữ liệu dashboard. Vui lòng thử lại sau.");
       } finally {
         setIsLoading(false);
       }
@@ -60,12 +64,12 @@ const AdminDashboard = () => {
       ) : (
         <div>
           <DashboardTabs />
-          
+
           <div className="dashboard-grid">
             <RevenueOverview data={dashboardData.revenue} />
             <RevenueBreakdown data={dashboardData.distribution} />
           </div>
-          
+
           <StoreRevenue data={dashboardData.topSellers} />
         </div>
       )}
