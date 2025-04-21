@@ -1,0 +1,128 @@
+:root {
+    --primary-color: #4A6CF7;
+    --secondary-color: #6A7C92;
+    --background-color: #F4F7FF;
+    --white-color: #FFFFFF;
+    --text-color: #333333;
+    --border-color: #E1E8ED;
+    --green-color: #4CAF50;
+    --light-gray: #F9FAFC;
+    --red-color: #F44336;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    font-size: 14px;
+  }
+  
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+  
+  .card {
+    background-color: var(--white-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .card-header {
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .flex {
+    display: flex;
+  }
+  
+  .flex-col {
+    flex-direction: column;
+  }
+  
+  .items-center {
+    align-items: center;
+  }
+  
+  .justify-between {
+    justify-content: space-between;
+  }
+  
+  .justify-center {
+    justify-content: center;
+  }
+  
+  .gap-2 {
+    gap: 8px;
+  }
+  
+  .gap-4 {
+    gap: 16px;
+  }
+  
+  .grid {
+    display: grid;
+  }
+  
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .w-full {
+    width: 100%;
+  }
+  
+  .h-full {
+    height: 100%;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .text-right {
+    text-align: right;
+  }
+  
+  .text-green {
+    color: var(--green-color);
+  }
+  
+  .text-red {
+    color: var(--red-color);
+  }
+  
+  .button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .button:hover {
+    opacity: 0.9;
+  }

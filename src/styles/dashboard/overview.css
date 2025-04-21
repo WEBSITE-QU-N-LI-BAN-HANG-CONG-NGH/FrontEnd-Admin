@@ -1,0 +1,79 @@
+.revenue-overview {
+    padding: 20px;
+  }
+  
+  .revenue-header {
+    margin-bottom: 20px;
+  }
+  
+  .revenue-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .revenue-subtitle {
+    font-size: 14px;
+    color: var(--secondary-color);
+  }
+  
+  .revenue-amount {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .revenue-change {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  
+  .revenue-change.positive {
+    color: var(--green-color);
+  }
+  
+  .revenue-change.negative {
+    color: var(--red-color);
+  }
+  
+  .revenue-previous {
+    font-size: 13px;
+    color: var(--secondary-color);
+  }
+  
+  .revenue-chart {
+    margin-top: 20px;
+    height: 200px;
+  }
+  
+  .store-highlights {
+    display: flex;
+    margin-top: 20px;
+    gap: 20px;
+  }
+  
+  .highlight-card {
+    flex: 1;
+    background-color: var(--light-gray);
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .highlight-title {
+    font-size: 14px;
+    color: var(--secondary-color);
+    margin-bottom: 8px;
+  }
+  
+  .highlight-store {
+    font-weight: 600;
+  }
+  
+  .highlight-value {
+    color: var(--primary-color);
+    font-size: 13px;
+    margin-top: 4px;
+  }
