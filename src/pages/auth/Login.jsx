@@ -38,7 +38,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2 className="login-title">Đăng nhập quản trị</h2>
+        <h2 className="login-title">ADMIN LOGIN - TECHSHOP</h2>
         {error && <div className="login-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="login-form">
