@@ -71,16 +71,28 @@
   align-items: center;
 }
 
+.admin-section {
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
 .admin-section .admin-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: var(--primary-color);
+  background-color: var(
+    --light-gray
+  ); /* Thay đổi từ primary-color thành light-gray */
+  color: var(--text-color); /* Thay đổi màu chữ */
   margin-right: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
   font-weight: 600;
 }
 
@@ -91,7 +103,7 @@
 /* CSS mới cho dropdown logout */
 .logout-dropdown {
   position: absolute;
-  top: -50px;
+  bottom: 60px;
   left: 20px;
   width: 120px;
   background-color: var(--white-color);

@@ -41,6 +41,9 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const response = await authService.login(credentials);
       const { accessToken, user } = response.data.data;
+
+      // Cookie refreshToken sẽ được tự động lưu bởi browser
+      // Ta chỉ cần lưu accessToken
       localStorage.setItem("accessToken", accessToken);
       setUser(user);
       return user;

@@ -1,71 +1,55 @@
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    background-color: var(--white-color);
-    border-bottom: 1px solid var(--border-color);
-  }
-  
-  .header-title {
-    font-size: 20px;
-    font-weight: 600;
-  }
-  
-  .header-subtitle {
-    font-size: 14px;
-    color: var(--secondary-color);
-    margin-top: 4px;
-  }
-  
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  
-  .search-input {
-    position: relative;
-    width: 300px;
-  }
-  
-  .search-input input {
-    width: 100%;
-    padding: 8px 12px;
-    padding-left: 36px;
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
-    background-color: var(--light-gray);
-    font-size: 14px;
-  }
-  
-  .search-input .icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--secondary-color);
-  }
-  
-  .header-icon {
-    position: relative;
-    font-size: 20px;
-    color: var(--secondary-color);
-    cursor: pointer;
-  }
-  
-  .notification-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: var(--red-color);
-    color: white;
-    font-size: 10px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: var(--white-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.header-subtitle {
+  font-size: 14px;
+  color: var(--secondary-color);
+  margin-top: 4px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.search-input {
+  position: relative;
+  width: 300px;
+}
+
+.search-input input {
+  width: 100%;
+  padding: 8px 12px;
+  padding-left: 36px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: var(--light-gray);
+  font-size: 14px;
+}
+
+.search-input .icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--secondary-color);
+}
+
+.header-icon {
+  position: relative;
+  font-size: 20px;
+  color: var(--secondary-color);
+  cursor: pointer;
+}

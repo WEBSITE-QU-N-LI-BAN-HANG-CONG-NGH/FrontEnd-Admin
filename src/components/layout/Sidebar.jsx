@@ -7,7 +7,10 @@ const Sidebar = () => {
   const [showLogout, setShowLogout] = useState(false);
   const { user, logout } = useAuth();
 
-  const handleLogout = async () => {
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     try {
       await logout();
       // Không cần chuyển hướng vì useEffect trong AuthContext đã xử lý điều này

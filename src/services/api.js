@@ -9,6 +9,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // Thêm dòng này để gửi và nhận cookie
 });
 
 // Thêm interceptor để xử lý token
@@ -50,6 +51,7 @@ api.interceptors.response.use(
           // Gán token mới vào header
           api.defaults.headers.common["Authorization"] =
             "Bearer " + res.data.data.accessToken;
+            
           // Thực hiện lại request ban đầu
           return api(originalRequest);
         }
