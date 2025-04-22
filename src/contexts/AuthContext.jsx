@@ -57,7 +57,10 @@ export const AuthProvider = ({ children }) => {
   // Xử lý đăng xuất
   const logout = async () => {
     try {
-      await authService.logout();
+      await authService.logout();// Gọi API để hủy refresh token trên server
+      localStorage.removeItem("accessToken"); // Xóa access token
+      setUser(null);
+      navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {

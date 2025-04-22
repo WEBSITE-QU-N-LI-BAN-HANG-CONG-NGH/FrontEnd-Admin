@@ -95,13 +95,7 @@ const Sidebar = () => {
         </div>
         {showLogout && (
           <div className="logout-dropdown">
-            <button
-              className="logout-button"
-              onClick={(e) => {
-                e.stopPropagation(); // Ngăn sự kiện click lan tỏa lên admin-section
-                handleLogout();
-              }}
-            >
+            <button className="logout-button" onClick={handleLogout}>
               Đăng xuất
             </button>
           </div>
