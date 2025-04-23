@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Navigate} from "react-router-dom";
 import Layout from "../../components/layout/Layout";
-import { useAuth } from "../../contexts/AuthContext";
-import { userService } from "../../services/api";
+import {useAuth} from "../../contexts/AuthContext";
+import {userService} from "../../services/api";
 import UserList from "../../components/features/users/UserList";
 import UserFilters from "../../components/features/users/UserFilters";
 import UserStats from "../../components/features/users/UserStats";
 import "../../styles/admin/users.css";
 
 const AdminUserManagement = () => {
-    const { user, loading, isAdmin } = useAuth();
+    const {user, loading, isAdmin} = useAuth();
     const [users, setUsers] = useState([]);
     const [stats, setStats] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -142,7 +142,7 @@ const AdminUserManagement = () => {
 
     // Nếu người dùng không đăng nhập hoặc không phải admin
     if (!user || !isAdmin()) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" replace/>;
     }
 
     return (
@@ -154,7 +154,7 @@ const AdminUserManagement = () => {
                 </div>
 
                 {/* Hiển thị thống kê */}
-                <UserStats stats={stats} />
+                <UserStats stats={stats}/>
 
                 {/* Bộ lọc và tìm kiếm */}
                 <UserFilters

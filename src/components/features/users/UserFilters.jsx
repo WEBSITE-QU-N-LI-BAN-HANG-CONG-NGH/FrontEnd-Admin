@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import "../../../styles/admin/users.css";
 
-const UserFilters = ({ onSearch, onRoleFilter, selectedRole }) => {
+const UserFilters = ({onSearch, onRoleFilter, selectedRole}) => {
     const [searchTerm, setSearchTerm] = useState("");
 
     const handleSearchSubmit = (e) => {

@@ -1,21 +1,21 @@
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  background-color: var(--white-color);
-  border-bottom: 1px solid var(--border-color);
-  background: linear-gradient(to right, #4A6CF7, #8B5CF6);
-  color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: var(--white-color);
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(to right, #4A6CF7, #8B5CF6);
+    color: white;
 }
 
 .header-title {
-  font-size: 22px;
-  font-weight: 600;
+    font-size: 22px;
+    font-weight: 600;
 }
 
 .header-subtitle {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.85);
-  margin-top: 4px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 4px;
 }

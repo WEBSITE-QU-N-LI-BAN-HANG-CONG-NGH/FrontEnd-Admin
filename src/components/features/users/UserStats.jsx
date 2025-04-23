@@ -1,7 +1,7 @@
 import React from "react";
 import "../../../styles/admin/users.css";
 
-const UserStats = ({ stats }) => {
+const UserStats = ({stats}) => {
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
     };

@@ -4,11 +4,11 @@ import Dashboard from './components/features/dashboard/Dashboard';
 import './styles/global.css';
 
 function App() {
-  return (
-    <Layout>
-      <Dashboard />
-    </Layout>
-  )
+    return (
+        <Layout>
+            <Dashboard/>
+        </Layout>
+    )
 }
 
 export default App
