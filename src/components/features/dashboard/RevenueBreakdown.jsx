@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import "../../../styles/dashboard/breakdown.css";
+import "../../../styles/admin/dashboard/breakdown.css";
 
 const RevenueBreakdown = ({data = {}}) => {
     useEffect(() => {

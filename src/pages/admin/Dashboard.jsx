@@ -1,4 +1,4 @@
-// src/pages/admin/AdminDashboard.jsx
+// src/pages/admin/Dashboard.jsx
 import React, {useEffect, useState} from "react";
 import {Navigate} from "react-router-dom";
 import RevenueBreakdown from "../../components/features/dashboard/RevenueBreakdown";
@@ -8,7 +8,7 @@ import Layout from "../../components/layout/Layout";
 import {useAuth} from "../../contexts/AuthContext";
 import {dashboardService} from "../../services/api";
 
-const AdminDashboard = () => {
+const Dashboard = () => {
     const {user, loading, isAdmin} = useAuth();
     const [dashboardData, setDashboardData] = useState({
         revenue: {},
@@ -79,4 +79,4 @@ const AdminDashboard = () => {
     );
 };
 
-export default AdminDashboard;
+export default Dashboard;

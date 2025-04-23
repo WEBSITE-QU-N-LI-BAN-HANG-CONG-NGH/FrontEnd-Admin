@@ -3,12 +3,13 @@ import {Navigate, Route, Routes} from "react-router-dom";
 import {useAuth} from "../contexts/AuthContext";
 
 // Import các pages
-import AdminDashboard from "../pages/admin/AdminDashboard";
+import Dashboard from "../pages/admin/Dashboard.jsx";
 import ProductManagement from "../pages/admin/ProductManagement";
 import Login from "../pages/auth/Login";
 import NotFound from "../pages/NotFound";
-import AdminUserManagement from "../pages/admin/AdminUserManagement.jsx";
+import UserManagement from "../pages/admin/UserManagement.jsx";
 import Analytics from "../pages/admin/Analytics";
+import OrdersManagement from "../pages/admin/OrdersManagement.jsx";
 
 
 // Protected Route component
@@ -43,7 +44,7 @@ const AppRouter = () => {
             <Route
                 path="/admin"
                 element={
-                    <ProtectedRoute element={<AdminDashboard/>} requiredRole="ADMIN"/>
+                    <ProtectedRoute element={<Dashboard/>} requiredRole="ADMIN"/>
                 }
             />
             <Route
@@ -55,13 +56,19 @@ const AppRouter = () => {
             <Route
                 path="/admin/users"
                 element={
-                    <ProtectedRoute element={<AdminUserManagement/>} requiredRole="ADMIN"/>
+                    <ProtectedRoute element={<UserManagement/>} requiredRole="ADMIN"/>
                 }
             />
             <Route
                 path="/admin/analytics"
                 element={
                     <ProtectedRoute element={<Analytics/>} requiredRole="ADMIN"/>
+                }
+            />
+            <Route
+                path="/admin/orders"
+                element={
+                    <ProtectedRoute element={<OrdersManagement/>} requiredRole="ADMIN"/>
                 }
             />
 

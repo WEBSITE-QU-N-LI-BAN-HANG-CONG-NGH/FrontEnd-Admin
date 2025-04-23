@@ -8,7 +8,7 @@ import UserFilters from "../../components/features/users/UserFilters";
 import UserStats from "../../components/features/users/UserStats";
 import "../../styles/admin/users.css";
 
-const AdminUserManagement = () => {
+const UserManagement = () => {
     const {user, loading, isAdmin} = useAuth();
     const [users, setUsers] = useState([]);
     const [stats, setStats] = useState({});
@@ -181,4 +181,4 @@ const AdminUserManagement = () => {
     );
 };
 
-export default AdminUserManagement;
+export default UserManagement;
