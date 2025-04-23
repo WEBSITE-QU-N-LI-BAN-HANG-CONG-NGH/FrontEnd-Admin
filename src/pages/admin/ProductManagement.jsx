@@ -28,9 +28,7 @@ const ProductManagement = () => {
         setProducts(productsData);
 
         // Lấy thống kê sản phẩm bán chạy
-        const topSellingResponse = await productService.getTopSellingProducts(
-          10
-        );
+        // const topSellingResponse = await productService.getTopSellingProducts(10);
 
         // Tính tổng doanh thu từ sản phẩm
         let totalRev = 0;
@@ -85,19 +83,21 @@ const ProductManagement = () => {
           <p>Phân tích và quản lý sản phẩm theo hiệu suất bán hàng</p>
         </div>
 
-        <div className="stats-cards">
-          <div className="stat-card">
-            <div className="stat-title">Tổng sản phẩm đã bán</div>
-            <div className="stat-value"></div>
-            <div className="stat-change positive">
-            </div>
+        <div className="stat-card">
+          <div className="stat-title">Tổng sản phẩm đã bán</div>
+          <div className="stat-value">
+            {products.reduce((total, product) => total + (product.quantitySold || 0), 0)}
           </div>
+          <div className="stat-change positive">
+            {formatPercentage(10)}
+          </div>
+        </div>
 
-          <div className="stat-card">
-            <div className="stat-title">Tổng doanh thu</div>
-            <div className="stat-value"></div>
-            <div className="stat-change positive">
-            </div>
+        <div className="stat-card">
+          <div className="stat-title">Tổng doanh thu</div>
+          <div className="stat-value">{formatCurrency(stats.totalRevenue)}</div>
+          <div className="stat-change positive">
+            {formatPercentage(12)}
           </div>
         </div>
 
@@ -176,7 +176,36 @@ const ProductManagement = () => {
                 <th>Tăng trưởng</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+            {products.length > 0 ? (
+                products.map((product) => (
+                    <tr key={product.id}>
+                      <td><input type="checkbox" /></td>
+                      <td>
+                        <div className="product-info">
+                          <div className="product-image-placeholder"></div>
+                          <div>
+                            <div className="product-name">{product.title}</div>
+                            <div className="product-id">ID: {product.id}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{product.category?.name || "Chưa phân loại"}</td>
+                      <td>{formatCurrency(product.price)}</td>
+                      <td>{product.quantitySold || 0}</td>
+                      <td>{formatCurrency((product.quantitySold || 0) * product.price)}</td>
+                      <td>{product.quantity || 0}</td>
+                      <td className="growth positive">{formatPercentage(8)}</td>
+                    </tr>
+                ))
+            ) : (
+                <tr>
+                  <td colSpan="8" style={{textAlign: "center", padding: "20px"}}>
+                    {isLoading ? "Đang tải dữ liệu..." : "Không có sản phẩm nào"}
+                  </td>
+                </tr>
+            )}
+            </tbody>
           </table>
         </div>
 

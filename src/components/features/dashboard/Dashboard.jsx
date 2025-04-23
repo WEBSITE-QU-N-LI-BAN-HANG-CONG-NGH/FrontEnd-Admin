@@ -1,8 +1,8 @@
 import React from 'react';
-import DashboardTabs from './DashboardTabs';
-import RevenueOverview from './RevenueOverview';
-import RevenueBreakdown from './RevenueBreakdown';
-import StoreRevenue from './StoreRevenue';
+import DashboardTabs from './DashboardTabs.jsx';
+import RevenueOverview from './RevenueOverview.jsx';
+import RevenueBreakdown from './RevenueBreakdown.jsx';
+import StoreRevenue from './StoreRevenue.jsx';
 
 const Dashboard = () => {
   return (

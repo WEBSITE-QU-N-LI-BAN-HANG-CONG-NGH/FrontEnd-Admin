@@ -1,10 +1,10 @@
 // src/pages/admin/AdminDashboard.jsx
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import DashboardTabs from "../../components/dashboard/DashboardTabs";
-import RevenueBreakdown from "../../components/dashboard/RevenueBreakdown";
-import RevenueOverview from "../../components/dashboard/RevenueOverview";
-import StoreRevenue from "../../components/dashboard/StoreRevenue";
+import DashboardTabs from "../../components/features/dashboard/DashboardTabs";
+import RevenueBreakdown from "../../components/features/dashboard/RevenueBreakdown";
+import RevenueOverview from "../../components/features/dashboard/RevenueOverview";
+import StoreRevenue from "../../components/features/dashboard/StoreRevenue";
 import Layout from "../../components/layout/Layout";
 import { useAuth } from "../../contexts/AuthContext";
 import { dashboardService } from "../../services/api";

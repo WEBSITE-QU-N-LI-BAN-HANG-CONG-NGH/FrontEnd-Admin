@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/dashboard/overview.css';
+import '../../../styles/dashboard/overview.css';
 
 // Hàm định dạng số tiền thành VND
 const formatCurrency = (amount) => {
