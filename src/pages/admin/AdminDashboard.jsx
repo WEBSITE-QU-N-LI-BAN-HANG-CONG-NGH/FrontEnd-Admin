@@ -1,13 +1,12 @@
 // src/pages/admin/AdminDashboard.jsx
-import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import DashboardTabs from "../../components/features/dashboard/DashboardTabs";
+import React, {useEffect, useState} from "react";
+import {Navigate} from "react-router-dom";
 import RevenueBreakdown from "../../components/features/dashboard/RevenueBreakdown";
 import RevenueOverview from "../../components/features/dashboard/RevenueOverview";
 import StoreRevenue from "../../components/features/dashboard/StoreRevenue";
 import Layout from "../../components/layout/Layout";
-import { useAuth } from "../../contexts/AuthContext";
-import { dashboardService } from "../../services/api";
+import {useAuth} from "../../contexts/AuthContext";
+import {dashboardService} from "../../services/api";
 
 const AdminDashboard = () => {
   const { user, loading, isAdmin } = useAuth();
@@ -68,8 +67,6 @@ const AdminDashboard = () => {
         <div className="error-message">{error}</div>
       ) : (
         <div>
-          <DashboardTabs />
-
           <div className="dashboard-grid">
             <RevenueOverview data={dashboardData.revenue} />
             <RevenueBreakdown data={dashboardData.distribution} />

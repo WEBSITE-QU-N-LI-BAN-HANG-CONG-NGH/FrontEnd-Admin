@@ -1,3 +1,4 @@
+// src/components/layout/Sidebar.jsx
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
@@ -14,7 +15,6 @@ const Sidebar = () => {
 
     try {
       await logout();
-      // Không cần chuyển hướng vì useEffect trong AuthContext đã xử lý điều này
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
     }
@@ -24,12 +24,10 @@ const Sidebar = () => {
     setShowLogout(!showLogout);
   };
 
-  // Kiểm tra xem menu item hiện tại có đang active không
   const isActive = (path) => {
     return location.pathname === path;
   };
 
-  // Lấy chữ cái đầu của tên và họ để hiển thị trong avatar
   const getInitials = () => {
     if (!user) return "U";
 
@@ -37,6 +35,16 @@ const Sidebar = () => {
     const lastName = user.lastName || "";
 
     return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+  };
+
+  // Thêm các icon sử dụng UTF-8 characters
+  const icons = {
+    dashboard: "📊",
+    analytics: "📈",
+    revenue: "💰",
+    products: "📦",
+    users: "👥",
+    orders: "🛒",
   };
 
   return (
@@ -50,16 +58,16 @@ const Sidebar = () => {
           <ul className="sidebar-menu">
             <li className={`sidebar-menu-item ${isActive("/admin") ? "active" : ""}`}>
               <Link to="/admin" className="sidebar-link">
-                <span className="icon"></span>
+                <span className="icon">{icons.dashboard}</span>
                 Dashboard
               </Link>
             </li>
             <li className="sidebar-menu-item">
-              <span className="icon"></span>
+              <span className="icon">{icons.analytics}</span>
               Phân tích
             </li>
             <li className="sidebar-menu-item">
-              <span className="icon"></span>
+              <span className="icon">{icons.revenue}</span>
               Doanh thu
             </li>
           </ul>
@@ -70,18 +78,18 @@ const Sidebar = () => {
           <ul className="sidebar-menu">
             <li className={`sidebar-menu-item ${isActive("/admin/products") ? "active" : ""}`}>
               <Link to="/admin/products" className="sidebar-link">
-                <span className="icon"></span>
+                <span className="icon">{icons.products}</span>
                 Sản phẩm
               </Link>
             </li>
             <li className={`sidebar-menu-item ${isActive("/admin/users") ? "active" : ""}`}>
               <Link to="/admin/users" className="sidebar-link">
-                <span className="icon"></span>
+                <span className="icon">{icons.users}</span>
                 Người dùng
               </Link>
             </li>
             <li className="sidebar-menu-item">
-              <span className="icon"></span>
+              <span className="icon">{icons.orders}</span>
               Đơn hàng
             </li>
           </ul>
@@ -90,17 +98,17 @@ const Sidebar = () => {
         <div className="admin-section" onClick={toggleLogout}>
           <div className="admin-avatar">{getInitials()}</div>
           <div className="admin-info">
-            <div style={{ fontWeight: "500" }}>
+            <div className="name">
               {user?.firstName || "Admin"} {user?.lastName || ""}
             </div>
-            <div style={{ fontSize: "12px", color: "#6A7C92" }}>
+            <div className="email">
               {user?.email || "admin@techshop.com"}
             </div>
           </div>
           {showLogout && (
               <div className="logout-dropdown">
                 <button className="logout-button" onClick={handleLogout}>
-                  Đăng xuất
+                  ⬅️ Đăng xuất
                 </button>
               </div>
           )}
