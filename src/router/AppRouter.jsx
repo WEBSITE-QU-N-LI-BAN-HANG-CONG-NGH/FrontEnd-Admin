@@ -7,6 +7,7 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import ProductManagement from "../pages/admin/ProductManagement";
 import Login from "../pages/auth/Login";
 import NotFound from "../pages/NotFound";
+import AdminUserManagement from "../pages/admin/AdminUserManagement.jsx";
 
 // Protected Route component
 const ProtectedRoute = ({ element, requiredRole }) => {
@@ -49,8 +50,15 @@ const AppRouter = () => {
           <ProtectedRoute element={<ProductManagement />} requiredRole="ADMIN" />
         }
       />
+    <Route
+        path="/admin/users"
+        element={
+            <ProtectedRoute element={<AdminUserManagement />} requiredRole="ADMIN" />
+        }
+    />
 
-      {/* Redirect root to admin dashboard if logged in */}
+
+        {/* Redirect root to admin dashboard if logged in */}
       <Route path="/" element={<Navigate to="/admin" replace />} />
 
       {/* 404 page */}
