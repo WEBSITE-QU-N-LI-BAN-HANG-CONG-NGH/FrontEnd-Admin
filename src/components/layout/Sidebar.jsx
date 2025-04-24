@@ -91,8 +91,10 @@ const Sidebar = () => {
                         </Link>
                     </li>
                     <li className="sidebar-menu-item">
-                        <span className="icon">{icons.orders}</span>
-                        Đơn hàng
+                        <Link to="/admin/orders" className="sidebar-link">
+                            <span className="icon">{icons.orders}</span>
+                            Đơn hàng
+                        </Link>
                     </li>
                 </ul>
             </div>

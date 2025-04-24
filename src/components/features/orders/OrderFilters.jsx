@@ -1,12 +1,23 @@
-import React, { useState } from "react";
+// src/components/features/orders/OrderFilters.jsx - Thêm prop onSearch và dùng nó
 
-const OrderFilters = ({ currentFilter, onFilterChange }) => {
+import {useState} from "react";
+
+const OrderFilters = ({ currentFilter, onFilterChange, onSearch }) => {
     const [searchTerm, setSearchTerm] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
-        // Xử lý tìm kiếm ở đây (có thể thêm vào sau)
-        console.log("Searching for:", searchTerm);
+        if (onSearch) {
+            onSearch(searchTerm);
+        }
+    };
+
+    const handleDateFilter = () => {
+        if (onSearch) {
+            onSearch(searchTerm, startDate, endDate);
+        }
     };
 
     return (
@@ -66,9 +77,21 @@ const OrderFilters = ({ currentFilter, onFilterChange }) => {
                 </form>
 
                 <div className="date-filters">
-                    <input type="date" placeholder="Từ ngày" className="date-input" />
-                    <input type="date" placeholder="Đến ngày" className="date-input" />
-                    <button className="filter-btn">Lọc</button>
+                    <input
+                        type="date"
+                        placeholder="Từ ngày"
+                        className="date-input"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                    />
+                    <input
+                        type="date"
+                        placeholder="Đến ngày"
+                        className="date-input"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                    />
+                    <button className="filter-btn" onClick={handleDateFilter}>Lọc</button>
                 </div>
 
                 <button className="export-btn">

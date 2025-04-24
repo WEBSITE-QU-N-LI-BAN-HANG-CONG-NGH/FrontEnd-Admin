@@ -31,16 +31,16 @@ const Analytics = () => {
                     setProductStats(productStatsResponse.data.data || {});
                 }
 
-                // Lấy dữ liệu doanh thu theo tháng
+                // Lấy dữ liệu doanh thu theo tháng từ API mới
                 const salesResponse = await dashboardService.getMonthlyRevenue();
                 if (salesResponse.status === 200) {
                     setSalesData(salesResponse.data.data.monthlyData || []);
                 }
 
                 // Lấy dữ liệu doanh thu theo danh mục
-                const categoryResponse = await productService.getRevenueByCateogry();
+                const categoryResponse = await dashboardService.getRevenueDistribution();
                 if (categoryResponse.status === 200) {
-                    setCategoryData(categoryResponse.data.data || []);
+                    setCategoryData(categoryResponse.data.data || {});
                 }
 
                 // Lấy dữ liệu thống kê khách hàng
@@ -51,6 +51,12 @@ const Analytics = () => {
             } catch (err) {
                 console.error("Lỗi khi tải dữ liệu phân tích:", err);
                 setError("Không thể tải dữ liệu phân tích. Vui lòng thử lại sau.");
+
+                setSalesData([
+                ]);
+
+                setCategoryData({
+                });
             } finally {
                 setIsLoading(false);
             }
@@ -90,7 +96,16 @@ const Analytics = () => {
                             <CustomerAnalytics data={customerData}/>
                         </div>
                         <SalesAnalytics data={salesData}/>
-                        <SalesByCategory data={categoryData}/>
+
+                        {/* Hiển thị phân bổ doanh thu theo danh mục */}
+                        {Array.isArray(categoryData) ? (
+                            <SalesByCategory data={categoryData} />
+                        ) : (
+                            <SalesByCategory data={Object.entries(categoryData).map(([name, value]) => ({
+                                name,
+                                revenue: value
+                            }))} />
+                        )}
                     </>
                 )}
             </div>

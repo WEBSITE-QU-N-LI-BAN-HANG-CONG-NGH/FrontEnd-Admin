@@ -1,8 +1,7 @@
 /* src/styles/layout/sidebar.css */
 .sidebar {
     width: 250px;
-    background-color: #111827;
-    /*background-color: #4A6CF7;*/
+    background-color: #1A2266;
     height: 100vh;
     position: sticky;
     top: 0;

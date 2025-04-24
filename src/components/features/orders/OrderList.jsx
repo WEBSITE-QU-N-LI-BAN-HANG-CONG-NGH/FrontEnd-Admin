@@ -22,40 +22,28 @@ const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {
         }).format(date);
     };
 
-    // Tạo badge cho trạng thái đơn hàng
     const getStatusBadge = (status) => {
         if (!status) return <span className="status-badge">Không xác định</span>;
 
-        const statusLower = status.toLowerCase();
-        let className = "status-badge";
+        const statusMap = {
+            "PENDING": { className: "status-pending", label: "Chờ xác nhận" },
+            "CONFIRMED": { className: "status-confirmed", label: "Đã xác nhận" },
+            "SHIPPED": { className: "status-shipped", label: "Đang giao" },
+            "DELIVERED": { className: "status-delivered", label: "Đã giao" },
+            "CANCELLED": { className: "status-cancelled", label: "Đã hủy" }
+        };
 
-        if (statusLower === "pending") {
-            className += " status-pending";
-            return <span className={className}>Chờ xác nhận</span>;
-        } else if (statusLower === "confirmed") {
-            className += " status-confirmed";
-            return <span className={className}>Đã xác nhận</span>;
-        } else if (statusLower === "shipped") {
-            className += " status-shipped";
-            return <span className={className}>Đang giao</span>;
-        } else if (statusLower === "delivered") {
-            className += " status-delivered";
-            return <span className={className}>Đã giao</span>;
-        } else if (statusLower === "cancelled") {
-            className += " status-cancelled";
-            return <span className={className}>Đã hủy</span>;
-        }
+        const statusInfo = statusMap[status] || { className: "", label: status };
 
-        return <span className={className}>{status}</span>;
+        return <span className={`status-badge ${statusInfo.className}`}>{statusInfo.label}</span>;
     };
 
-    // Tạo nút hành động dựa trên trạng thái đơn hàng
     const getActionButtons = (order) => {
-        const status = order.orderStatus?.toLowerCase();
+        const status = order.orderStatus;
 
         return (
             <div className="order-actions">
-                {status === "pending" && (
+                {status === "PENDING" && (
                     <>
                         <button
                             className="action-btn confirm-btn"
@@ -72,7 +60,7 @@ const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {
                     </>
                 )}
 
-                {status === "confirmed" && (
+                {status === "CONFIRMED" && (
                     <button
                         className="action-btn ship-btn"
                         onClick={() => onStatusChange(order.id, "ship")}
@@ -81,7 +69,7 @@ const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {
                     </button>
                 )}
 
-                {status === "shipped" && (
+                {status === "SHIPPED" && (
                     <button
                         className="action-btn deliver-btn"
                         onClick={() => onStatusChange(order.id, "deliver")}
