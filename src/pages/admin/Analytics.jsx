@@ -7,7 +7,7 @@ import ProductAnalytics from "../../components/features/analytics/ProductAnalyti
 import SalesAnalytics from "../../components/features/analytics/SalesAnalytics";
 import SalesByCategory from "../../components/features/analytics/SalesByCategory";
 import CustomerAnalytics from "../../components/features/analytics/CustomerAnalytics";
-import "../../styles/admin/analytics.css";
+import "../../styles/admin/analytic/analytics.css";
 import {reportService, productService, dashboardService, userService} from "../../services/api";
 
 const Analytics = () => {

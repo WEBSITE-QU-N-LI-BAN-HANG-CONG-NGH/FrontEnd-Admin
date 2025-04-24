@@ -82,3 +82,20 @@
 .growth-indicator.negative {
     color: var(--red-color);
 }
+
+.breakdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.breakdown-item:hover {
+    background-color: var(--light-gray);
+    border-radius: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+}

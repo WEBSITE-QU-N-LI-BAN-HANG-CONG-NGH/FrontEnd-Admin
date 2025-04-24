@@ -6,7 +6,7 @@ import {userService} from "../../services/api";
 import UserList from "../../components/features/users/UserList";
 import UserFilters from "../../components/features/users/UserFilters";
 import UserStats from "../../components/features/users/UserStats";
-import "../../styles/admin/users.css";
+import "../../styles/admin/user/users.css";
 
 const UserManagement = () => {
     const {user, loading, isAdmin} = useAuth();

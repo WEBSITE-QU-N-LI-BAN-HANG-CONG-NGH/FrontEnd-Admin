@@ -6,7 +6,7 @@ import { orderService } from "../../services/api";
 import OrderList from "../../components/features/orders/OrderList";
 import OrderStats from "../../components/features/orders/OrderStats";
 import OrderFilters from "../../components/features/orders/OrderFilters";
-import "../../styles/admin/orders.css";
+import "../../styles/admin/order/orders.css";
 
 const OrdersManagement = () => {
     const { user, loading, isAdmin } = useAuth();

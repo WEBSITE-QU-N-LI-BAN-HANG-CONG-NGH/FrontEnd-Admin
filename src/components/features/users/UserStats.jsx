@@ -1,5 +1,5 @@
 import React from "react";
-import "../../../styles/admin/users.css";
+import "../../../styles/admin/user/users.css";
 
 const UserStats = ({stats}) => {
     const formatCurrency = (amount) => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../../styles/admin/orders.css";
+import "../../../styles/admin/order/orders.css";
 import OrderDetailModal from "./OrderDetailModal";
 
 const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {

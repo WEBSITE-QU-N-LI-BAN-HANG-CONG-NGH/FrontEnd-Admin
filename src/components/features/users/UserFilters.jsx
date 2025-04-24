@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import "../../../styles/admin/users.css";
+import "../../../styles/admin/user/users.css";
 
 const UserFilters = ({onSearch, onRoleFilter, selectedRole}) => {
     const [searchTerm, setSearchTerm] = useState("");

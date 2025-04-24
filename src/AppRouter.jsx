@@ -1,15 +1,16 @@
 import React from "react";
 import {Navigate, Route, Routes} from "react-router-dom";
-import {useAuth} from "../contexts/AuthContext";
+import {useAuth} from "./contexts/AuthContext.jsx";
 
 // Import các pages
-import Dashboard from "../pages/admin/Dashboard.jsx";
-import ProductManagement from "../pages/admin/ProductManagement";
-import Login from "../pages/auth/Login";
-import NotFound from "../pages/NotFound";
-import UserManagement from "../pages/admin/UserManagement.jsx";
-import Analytics from "../pages/admin/Analytics";
-import OrdersManagement from "../pages/admin/OrdersManagement.jsx";
+import Dashboard from "./pages/admin/Dashboard.jsx";
+import ProductManagement from "./pages/admin/ProductManagement.jsx";
+import Login from "./pages/auth/Login.jsx";
+import NotFound from "./pages/NotFound.jsx";
+import UserManagement from "./pages/admin/UserManagement.jsx";
+import Analytics from "./pages/admin/Analytics.jsx";
+import OrdersManagement from "./pages/admin/OrdersManagement.jsx";
+import Revenue from "./pages/admin/Revenue";
 
 
 // Protected Route component
@@ -48,6 +49,12 @@ const AppRouter = () => {
                 }
             />
             <Route
+                path="/admin/revenue"
+                element={
+                    <ProtectedRoute element={<Revenue />} requiredRole="ADMIN" />
+                }
+            />
+            <Route
                 path="/admin/products"
                 element={
                     <ProtectedRoute element={<ProductManagement/>} requiredRole="ADMIN"/>
@@ -71,6 +78,7 @@ const AppRouter = () => {
                     <ProtectedRoute element={<OrdersManagement/>} requiredRole="ADMIN"/>
                 }
             />
+
 
             {/* Redirect root to admin dashboard if logged in */}
             <Route path="/" element={<Navigate to="/admin" replace/>}/>

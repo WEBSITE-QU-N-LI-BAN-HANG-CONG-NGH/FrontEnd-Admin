@@ -68,9 +68,11 @@ const Sidebar = () => {
                           Phân tích
                       </Link>
                     </li>
-                    <li className="sidebar-menu-item">
-                        <span className="icon">{icons.revenue}</span>
-                        Doanh thu
+                    <li className={`sidebar-menu-item ${isActive("/admin/revenue") ? "active" : ""}`}>
+                        <Link to="/admin/revenue" className="sidebar-link">
+                            <span className="icon">{icons.revenue}</span>
+                            Doanh thu
+                        </Link>
                     </li>
                 </ul>
             </div>

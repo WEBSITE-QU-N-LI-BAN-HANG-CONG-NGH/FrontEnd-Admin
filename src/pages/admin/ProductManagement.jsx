@@ -3,7 +3,7 @@ import {Navigate} from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import {useAuth} from "../../contexts/AuthContext";
 import {productService} from "../../services/api";
-import "../../styles/admin/products.css";
+import "../../styles/admin/product/products.css";
 
 const ProductManagement = () => {
     const {user, loading, isAdmin} = useAuth();

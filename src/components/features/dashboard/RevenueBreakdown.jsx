@@ -8,6 +8,12 @@ const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
 };
 
+const handleItemClick = (name, percentage) => {
+    console.log(`Clicked on: ${name} (${percentage.toFixed(1)}%)`);
+    // Có thể mở modal chi tiết hoặc navigate đến trang phân tích cụ thể
+    // window.location.href = `/admin/revenue?category=${name}`;
+};
+
 const RevenueBreakdown = ({ data = {} }) => {
     // Chuyển đổi dữ liệu từ nhiều định dạng có thể có
     let storeData = [];
@@ -74,7 +80,11 @@ const RevenueBreakdown = ({ data = {} }) => {
 
             <ul className="breakdown-list">
                 {storeData.map((store, index) => (
-                    <li key={index} className="breakdown-item">
+                    <li key={index}
+                        className="breakdown-item"
+                        onClick={() => handleItemClick(store.name, store.percentage)}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <span className="store-name" style={{display: "flex", alignItems: "center"}}>
                             <span
                                 style={{

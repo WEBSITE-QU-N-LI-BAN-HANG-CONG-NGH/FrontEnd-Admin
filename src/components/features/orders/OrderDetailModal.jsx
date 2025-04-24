@@ -1,5 +1,5 @@
 import React from "react";
-import "../../../styles/admin/order-detail.css";
+import "../../../styles/admin/order/order-detail.css";
 
 const OrderDetailModal = ({ order, onClose }) => {
     if (!order) return null;
