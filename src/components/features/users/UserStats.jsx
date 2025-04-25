@@ -21,11 +21,6 @@ const UserStats = ({stats}) => {
             </div>
 
             <div className="stat-card">
-                <div className="stat-title">Khách hàng VIP</div>
-                <div className="stat-value">{stats.vipCustomers || 0}</div>
-            </div>
-
-            <div className="stat-card">
                 <div className="stat-title">Đơn hàng trung bình</div>
                 <div className="stat-value">
                     {stats.averageOrders ? stats.averageOrders.toFixed(1) : "0"}

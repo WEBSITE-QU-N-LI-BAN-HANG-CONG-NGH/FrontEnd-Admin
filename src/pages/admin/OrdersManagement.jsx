@@ -15,6 +15,8 @@ const OrdersManagement = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState("all"); // all, pending, shipped, delivered, cancelled
+    const [searchTerm, setSearchTerm] = useState("");
+    const [dateRange, setDateRange] = useState({ start: "", end: "" });
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -25,18 +27,19 @@ const OrdersManagement = () => {
                 // Lấy tất cả đơn hàng
                 const response = await orderService.getAllOrders();
                 if (response.status === 200) {
-                    setOrders(response.data.data || []);
+                    const ordersData = response.data.data || [];
+                    setOrders(ordersData);
 
                     // Tạo thống kê từ dữ liệu orders
-                    const pendingOrders = response.data.data.filter(order => order.orderStatus === "PENDING").length;
-                    const completedOrders = response.data.data.filter(order => order.orderStatus === "DELIVERED").length;
-                    const cancelledOrders = response.data.data.filter(order => order.orderStatus === "CANCELLED").length;
-                    const totalRevenue = response.data.data
+                    const pendingOrders = ordersData.filter(order => order.orderStatus === "PENDING").length;
+                    const completedOrders = ordersData.filter(order => order.orderStatus === "DELIVERED").length;
+                    const cancelledOrders = ordersData.filter(order => order.orderStatus === "CANCELLED").length;
+                    const totalRevenue = ordersData
                         .filter(order => order.orderStatus === "DELIVERED")
                         .reduce((sum, order) => sum + order.totalAmount, 0);
 
                     setStats({
-                        totalOrders: response.data.data.length,
+                        totalOrders: ordersData.length,
                         pendingOrders,
                         completedOrders,
                         cancelledOrders,
@@ -49,6 +52,16 @@ const OrdersManagement = () => {
             } catch (err) {
                 console.error("Lỗi khi tải dữ liệu đơn hàng:", err);
                 setError("Không thể tải danh sách đơn hàng. Vui lòng thử lại sau.");
+
+                setOrders([]);
+                setStats({
+                    totalOrders: 0,
+                    pendingOrders: 0,
+                    completedOrders: 0,
+                    cancelledOrders: 0,
+                    totalRevenue: 0,
+                    averageOrderValue: 0
+                });
             } finally {
                 setIsLoading(false);
             }
@@ -113,10 +126,7 @@ const OrdersManagement = () => {
         }
     };
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [dateRange, setDateRange] = useState({ start: "", end: "" });
-
-// Hàm xử lý tìm kiếm
+    // Hàm xử lý tìm kiếm
     const handleSearch = (term, startDate, endDate) => {
         setSearchTerm(term);
         if (startDate && endDate) {
@@ -124,10 +134,10 @@ const OrdersManagement = () => {
         }
     };
 
-// Điều chỉnh lọc đơn hàng
+    // Điều chỉnh lọc đơn hàng
     const filteredOrders = orders.filter(order => {
         // Lọc theo trạng thái
-        if (filter !== "all" && order.orderStatus.toLowerCase() !== filter.toUpperCase()) {
+        if (filter !== "all" && order.orderStatus !== filter.toUpperCase()) {
             return false;
         }
 
@@ -139,7 +149,7 @@ const OrdersManagement = () => {
 
             if (!orderId.includes(searchLower) &&
                 !customerName.includes(searchLower) &&
-                !order.user?.email.toLowerCase().includes(searchLower)) {
+                !(order.user?.email || '').toLowerCase().includes(searchLower)) {
                 return false;
             }
         }
@@ -158,6 +168,7 @@ const OrdersManagement = () => {
 
         return true;
     });
+
     // Nếu đang tải thông tin người dùng
     if (loading) {
         return <div>Đang tải...</div>;

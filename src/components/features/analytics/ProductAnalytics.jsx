@@ -28,6 +28,11 @@ const ProductAnalytics = ({data = {}}) => {
                     <div className="metric-value">{outOfStockProducts}</div>
                     <div className="metric-label">Sản phẩm hết hàng</div>
                 </div>
+
+                <div className="metric">
+                    <div className="metric-value">{Object.keys(productsByCategory).length}</div>
+                    <div className="metric-label">Số danh mục</div>
+                </div>
             </div>
 
             <div className="analytics-category-distribution">

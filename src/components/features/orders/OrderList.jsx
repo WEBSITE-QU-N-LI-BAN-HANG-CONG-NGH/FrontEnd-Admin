@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import "../../../styles/admin/order/orders.css";
 import OrderDetailModal from "./OrderDetailModal";
 
-const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {
+const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [showStatusDropdown, setShowStatusDropdown] = useState({});
+    const [showPaymentDropdown, setShowPaymentDropdown] = useState({});
     // Hàm định dạng số tiền
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
@@ -26,14 +28,14 @@ const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {
         if (!status) return <span className="status-badge">Không xác định</span>;
 
         const statusMap = {
-            "PENDING": { className: "status-pending", label: "Chờ xác nhận" },
-            "CONFIRMED": { className: "status-confirmed", label: "Đã xác nhận" },
-            "SHIPPED": { className: "status-shipped", label: "Đang giao" },
-            "DELIVERED": { className: "status-delivered", label: "Đã giao" },
-            "CANCELLED": { className: "status-cancelled", label: "Đã hủy" }
+            "PENDING": {className: "status-pending", label: "Chờ xác nhận"},
+            "CONFIRMED": {className: "status-confirmed", label: "Đã xác nhận"},
+            "SHIPPED": {className: "status-shipped", label: "Đang giao"},
+            "DELIVERED": {className: "status-delivered", label: "Đã giao"},
+            "CANCELLED": {className: "status-cancelled", label: "Đã hủy"}
         };
 
-        const statusInfo = statusMap[status] || { className: "", label: status };
+        const statusInfo = statusMap[status] || {className: "", label: status};
 
         return <span className={`status-badge ${statusInfo.className}`}>{statusInfo.label}</span>;
     };
@@ -47,7 +49,10 @@ const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {
                     <>
                         <button
                             className="action-btn confirm-btn"
-                            onClick={() => onStatusChange(order.id, "confirm")}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onStatusChange(order.id, "confirm");
+                            }}
                         >
                             Xác nhận
                         </button>
@@ -57,7 +62,35 @@ const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {
                         >
                             Hủy
                         </button>
+                        <button
+                            className="action-btn status-btn"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowStatusDropdown({
+                                    ...showStatusDropdown,
+                                    [order.id]: !showStatusDropdown[order.id]
+                                });
+                            }}
+                        >
+                            Đổi trạng thái
+                        </button>
                     </>
+                )}
+
+                {showStatusDropdown[order.id] && (
+                    <div className="status-dropdown">
+                        <button onClick={(e) => {
+                            e.stopPropagation();
+                            onStatusChange(order.id, "confirm");
+                            setShowStatusDropdown({...showStatusDropdown, [order.id]: false});
+                        }}>Xác nhận</button>
+                        <button onClick={(e) => {
+                            e.stopPropagation();
+                            onStatusChange(order.id, "ship");
+                            setShowStatusDropdown({...showStatusDropdown, [order.id]: false});
+                        }}>Giao hàng</button>
+                        {/* Thêm các trạng thái khác tương tự */}
+                    </div>
                 )}
 
                 {status === "CONFIRMED" && (
@@ -104,7 +137,7 @@ const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {
 
             {/* Modal chi tiết đơn hàng */}
             {selectedOrder && (
-                <OrderDetailModal order={selectedOrder} onClose={closeOrderDetail} />
+                <OrderDetailModal order={selectedOrder} onClose={closeOrderDetail}/>
             )}
 
             {isLoading ? (
@@ -126,11 +159,12 @@ const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {
                     </thead>
                     <tbody>
                     {orders.map((order) => (
-                        <tr key={order.id} onClick={() => openOrderDetail(order)} style={{ cursor: 'pointer' }}>
+                        <tr key={order.id} onClick={() => openOrderDetail(order)} style={{cursor: 'pointer'}}>
                             <td>#{order.id}</td>
                             <td>
                                 <div className="customer-info">
-                                    <span className="customer-name">{order.user?.firstName} {order.user?.lastName}</span>
+                                    <span
+                                        className="customer-name">{order.user?.firstName} {order.user?.lastName}</span>
                                     <span className="customer-email">{order.user?.email}</span>
                                 </div>
                             </td>
@@ -141,7 +175,8 @@ const OrderList = ({ orders, isLoading, onStatusChange, onDeleteOrder }) => {
                                 <div className="payment-info">
                                     <div>{order.paymentMethod || "COD"}</div>
                                     {order.paymentStatus && (
-                                        <div className={`payment-status ${order.paymentStatus.toLowerCase() === 'paid' ? 'paid' : 'unpaid'}`}>
+                                        <div
+                                            className={`payment-status ${order.paymentStatus.toLowerCase() === 'paid' ? 'paid' : 'unpaid'}`}>
                                             {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'}
                                         </div>
                                     )}

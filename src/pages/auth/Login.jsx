@@ -38,7 +38,7 @@ const Login = () => {
     return (
         <div className="login-container">
             <div className="login-card">
-                <h2 className="login-title">ADMIN LOGIN - TECHSHOP</h2>
+                <h2 className="login-title">ADMIN - TECHSHOP</h2>
                 {error && <div className="login-error">{error}</div>}
 
                 <form onSubmit={handleSubmit} className="login-form">
@@ -50,7 +50,7 @@ const Login = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            placeholder="Nhập email của bạn"
+                            placeholder="Nhập email"
                         />
                     </div>
 
@@ -62,7 +62,7 @@ const Login = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            placeholder="Nhập mật khẩu"
+                            placeholder="Nhập password"
                         />
                     </div>
 

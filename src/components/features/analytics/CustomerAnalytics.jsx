@@ -5,7 +5,6 @@ const CustomerAnalytics = ({data = {}}) => {
     const {
         totalCustomers = 0,
         totalSpending = 0,
-        vipCustomers = 0,
         averageOrders = 0,
     } = data;
 
@@ -13,6 +12,9 @@ const CustomerAnalytics = ({data = {}}) => {
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
     };
+
+    // Tính toán chi tiêu trung bình mỗi khách hàng
+    const averageSpending = totalCustomers > 0 ? totalSpending / totalCustomers : 0;
 
     return (
         <div className="analytics-card">
@@ -37,40 +39,31 @@ const CustomerAnalytics = ({data = {}}) => {
                 </div>
 
                 <div className="metric">
-                    <div className="metric-value">{vipCustomers}</div>
-                    <div className="metric-label">Khách hàng VIP</div>
+                    <div className="metric-value">{formatCurrency(averageSpending)}</div>
+                    <div className="metric-label">Chi tiêu trung bình</div>
                 </div>
             </div>
 
             <div className="customer-metrics">
                 <div className="spending-per-customer">
-                    <h3>Chi tiêu trung bình</h3>
+                    <h3>Chi tiêu theo khách hàng</h3>
                     <div className="big-metric">
-                        {formatCurrency(totalCustomers ? Math.round(totalSpending / totalCustomers) : 0)}
+                        {formatCurrency(averageSpending)}
                     </div>
                     <div className="metric-description">Trung bình mỗi khách hàng</div>
                 </div>
 
-                <div className="vip-percentage">
-                    <h3>Tỷ lệ khách hàng VIP</h3>
-                    <div className="vip-chart">
-                        <svg viewBox="0 0 100 100" className="pie-percentage">
-                            <circle cx="50" cy="50" r="40" fill="#e6e6e6"/>
-                            <circle
-                                cx="50"
-                                cy="50"
-                                r="40"
-                                fill="transparent"
-                                stroke="#4A6CF7"
-                                strokeWidth="10"
-                                strokeDasharray={`${(vipCustomers / totalCustomers) * 251.2} 251.2`}
-                                transform="rotate(-90 50 50)"
-                            />
-                            <text x="50" y="50" textAnchor="middle" dominantBaseline="middle"
-                                  className="percentage-text">
-                                {totalCustomers ? Math.round((vipCustomers / totalCustomers) * 100) : 0}%
-                            </text>
-                        </svg>
+                <div className="customer-activity">
+                    <h3>Hoạt động của khách hàng</h3>
+                    <div className="activity-chart">
+                        <div className="activity-metric">
+                            <div className="activity-value">{averageOrders.toFixed(1)}</div>
+                            <div className="activity-label">Đơn hàng trung bình</div>
+                        </div>
+                        <div className="activity-metric">
+                            <div className="activity-value">{formatCurrency(totalSpending / (totalCustomers || 1))}</div>
+                            <div className="activity-label">Chi tiêu/khách hàng</div>
+                        </div>
                     </div>
                 </div>
             </div>

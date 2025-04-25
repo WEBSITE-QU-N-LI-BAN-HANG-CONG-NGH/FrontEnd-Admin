@@ -8,7 +8,7 @@ import SalesAnalytics from "../../components/features/analytics/SalesAnalytics";
 import SalesByCategory from "../../components/features/analytics/SalesByCategory";
 import CustomerAnalytics from "../../components/features/analytics/CustomerAnalytics";
 import "../../styles/admin/analytic/analytics.css";
-import {reportService, productService, dashboardService, userService} from "../../services/api";
+import {reportService, dashboardService, userService} from "../../services/api";
 
 const Analytics = () => {
     const {user, loading, isAdmin} = useAuth();
@@ -31,7 +31,7 @@ const Analytics = () => {
                     setProductStats(productStatsResponse.data.data || {});
                 }
 
-                // Lấy dữ liệu doanh thu theo tháng từ API mới
+                // Lấy dữ liệu doanh thu theo tháng từ API
                 const salesResponse = await dashboardService.getMonthlyRevenue();
                 if (salesResponse.status === 200) {
                     setSalesData(salesResponse.data.data.monthlyData || []);
@@ -51,12 +51,10 @@ const Analytics = () => {
             } catch (err) {
                 console.error("Lỗi khi tải dữ liệu phân tích:", err);
                 setError("Không thể tải dữ liệu phân tích. Vui lòng thử lại sau.");
-
-                setSalesData([
-                ]);
-
-                setCategoryData({
-                });
+                setSalesData([]);
+                setCategoryData([]);
+                setCustomerData({});
+                setProductStats({});
             } finally {
                 setIsLoading(false);
             }

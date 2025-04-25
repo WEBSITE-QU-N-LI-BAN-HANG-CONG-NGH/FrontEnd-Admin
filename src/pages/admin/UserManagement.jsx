@@ -83,27 +83,27 @@ const UserManagement = () => {
         setCurrentPage(0); // Reset về trang đầu tiên khi lọc
     };
 
-    // Xử lý thay đổi vai trò của người dùng
-    const handleChangeRole = async (userId, newRole) => {
-        try {
-            const response = await userService.changeUserRole(userId, newRole);
-            if (response.status === 200 && response.data.status) {
-                // Cập nhật lại danh sách người dùng
-                fetchUsers();
-            } else {
-                throw new Error("Không thể thay đổi vai trò người dùng");
-            }
-        } catch (err) {
-            console.error("Lỗi khi thay đổi vai trò người dùng:", err);
-            setError("Không thể thay đổi vai trò người dùng. Vui lòng thử lại sau.");
-        }
-    };
+    // // Xử lý thay đổi vai trò của người dùng
+    // const handleChangeRole = async (userId, newRole) => {
+    //     try {
+    //         const response = await userService.changeUserRole(userId, newRole);
+    //         if (response.status === 200 && response.data.status) {
+    //             // Cập nhật lại danh sách người dùng
+    //             fetchUsers();
+    //         } else {
+    //             throw new Error("Không thể thay đổi vai trò người dùng");
+    //         }
+    //     } catch (err) {
+    //         console.error("Lỗi khi thay đổi vai trò người dùng:", err);
+    //         setError("Không thể thay đổi vai trò người dùng. Vui lòng thử lại sau.");
+    //     }
+    // };
 
     // Xử lý thay đổi trạng thái hoạt động của người dùng
     const handleToggleStatus = async (userId, isActive) => {
         try {
             const response = await userService.updateUserStatus(userId, !isActive);
-            if (response.status === 200 && response.data.status) {
+            if (response.status === 200) {
                 // Cập nhật lại danh sách người dùng
                 fetchUsers();
             } else {
@@ -123,11 +123,9 @@ const UserManagement = () => {
 
         try {
             const response = await userService.deleteUser(userId);
-            if (response.status === 200 && response.data.status) {
+            if (response.status === 200) {
                 // Cập nhật lại danh sách người dùng
                 fetchUsers();
-            } else {
-                throw new Error("Không thể xóa người dùng");
             }
         } catch (err) {
             console.error("Lỗi khi xóa người dùng:", err);
@@ -172,7 +170,7 @@ const UserManagement = () => {
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
-                    onChangeRole={handleChangeRole}
+                    // onChangeRole={handleChangeRole}
                     onToggleStatus={handleToggleStatus}
                     onDeleteUser={handleDeleteUser}
                 />

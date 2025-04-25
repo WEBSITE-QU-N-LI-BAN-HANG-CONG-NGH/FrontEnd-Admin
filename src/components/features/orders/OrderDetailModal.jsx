@@ -180,7 +180,7 @@ const OrderDetailModal = ({ order, onClose }) => {
                         </div>
                         <div className="summary-row total">
                             <div>Tổng thanh toán:</div>
-                            <div>{formatCurrency(order.totalAmount)}</div>
+                            <div>{formatCurrency(order.totalAmount-order.discount)}</div>
                         </div>
                     </div>
                 </div>

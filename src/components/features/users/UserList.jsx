@@ -7,7 +7,6 @@ const UserList = ({
                       currentPage,
                       totalPages,
                       onPageChange,
-                      onChangeRole,
                       onToggleStatus,
                       onDeleteUser,
                   }) => {
@@ -77,17 +76,7 @@ const UserList = ({
                                 <td>{user.id}</td>
                                 <td>{user.email}</td>
                                 <td>{`${user.firstName || ''} ${user.lastName || ''}`}</td>
-                                <td>
-                                    <select
-                                        className="role-select"
-                                        value={user.role}
-                                        onChange={(e) => onChangeRole(user.id, e.target.value)}
-                                    >
-                                        <option value="CUSTOMER">Khách hàng</option>
-                                        <option value="SELLER">Người bán</option>
-                                        <option value="ADMIN">Quản trị viên</option>
-                                    </select>
-                                </td>
+                                <td>{user.role === "CUSTOMER" ? "Khách hàng" : "Người bán"}</td>
                                 <td>
                                     <div className="status-toggle">
                                         <button

@@ -34,7 +34,6 @@ const UserFilters = ({onSearch, onRoleFilter, selectedRole}) => {
                     <option value="">Tất cả vai trò</option>
                     <option value="CUSTOMER">Khách hàng</option>
                     <option value="SELLER">Người bán</option>
-                    <option value="ADMIN">Quản trị viên</option>
                 </select>
             </div>
 
