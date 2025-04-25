@@ -1,6 +1,8 @@
 // src/components/features/dashboard/RevenueOverview.jsx
 import React from 'react';
 import '../../../styles/admin/dashboard/overview.css';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+
 
 // Hàm định dạng số tiền thành VND
 const formatCurrency = (amount) => {
@@ -41,7 +43,16 @@ const RevenueOverview = ({ data = {} }) => {
             </div>
 
             <div className="revenue-chart">
-                {/* Phần này có thể thêm biểu đồ doanh thu ở phiên bản nâng cao */}
+                {/*<div className="revenue-chart">*/}
+                {/*    <ResponsiveContainer width="100%" height="100%">*/}
+                {/*        <LineChart data={data || []}>*/}
+                {/*            <XAxis dataKey="month" />*/}
+                {/*            <YAxis />*/}
+                {/*            <Tooltip />*/}
+                {/*            <Line type="monotone" dataKey="revenue" stroke="#8884d8" />*/}
+                {/*        </LineChart>*/}
+                {/*    </ResponsiveContainer>*/}
+                {/*</div>*/}
             </div>
 
             <div className="store-highlights">

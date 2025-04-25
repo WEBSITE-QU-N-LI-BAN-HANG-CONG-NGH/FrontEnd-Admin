@@ -28,20 +28,10 @@ const Sidebar = () => {
         return location.pathname === path;
     };
 
-    const getInitials = () => {
-        if (!user) return "U";
-
-        const firstName = user.firstName || "";
-        const lastName = user.lastName || "";
-
-        return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
-    };
-
     // Thêm các icon sử dụng UTF-8 characters
     const icons = {
         dashboard: "📊",
         analytics: "📈",
-        revenue: "💰",
         products: "📦",
         users: "👥",
         orders: "🛒",
@@ -67,12 +57,6 @@ const Sidebar = () => {
                           <span className="icon">{icons.analytics}</span>
                           Phân tích
                       </Link>
-                    </li>
-                    <li className={`sidebar-menu-item ${isActive("/admin/revenue") ? "active" : ""}`}>
-                        <Link to="/admin/revenue" className="sidebar-link">
-                            <span className="icon">{icons.revenue}</span>
-                            Doanh thu
-                        </Link>
                     </li>
                 </ul>
             </div>
@@ -102,7 +86,13 @@ const Sidebar = () => {
             </div>
 
             <div className="admin-section" onClick={toggleLogout}>
-                <div className="admin-avatar">{getInitials()}</div>
+                <div className="admin-avatar">
+                    <img
+                        src="https://res.cloudinary.com/dgygvrrjs/image/upload/v1745387610/ChatGPT_Image_Apr_5_2025_12_08_58_AM_ociguu.png"
+                        alt="Avatar"
+                        className="avatar-img"
+                    />
+                </div>
                 <div className="admin-info">
                     <div className="name">
                         {user?.firstName || "Admin"} {user?.lastName || ""}

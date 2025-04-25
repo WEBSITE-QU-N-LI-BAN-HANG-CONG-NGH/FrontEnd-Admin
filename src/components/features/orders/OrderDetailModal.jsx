@@ -69,15 +69,17 @@ const OrderDetailModal = ({ order, onClose }) => {
                             <h3>Thông tin khách hàng</h3>
                             <div className="info-group">
                                 <div className="info-label">Tên khách hàng:</div>
-                                <div className="info-value">{order.user?.firstName} {order.user?.lastName}</div>
+                                <div className="info-value">
+                                    {(order.user?.firstName || '') + ' ' + (order.user?.lastName || '')}
+                                </div>
                             </div>
                             <div className="info-group">
                                 <div className="info-label">Email:</div>
-                                <div className="info-value">{order.user?.email}</div>
+                                <div className="info-value">{order.user?.email || 'N/A'}</div>
                             </div>
                             <div className="info-group">
                                 <div className="info-label">Số điện thoại:</div>
-                                <div className="info-value">{order.user?.phone || "Không có"}</div>
+                                <div className="info-value">{order.user?.phone || 'Không có'}</div>
                             </div>
                         </div>
                     </div>
