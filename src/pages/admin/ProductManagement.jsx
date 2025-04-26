@@ -89,7 +89,6 @@ const ProductManagement = () => {
                         {products.reduce((total, product) => total + (product.quantitySold || 0), 0)}
                     </div>
                     <div className="stat-change positive">
-                        {formatPercentage(10)}
                     </div>
                 </div>
 
@@ -97,7 +96,6 @@ const ProductManagement = () => {
                     <div className="stat-title">Tổng doanh thu</div>
                     <div className="stat-value">{formatCurrency(stats.totalRevenue)}</div>
                     <div className="stat-change positive">
-                        {formatPercentage(12)}
                     </div>
                 </div>
 

@@ -9,7 +9,7 @@ const UserStats = ({stats}) => {
     return (
         <div className="user-stats">
             <div className="stat-card">
-                <div className="stat-title">Tổng số khách hàng</div>
+                <div className="stat-title">Tổng số người dùng</div>
                 <div className="stat-value">{stats.totalCustomers || 0}</div>
             </div>
 
@@ -21,7 +21,7 @@ const UserStats = ({stats}) => {
             </div>
 
             <div className="stat-card">
-                <div className="stat-title">Đơn hàng trung bình</div>
+                <div className="stat-title">Đơn hàng trung bình / khách hàng</div>
                 <div className="stat-value">
                     {stats.averageOrders ? stats.averageOrders.toFixed(1) : "0"}
                 </div>

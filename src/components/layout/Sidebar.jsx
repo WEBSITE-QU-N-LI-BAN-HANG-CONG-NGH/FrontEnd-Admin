@@ -53,10 +53,10 @@ const Sidebar = () => {
                         </Link>
                     </li>
                     <li className="sidebar-menu-item">
-                      <Link to="/admin/analytics" className="sidebar-link">
-                          <span className="icon">{icons.analytics}</span>
-                          Phân tích
-                      </Link>
+                        <Link to="/admin/analytics" className="sidebar-link">
+                            <span className="icon">{icons.analytics}</span>
+                            Phân tích
+                        </Link>
                     </li>
                 </ul>
             </div>
@@ -95,10 +95,7 @@ const Sidebar = () => {
                 </div>
                 <div className="admin-info">
                     <div className="name">
-                        {user?.firstName || "Admin"} {user?.lastName || ""}
-                    </div>
-                    <div className="email">
-                        {user?.email || "admin@techshop.com"}
+                        ADMIN
                     </div>
                 </div>
                 {showLogout && (

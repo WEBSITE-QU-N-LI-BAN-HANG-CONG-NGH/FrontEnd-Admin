@@ -9,42 +9,37 @@ const DashboardStats = ({ stats = {} }) => {
     return (
         <div className="dashboard-stats">
             <div className="stat-card">
-                <div className="stat-icon orders-icon">📊</div>
-                <div className="stat-content">
-                    <div className="stat-title">Tổng đơn hàng</div>
-                    <div className="stat-value">{stats.totalOrders || 0}</div>
-                    <div className={`stat-change ${(stats.orderGrowth || 0) >= 0 ? 'positive' : 'negative'}`}>
-                        {(stats.orderGrowth || 0) >= 0 ? '+' : ''}{stats.orderGrowth || 0}%
-                    </div>
-                </div>
-            </div>
-
-            <div className="stat-card">
-                <div className="stat-icon revenue-icon">💰</div>
-                <div className="stat-content">
-                    <div className="stat-title">Doanh thu</div>
-                    <div className="stat-value">{formatCurrency(stats.totalRevenue)}</div>
-                    <div className={`stat-change ${(stats.revenueGrowth || 0) >= 0 ? 'positive' : 'negative'}`}>
-                        {(stats.revenueGrowth || 0) >= 0 ? '+' : ''}{stats.revenueGrowth || 0}%
-                    </div>
-                </div>
-            </div>
-
-            <div className="stat-card">
                 <div className="stat-icon products-icon">📦</div>
                 <div className="stat-content">
-                    <div className="stat-title">Sản phẩm</div>
-                    <div className="stat-value">{stats.totalProducts || 0}</div>
-                    <div className="stat-subtitle">{stats.outOfStockProducts || 0} hết hàng</div>
+                    <div className="stat-title">Mẫu sản phẩm</div>
+                    <div className="stat-value">{stats.totalProducts || 178}</div>
+                    <div className={`stat-change ${(stats.productGrowth || 0) >= 0 ? 'positive' : 'negative'}`}>
+                        {(stats.productGrowth || 12) >= 0 ? '+' : ''}{stats.productGrowth || 12}%
+                        <span className="change-period">tuần này</span>
+                    </div>
                 </div>
             </div>
 
             <div className="stat-card">
-                <div className="stat-icon users-icon">👥</div>
+                <div className="stat-icon stock-icon">📊</div>
                 <div className="stat-content">
-                    <div className="stat-title">Khách hàng</div>
-                    <div className="stat-value">{stats.totalCustomers || 0}</div>
-                    <div className="stat-subtitle">{stats.newCustomers || 0} khách mới</div>
+                    <div className="stat-title">Trong kho</div>
+                    <div className="stat-value">{stats.inStock || 24}</div>
+                    <div className="stat-subtitle">
+                        {stats.lowStockItems || 5} sản phẩm sắp hết
+                    </div>
+                </div>
+            </div>
+
+            <div className="stat-card">
+                <div className="stat-icon orders-icon">🛒</div>
+                <div className="stat-content">
+                    <div className="stat-title">Đã bán</div>
+                    <div className="stat-value">{stats.soldItems || 190}</div>
+                    <div className={`stat-change ${(stats.salesGrowth || 0) >= 0 ? 'positive' : 'negative'}`}>
+                        {(stats.salesGrowth || 8) >= 0 ? '+' : ''}{stats.salesGrowth || 8}%
+                        <span className="change-period">tuần này</span>
+                    </div>
                 </div>
             </div>
         </div>

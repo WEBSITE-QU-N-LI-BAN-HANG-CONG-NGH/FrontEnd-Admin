@@ -1,15 +1,24 @@
 .revenue-overview {
-    padding: 20px;
+    padding: 24px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+}
+
+.revenue-overview:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
 
 .revenue-header {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .revenue-title {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 8px;
+    color: var(--text-color);
 }
 
 .revenue-subtitle {
@@ -20,8 +29,11 @@
 .revenue-amount {
     font-size: 32px;
     font-weight: 700;
-    margin-bottom: 8px;
-    color: var(--primary-color);
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #4A6CF7, #8B5CF6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
 }
 
 .revenue-change {
@@ -29,7 +41,8 @@
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    font-weight: 500;
 }
 
 .revenue-change.positive {
@@ -40,65 +53,92 @@
     color: var(--red-color);
 }
 
+.revenue-change.positive::before {
+    content: "↑";
+    font-size: 16px;
+}
+
+.revenue-change.negative::before {
+    content: "↓";
+    font-size: 16px;
+}
+
 .revenue-previous {
     font-size: 13px;
     color: var(--secondary-color);
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .revenue-chart {
-    margin-top: 20px;
-    height: 150px;
+    margin: 30px 0;
+    border-radius: 12px;
     background-color: var(--light-gray);
-    border-radius: 8px;
-    margin-bottom: 20px;
-    position: relative;
+    padding: 20px 10px 10px 10px;
     overflow: hidden;
 }
 
-.revenue-chart::before {
-    content: "Biểu đồ doanh thu";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--secondary-color);
+.chart-tooltip {
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 8px;
+    padding: 12px;
+    border: none;
+    color: white;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-label {
+    margin: 0 0 6px 0;
     font-size: 14px;
-    opacity: 0.7;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.tooltip-revenue {
+    margin: 0 0 4px 0;
+    font-size: 13px;
+    color: #4A6CF7;
+}
+
+.tooltip-orders {
+    margin: 0;
+    font-size: 13px;
+    color: #8B5CF6;
 }
 
 .store-highlights {
     display: flex;
-    margin-top: 20px;
-    gap: 20px;
+    margin-top: 24px;
+    gap: 16px;
 }
 
 .highlight-card {
     flex: 1;
     background-color: var(--light-gray);
     padding: 16px;
-    border-radius: 8px;
+    border-radius: 10px;
     transition: all 0.3s ease;
 }
 
 .highlight-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: rgba(74, 108, 247, 0.05);
     transform: translateY(-2px);
 }
 
 .highlight-title {
     font-size: 14px;
     color: var(--secondary-color);
-    margin-bottom: 8px;
-}
-
-.highlight-store {
-    font-weight: 600;
-    font-size: 18px;
+    margin-bottom: 10px;
 }
 
 .highlight-value {
+    font-weight: 600;
+    font-size: 18px;
     color: var(--primary-color);
+    margin-bottom: 4px;
+}
+
+.highlight-subtitle {
+    color: var(--secondary-color);
     font-size: 13px;
     margin-top: 4px;
 }

@@ -1,20 +1,25 @@
-// src/pages/admin/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import DashboardStats from "../../components/features/dashboard/DashboardStats";
+import RecentOrders from "../../components/features/dashboard/RecentOrders";
 import RevenueBreakdown from "../../components/features/dashboard/RevenueBreakdown";
 import RevenueOverview from "../../components/features/dashboard/RevenueOverview";
-import StoreRevenue from "../../components/features/dashboard/StoreRevenue";
+import TopSellingProducts from "../../components/features/dashboard/TopSellingProducts";
 import Layout from "../../components/layout/Layout";
 import { useAuth } from "../../contexts/AuthContext";
-import { dashboardService } from "../../services/api";
+import { dashboardService, orderService, productService } from "../../services/api";
+import "../../styles/admin/dashboard/dashboard.css";
 
 const Dashboard = () => {
     const { user, loading, isAdmin } = useAuth();
     const [dashboardData, setDashboardData] = useState({
-        revenue: {},
-        topSellers: [],
-        distribution: {}
+        revenueStats: {},
+        revenueDistribution: {},
+        topProducts: [],
+        recentOrders: [],
+        productStats: {}
     });
+    const [filterOption, setFilterOption] = useState('today'); // today, week, month, year
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -24,27 +29,71 @@ const Dashboard = () => {
                 setIsLoading(true);
                 setError(null);
 
-                // Gọi API tổng hợp tất cả dữ liệu dashboard
+                // Gọi API dashboard overview
                 const overviewResponse = await dashboardService.getOverview();
                 if (overviewResponse.status === 200) {
                     const data = overviewResponse.data.data || {};
+
+                    // Cập nhật state với dữ liệu dashboard
                     setDashboardData({
-                        revenue: data.revenue || {},
-                        topSellers: data.topSellers || [],
-                        distribution: data.distribution || {}
+                        revenueStats: data.revenue || {},
+                        revenueDistribution: data.distribution || {},
+                        topProducts: [],
+                        recentOrders: [],
+                        productStats: data.productStats || {}
                     });
-                } else {
-                    throw new Error("Không thể tải dữ liệu tổng quan");
                 }
+
+                // Gọi API lấy sản phẩm bán chạy
+                try {
+                    const topProductsResponse = await productService.getTopSellingProducts(5);
+                    if (topProductsResponse.status === 200) {
+                        setDashboardData(prev => ({
+                            ...prev,
+                            topProducts: topProductsResponse.data.data || []
+                        }));
+                    }
+                } catch (err) {
+                    console.warn("Không thể tải dữ liệu sản phẩm bán chạy:", err);
+                }
+
+                // Gọi API lấy đơn hàng gần đây
+                try {
+                    const ordersResponse = await orderService.getAllOrders();
+                    if (ordersResponse.status === 200) {
+                        const recentOrders = (ordersResponse.data.data || [])
+                            .slice(0, 5)
+                            .map(order => {
+                                // Chuyển đổi dữ liệu đơn hàng thành định dạng cần thiết cho component
+                                if (order.orderItems && order.orderItems.length > 0) {
+                                    const firstItem = order.orderItems[0];
+                                    return {
+                                        id: order.id,
+                                        trackingNo: `TN-${order.id}`,
+                                        productName: firstItem.product?.title || "Sản phẩm không xác định",
+                                        productImg: firstItem.product?.images?.[0]?.downloadUrl || "https://res.cloudinary.com/dgygvrrjs/image/upload/v1745387610/ChatGPT_Image_Apr_5_2025_12_08_58_AM_ociguu.png",
+                                        price: firstItem.price,
+                                        quantity: firstItem.quantity,
+                                        totalAmount: order.totalAmount,
+                                        date: order.orderDate
+                                    };
+                                }
+                                return null;
+                            })
+                            .filter(Boolean); // Lọc bỏ các giá trị null
+
+                        setDashboardData(prev => ({
+                            ...prev,
+                            recentOrders
+                        }));
+                    }
+                } catch (err) {
+                    console.warn("Không thể tải dữ liệu đơn hàng gần đây:", err);
+                }
+
             } catch (err) {
                 console.error("Lỗi khi tải dữ liệu dashboard:", err);
                 setError("Không thể tải dữ liệu dashboard. Vui lòng thử lại sau.");
-
-                setDashboardData({
-                    revenue: {},
-                    topSellers: [],
-                    distribution: {}
-                });
             } finally {
                 setIsLoading(false);
             }
@@ -53,7 +102,7 @@ const Dashboard = () => {
         if (!loading && user) {
             fetchDashboardData();
         }
-    }, [loading, user]);
+    }, [loading, user, filterOption]);
 
     // Nếu đang tải thông tin người dùng
     if (loading) {
@@ -68,17 +117,28 @@ const Dashboard = () => {
     return (
         <Layout>
             <div className="content-wrapper">
+
                 {isLoading ? (
-                    <div className="loading-message">Đang tải dữ liệu dashboard...</div>
+                    <div className="loading-message" style={{ textAlign: 'center', padding: '50px' }}>
+                        Đang tải dữ liệu dashboard...
+                    </div>
                 ) : error ? (
-                    <div className="error-message">{error}</div>
+                    <div className="error-message" style={{ textAlign: 'center', padding: '30px', color: 'var(--red-color)' }}>
+                        {error}
+                    </div>
                 ) : (
                     <>
+                        <DashboardStats stats={dashboardData.productStats} />
+
                         <div className="dashboard-grid">
-                            <RevenueOverview data={dashboardData.revenue} />
-                            <RevenueBreakdown data={dashboardData.distribution} />
+                            <RevenueOverview data={dashboardData.revenueStats} />
+                            <RevenueBreakdown data={dashboardData.revenueDistribution} />
                         </div>
-                        <StoreRevenue data={dashboardData.topSellers} />
+
+                        <div className="dashboard-grid">
+                            <RecentOrders orders={dashboardData.recentOrders} />
+                            <TopSellingProducts products={dashboardData.topProducts} />
+                        </div>
                     </>
                 )}
             </div>
