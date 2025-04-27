@@ -44,7 +44,6 @@ const Sidebar = () => {
             </div>
 
             <div className="sidebar-section">
-                <div className="sidebar-section-title">Tổng quan</div>
                 <ul className="sidebar-menu">
                     <li className={`sidebar-menu-item ${isActive("/admin") ? "active" : ""}`}>
                         <Link to="/admin" className="sidebar-link">
@@ -58,12 +57,6 @@ const Sidebar = () => {
                             Phân tích
                         </Link>
                     </li>
-                </ul>
-            </div>
-
-            <div className="sidebar-section">
-                <div className="sidebar-section-title">Quản lý</div>
-                <ul className="sidebar-menu">
                     <li className={`sidebar-menu-item ${isActive("/admin/products") ? "active" : ""}`}>
                         <Link to="/admin/products" className="sidebar-link">
                             <span className="icon">{icons.products}</span>

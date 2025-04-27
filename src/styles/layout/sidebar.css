@@ -1,6 +1,6 @@
 /* src/styles/layout/sidebar.css */
 .sidebar {
-    width: 250px;
+    width: 220px; /* Giảm chiều rộng */
     background-color: #1A2266;
     height: 100vh;
     position: sticky;
@@ -8,52 +8,47 @@
     display: flex;
     flex-direction: column;
     color: #FFFFFF;
-    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-header {
-    padding: 20px;
+    padding: 15px;
     display: flex;
     align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-header h1 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     background: linear-gradient(to right, #4A6CF7, #8B5CF6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-left: 10px;
-}
-
-.sidebar-section {
-    margin-top: 24px;
-}
-
-.sidebar-section-title {
-    padding: 0 20px;
-    font-size: 12px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7); /* Sáng hơn từ 0.5 lên 0.7 */
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    letter-spacing: 0.5px;
+    margin-left: 8px;
 }
 
 .sidebar-menu {
     list-style: none;
+    padding-top: 10px;
 }
 
 .sidebar-menu-item {
     display: flex;
     align-items: center;
-    padding: 12px 20px;
-    color: rgba(255, 255, 255, 0.9); /* Sáng hơn từ 0.7 lên 0.9 */
+    padding: 10px 15px;
+    color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     transition: all 0.2s;
     position: relative;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
+}
+
+.sidebar-menu-item .icon {
+    margin-right: 10px;
+    font-size: 16px;
+    display: inline-block;
+    width: 18px;
+    text-align: center;
 }
 
 .sidebar-menu-item:hover {
@@ -74,14 +69,6 @@
     height: 100%;
     width: 3px;
     background: linear-gradient(to bottom, #4A6CF7, #8B5CF6);
-}
-
-.sidebar-menu-item .icon {
-    margin-right: 12px;
-    font-size: 18px;
-    display: inline-block; /* Thay đổi từ flex sang inline-block */
-    width: 20px; /* Giảm kích thước */
-    text-align: center; /* Căn giữa icon */
 }
 
 .sidebar-link {

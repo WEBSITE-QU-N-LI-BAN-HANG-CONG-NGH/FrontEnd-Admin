@@ -83,19 +83,17 @@ const ProductManagement = () => {
                     <p>Phân tích và quản lý sản phẩm theo hiệu suất bán hàng</p>
                 </div>
 
-                <div className="stat-card">
-                    <div className="stat-title">Tổng sản phẩm đã bán</div>
-                    <div className="stat-value">
-                        {products.reduce((total, product) => total + (product.quantitySold || 0), 0)}
+                <div className="stat-card combined-stats">
+                    <div className="stat-info">
+                        <div className="stat-title">Tổng số sản phẩm đã bán</div>
+                        <div className="stat-value">
+                            {products.reduce((total, product) => total + (product.quantitySold || 0), 0)}
+                        </div>
                     </div>
-                    <div className="stat-change positive">
-                    </div>
-                </div>
-
-                <div className="stat-card">
-                    <div className="stat-title">Tổng doanh thu</div>
-                    <div className="stat-value">{formatCurrency(stats.totalRevenue)}</div>
-                    <div className="stat-change positive">
+                    <div className="stat-divider"></div>
+                    <div className="stat-info">
+                        <div className="stat-title">Tổng doanh thu</div>
+                        <div className="stat-value">{formatCurrency(stats.totalRevenue)}</div>
                     </div>
                 </div>
 

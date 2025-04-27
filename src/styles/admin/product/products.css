@@ -229,3 +229,20 @@
     color: white;
     border-color: var(--primary-color);
 }
+
+.combined-stats {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-divider {
+    width: 1px;
+    background-color: var(--border-color);
+    margin: 0 20px;
+}

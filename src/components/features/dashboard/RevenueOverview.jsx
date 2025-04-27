@@ -56,30 +56,11 @@ const RevenueOverview = ({ data = {} }) => {
     // Dữ liệu cho biểu đồ
     const chartData = generateData();
 
-    // Tính toán giá trị tháng trước dựa trên dữ liệu hiện tại
-    const previousMonthIncome = currentMonthIncome - compareDifference;
-
-    // Kiểm tra xem tỷ lệ tăng trưởng là dương hay âm
-    const isPositiveGrowth = comparePercent >= 0;
-
     return (
         <div className="card revenue-overview">
             <div className="revenue-header">
-                <div className="revenue-title">Tổng quan doanh thu</div>
-                <div className="revenue-subtitle">Doanh thu theo giờ trong ngày</div>
+                <div className="revenue-title">Chart By Revenue</div>
             </div>
-
-            <div className="revenue-amount">{formatCurrency(currentMonthIncome)}</div>
-
-            <div className={`revenue-change ${isPositiveGrowth ? 'positive' : 'negative'}`}>
-                {isPositiveGrowth ? '+' : ''}{comparePercent.toFixed(2)}% so với tháng trước
-            </div>
-
-            <div className="revenue-previous">
-                {isPositiveGrowth ? 'Tăng' : 'Giảm'} {formatCurrency(Math.abs(compareDifference))} so với tháng trước
-                ({formatCurrency(previousMonthIncome)})
-            </div>
-
             <div className="revenue-chart">
                 <ResponsiveContainer width="100%" height={200}>
                     <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
@@ -104,27 +85,6 @@ const RevenueOverview = ({ data = {} }) => {
                         />
                     </AreaChart>
                 </ResponsiveContainer>
-            </div>
-
-            <div className="store-highlights">
-                <div className="highlight-card">
-                    <div className="highlight-title">Mục tiêu tháng</div>
-                    <div className="highlight-value">
-                        {formatCurrency(currentMonthIncome * 1.2)}
-                    </div>
-                    <div className="highlight-subtitle">
-                        ({((currentMonthIncome / (currentMonthIncome * 1.2)) * 100).toFixed(1)}% đạt được)
-                    </div>
-                </div>
-                <div className="highlight-card">
-                    <div className="highlight-title">Dự báo tháng sau</div>
-                    <div className="highlight-value">
-                        {formatCurrency(currentMonthIncome * (1 + comparePercent / 100))}
-                    </div>
-                    <div className="highlight-subtitle">
-                        (Dựa trên tỷ lệ tăng trưởng hiện tại)
-                    </div>
-                </div>
             </div>
         </div>
     );

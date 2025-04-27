@@ -19,7 +19,6 @@ const Dashboard = () => {
         recentOrders: [],
         productStats: {}
     });
-    const [filterOption, setFilterOption] = useState('today'); // today, week, month, year
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -102,7 +101,7 @@ const Dashboard = () => {
         if (!loading && user) {
             fetchDashboardData();
         }
-    }, [loading, user, filterOption]);
+    }, [loading, user]);
 
     // Nếu đang tải thông tin người dùng
     if (loading) {

@@ -1,8 +1,8 @@
-.revenue-overview {
-    padding: 24px;
+css.revenue-overview {
+    padding: 15px; /* Giảm padding */
     background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    border-radius: 8px; /* Giảm border-radius */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     transition: all 0.3s ease;
 }
 
@@ -11,14 +11,14 @@
 }
 
 .revenue-header {
-    margin-bottom: 24px;
+    margin-bottom: 15px; /* Giảm margin */
 }
 
+
 .revenue-title {
-    font-size: 18px;
+    font-size: 16px; /* Giảm font-size */
     font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--text-color);
+    margin-bottom: 5px; /* Giảm margin */
 }
 
 .revenue-subtitle {
@@ -27,13 +27,9 @@
 }
 
 .revenue-amount {
-    font-size: 32px;
+    font-size: 26px; /* Giảm font-size */
     font-weight: 700;
-    margin-bottom: 10px;
-    background: linear-gradient(45deg, #4A6CF7, #8B5CF6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
+    margin-bottom: 8px; /* Giảm margin */
 }
 
 .revenue-change {
@@ -70,11 +66,9 @@
 }
 
 .revenue-chart {
-    margin: 30px 0;
-    border-radius: 12px;
-    background-color: var(--light-gray);
-    padding: 20px 10px 10px 10px;
-    overflow: hidden;
+    margin: 15px 0; /* Giảm margin */
+    border-radius: 8px; /* Giảm border-radius */
+    padding: 10px 5px 5px 5px; /* Giảm padding */
 }
 
 .chart-tooltip {
@@ -107,16 +101,14 @@
 
 .store-highlights {
     display: flex;
-    margin-top: 24px;
-    gap: 16px;
+    margin-top: 15px; /* Giảm margin */
+    gap: 10px; /* Giảm gap */
 }
 
 .highlight-card {
     flex: 1;
-    background-color: var(--light-gray);
-    padding: 16px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
+    padding: 12px; /* Giảm padding */
+    border-radius: 8px; /* Giảm border-radius */
 }
 
 .highlight-card:hover {
