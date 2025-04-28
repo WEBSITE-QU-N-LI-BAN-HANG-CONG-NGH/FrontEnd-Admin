@@ -1,5 +1,7 @@
 .revenue-breakdown {
     padding: 20px;
+    overflow-y: hidden;
+    max-height: 400px;
 }
 
 .breakdown-title {
@@ -24,6 +26,8 @@
 
 .breakdown-list {
     list-style: none;
+    overflow-y: auto;
+    max-height: 150px;
 }
 
 .breakdown-item {

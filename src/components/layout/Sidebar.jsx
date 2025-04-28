@@ -39,9 +39,10 @@ const Sidebar = () => {
 
     return (
         <div className="sidebar">
-            <div className="sidebar-header">
-                <h1>TechShop</h1>
-            </div>
+                <div className="sidebar-header">
+                    <img src="https://res.cloudinary.com/dgygvrrjs/image/upload/v1745387610/ChatGPT_Image_Apr_5_2025_12_08_58_AM_ociguu.png?fbclid=IwY2xjawJ4KxJleHRuA2FlbQIxMABicmlkETFnbUszR1o2RlZrQXJ2VFRXAR7SKjjUPYQHQovx3wZg3p14ksqpKnPTakahujkwPCwl21n8F7-sQJX0fXLfRg_aem_ghKIYi2m6VITMUEzqoiUOg" alt="Logo" className="logo" />
+                    <h1>TechShop</h1>
+                </div>
 
             <div className="sidebar-section">
                 <ul className="sidebar-menu">
@@ -54,7 +55,7 @@ const Sidebar = () => {
                     <li className="sidebar-menu-item">
                         <Link to="/admin/analytics" className="sidebar-link">
                             <span className="icon">{icons.analytics}</span>
-                            Phân tích
+                            Phân tícha
                         </Link>
                     </li>
                     <li className={`sidebar-menu-item ${isActive("/admin/products") ? "active" : ""}`}>

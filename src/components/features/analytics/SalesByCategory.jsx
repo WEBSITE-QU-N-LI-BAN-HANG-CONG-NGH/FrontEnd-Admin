@@ -1,4 +1,4 @@
-// src/components/features/analytics/SalesByCategory.jsx
+// src/components/features/analytics/SalesByCategory.jsx - Cải thiện hiển thị với Others
 import React from "react";
 
 const SalesByCategory = ({data = []}) => {
@@ -9,7 +9,6 @@ const SalesByCategory = ({data = []}) => {
         return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
     };
 
-
     // Sắp xếp danh mục theo doanh thu giảm dần
     const sortedData = [...safeData].sort((a, b) => b.revenue - a.revenue);
 
@@ -19,6 +18,25 @@ const SalesByCategory = ({data = []}) => {
     // Màu sắc cho biểu đồ
     const colors = ["#4A6CF7", "#6366F1", "#8B5CF6", "#EC4899", "#F97316", "#10B981", "#3B82F6"];
 
+    // Xử lý dữ liệu hiển thị: top 5 danh mục + Others
+    let displayData = sortedData;
+    if (sortedData.length > 5) {
+        const top5 = sortedData.slice(0, 5);
+        const others = sortedData.slice(5);
+
+        // Tính tổng revenue cho Others
+        const othersRevenue = others.reduce((sum, item) => sum + (item.revenue || 0), 0);
+
+        // Thêm mục Others vào dữ liệu hiển thị
+        displayData = [
+            ...top5,
+            {
+                name: "Khác",
+                revenue: othersRevenue
+            }
+        ];
+    }
+
     return (
         <div className="analytics-card sales-by-category">
             <h2 className="analytics-card-title">Doanh thu theo danh mục</h2>
@@ -27,7 +45,7 @@ const SalesByCategory = ({data = []}) => {
                 <div className="category-revenue-container">
                     <div className="pie-chart-container">
                         <svg viewBox="0 0 100 100" className="pie-chart">
-                            {createPieChartSegments(sortedData, totalRevenue, colors)}
+                            {createPieChartSegments(displayData, totalRevenue, colors)}
                             <circle cx="50" cy="50" r="25" fill="white"/>
                             <text x="50" y="50" textAnchor="middle" dominantBaseline="middle" className="total-revenue">
                                 {formatCurrency(totalRevenue)}
@@ -36,7 +54,7 @@ const SalesByCategory = ({data = []}) => {
                     </div>
 
                     <div className="category-list">
-                        {sortedData.map((category, index) => (
+                        {displayData.map((category, index) => (
                             <div className="category-item" key={index}>
                                 <div
                                     className="category-color"

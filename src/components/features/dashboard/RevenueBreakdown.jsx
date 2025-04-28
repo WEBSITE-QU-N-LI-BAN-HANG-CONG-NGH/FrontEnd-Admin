@@ -22,19 +22,43 @@ const RevenueBreakdown = ({ data = {} }) => {
         // Nếu data là mảng các đối tượng
         storeData = data.map(item => ({
             name: item.name || 'Không xác định',
-            percentage: item.percentage || (item.revenue / data.reduce((sum, i) => sum + (i.revenue || 0), 1) * 100) || 0
+            percentage: item.percentage || (item.revenue / data.reduce((sum, i) => sum + (i.revenue || 0), 1) * 100) || 0,
+            revenue: item.revenue || 0
         }));
     } else if (typeof data === 'object' && data !== null) {
         // Nếu data là đối tượng với các cặp key-value
         storeData = Object.entries(data).map(([name, value]) => ({
             name,
-            percentage: typeof value === 'number' ? value : 0
+            percentage: typeof value === 'number' ? value : 0,
+            revenue: value || 0
         }));
     }
 
     // Nếu không có dữ liệu, hiển thị một mục mặc định
     if (storeData.length === 0) {
-        storeData = [{ name: "Chưa có dữ liệu", percentage: 100 }];
+        storeData = [{ name: "Chưa có dữ liệu", percentage: 100, revenue: 0 }];
+    }
+
+    // Sắp xếp dữ liệu theo phần trăm giảm dần
+    storeData.sort((a, b) => b.percentage - a.percentage);
+
+    // Lấy top 2 và gộp còn lại thành "Others" nếu có nhiều hơn 2 mục
+    let displayData = storeData;
+    if (storeData.length > 2) {
+        const top2 = storeData.slice(0, 2);
+        const others = storeData.slice(2);
+
+        const othersPercentage = others.reduce((sum, item) => sum + item.percentage, 0);
+        const othersRevenue = others.reduce((sum, item) => sum + item.revenue, 0);
+
+        displayData = [
+            ...top2,
+            {
+                name: "Khác",
+                percentage: othersPercentage,
+                revenue: othersRevenue
+            }
+        ];
     }
 
     // Màu sắc cho biểu đồ tròn
@@ -42,11 +66,11 @@ const RevenueBreakdown = ({ data = {} }) => {
 
     // Tính toán các phần của biểu đồ tròn
     const createPieChartSegments = () => {
-        let total = storeData.reduce((sum, item) => sum + item.percentage, 0);
+        let total = displayData.reduce((sum, item) => sum + item.percentage, 0);
         if (total === 0) total = 100; // Tránh chia cho 0
 
         let startAngle = 0;
-        return storeData.map((item, index) => {
+        return displayData.map((item, index) => {
             const percentage = item.percentage / total;
             const angle = percentage * Math.PI * 2;
             const endAngle = startAngle + angle;
@@ -69,9 +93,7 @@ const RevenueBreakdown = ({ data = {} }) => {
 
     return (
         <div className="card revenue-breakdown">
-            <div className="breakdown-title">Phân bổ doanh thu</div>
-            <div className="breakdown-subtitle">Tỷ lệ đóng góp theo danh mục</div>
-
+            <div className="breakdown-title">Revenue By Category</div>
             <div className="pie-chart-container">
                 <svg width="100%" height="100%" viewBox="0 0 100 100">
                     {createPieChartSegments()}
@@ -79,7 +101,7 @@ const RevenueBreakdown = ({ data = {} }) => {
             </div>
 
             <ul className="breakdown-list">
-                {storeData.map((store, index) => (
+                {displayData.map((store, index) => (
                     <li key={index}
                         className="breakdown-item"
                         onClick={() => handleItemClick(store.name, store.percentage)}

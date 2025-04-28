@@ -140,6 +140,17 @@
     grid-template-columns: 2fr 1fr;
     gap: 15px; /* Giảm gap */
     margin-bottom: 15px; /* Giảm margin */
+    align-items: flex-start; /* Thêm dòng này để các thành phần có thể có chiều cao khác nhau */
+}
+
+.revenue-overview {
+    min-height: 300px;
+}
+
+.revenue-breakdown {
+    height: auto; /* Để nội dung tự điều chỉnh chiều cao */
+    max-height: 400px; /* Giới hạn chiều cao tối đa */
+    overflow-y: auto; /* Cho phép cuộn nếu nội dung quá dài */
 }
 
 .recent-orders-card, .top-selling-card {
