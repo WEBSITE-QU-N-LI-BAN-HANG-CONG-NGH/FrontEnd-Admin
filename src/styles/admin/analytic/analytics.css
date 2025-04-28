@@ -19,21 +19,14 @@
 }
 
 .analytics-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-bottom: 20px;
-    align-items: flex-start; /* Cho phép các thành phần có chiều cao độc lập */
+    gap: 16px; /* Giảm gap */
+    margin-bottom: 16px; /* Giảm margin */
 }
 
 .analytics-card {
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    margin-bottom: 20px;
-    height: auto; /* Để chiều cao tự điều chỉnh theo nội dung */
-    min-height: 100px; /* Thiết lập chiều cao tối thiểu */
+    padding: 16px; /* Giảm padding */
+    border-radius: 6px; /* Giảm border-radius */
+    margin-bottom: 16px; /* Giảm margin */
 }
 
 .stats-summary {
@@ -64,32 +57,22 @@
 }
 
 .analytics-card-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: var(--text-color);
+    font-size: 16px; /* Giảm font-size */
+    margin-bottom: 16px; /* Giảm margin */
 }
 
 /* Metrics styling */
 .analytics-metrics {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 12px; /* Giảm gap */
+    margin-bottom: 20px; /* Giảm margin */
 }
 
 .metric {
-    text-align: center;
-    padding: 15px 10px;
-    border-radius: 8px;
-    background-color: var(--light-gray);
+    padding: 12px 8px; /* Giảm padding */
 }
 
 .metric-value {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: var(--primary-color);
+    font-size: 20px; /* Giảm font-size */
 }
 
 .metric-label {

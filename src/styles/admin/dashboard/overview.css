@@ -1,9 +1,6 @@
-css.revenue-overview {
-    padding: 15px; /* Giảm padding */
-    background-color: white;
-    border-radius: 8px; /* Giảm border-radius */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    transition: all 0.3s ease;
+.revenue-overview {
+    padding: 12px; /* Giảm padding */
+    border-radius: 6px; /* Giảm border-radius */
 }
 
 .revenue-overview:hover {
@@ -16,9 +13,8 @@ css.revenue-overview {
 
 
 .revenue-title {
-    font-size: 16px; /* Giảm font-size */
-    font-weight: 600;
-    margin-bottom: 5px; /* Giảm margin */
+    font-size: 14px; /* Giảm font-size */
+    margin-bottom: 4px; /* Giảm margin */
 }
 
 .revenue-subtitle {
@@ -27,9 +23,8 @@ css.revenue-overview {
 }
 
 .revenue-amount {
-    font-size: 26px; /* Giảm font-size */
-    font-weight: 700;
-    margin-bottom: 8px; /* Giảm margin */
+    font-size: 22px; /* Giảm font-size */
+    margin-bottom: 6px; /* Giảm margin */
 }
 
 .revenue-change {
@@ -66,9 +61,7 @@ css.revenue-overview {
 }
 
 .revenue-chart {
-    margin: 15px 0; /* Giảm margin */
-    border-radius: 8px; /* Giảm border-radius */
-    padding: 10px 5px 5px 5px; /* Giảm padding */
+    margin: 12px 0; /* Giảm margin */
 }
 
 .chart-tooltip {
@@ -100,15 +93,13 @@ css.revenue-overview {
 }
 
 .store-highlights {
-    display: flex;
-    margin-top: 15px; /* Giảm margin */
-    gap: 10px; /* Giảm gap */
+    margin-top: 12px; /* Giảm margin */
+    gap: 8px; /* Giảm gap */
 }
 
 .highlight-card {
-    flex: 1;
-    padding: 12px; /* Giảm padding */
-    border-radius: 8px; /* Giảm border-radius */
+    padding: 10px; /* Giảm padding */
+    border-radius: 6px; /* Giảm border-radius */
 }
 
 .highlight-card:hover {
@@ -117,16 +108,12 @@ css.revenue-overview {
 }
 
 .highlight-title {
-    font-size: 14px;
-    color: var(--secondary-color);
-    margin-bottom: 10px;
+    font-size: 12px; /* Giảm font-size */
+    margin-bottom: 8px; /* Giảm margin */
 }
 
 .highlight-value {
-    font-weight: 600;
-    font-size: 18px;
-    color: var(--primary-color);
-    margin-bottom: 4px;
+    font-size: 16px; /* Giảm font-size */
 }
 
 .highlight-subtitle {

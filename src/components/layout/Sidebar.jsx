@@ -55,7 +55,7 @@ const Sidebar = () => {
                     <li className="sidebar-menu-item">
                         <Link to="/admin/analytics" className="sidebar-link">
                             <span className="icon">{icons.analytics}</span>
-                            Phân tícha
+                            Phân tích
                         </Link>
                     </li>
                     <li className={`sidebar-menu-item ${isActive("/admin/products") ? "active" : ""}`}>

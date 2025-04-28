@@ -20,8 +20,8 @@ body {
     font-family: 'Poppins', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
-    line-height: 1.6;
-    font-size: 14px;
+    line-height: 1.5; /* Giảm line-height xuống */
+    font-size: 13px; /* Giảm kích thước font chữ cơ bản */
 }
 
 button {
@@ -40,20 +40,21 @@ a {
 
 .card {
     background-color: var(--white-color);
-    border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
-    padding: 24px;
-    margin-bottom: 24px;
+    border-radius: 8px; /* Giảm border-radius */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* Giảm đổ bóng */
+    padding: 16px; /* Giảm padding */
+    margin-bottom: 16px; /* Giảm margin */
     transition: all 0.3s ease;
 }
+
 
 .card:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
 
 .card-header {
-    margin-bottom: 20px;
-    font-size: 18px;
+    margin-bottom: 16px; /* Giảm margin */
+    font-size: 16px; /* Giảm font-size */
     font-weight: 600;
 }
 
