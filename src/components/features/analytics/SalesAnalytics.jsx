@@ -1,4 +1,3 @@
-// src/components/features/analytics/SalesAnalytics.jsx
 import React from "react";
 
 const SalesAnalytics = ({data = []}) => {
@@ -7,12 +6,12 @@ const SalesAnalytics = ({data = []}) => {
 
     // Hàm định dạng số tiền thành VND
     const formatCurrency = (amount) => {
+        // Xử lý chuyển đổi nếu amount là object (như BigDecimal từ Java)
         if (typeof amount === 'object' && amount !== null) {
-            // Xử lý trường hợp amount là BigDecimal từ Java
             try {
                 amount = parseFloat(amount.toString());
             } catch (error) {
-                console.error("Lỗi khi chuyển đổi BigDecimal:", error);
+                console.error("Lỗi khi chuyển đổi dữ liệu số:", error);
                 amount = 0;
             }
         }
@@ -30,7 +29,24 @@ const SalesAnalytics = ({data = []}) => {
             }
         }
         return revenue || 0;
-    }), 1);
+    }), 1); // Nếu không có dữ liệu, sử dụng 1 làm giá trị mặc định
+
+    // Tính tổng doanh thu và đơn hàng
+    const totalRevenue = salesData.reduce((sum, item) => {
+        let revenue = item.revenue;
+        if (typeof revenue === 'object' && revenue !== null) {
+            try {
+                revenue = parseFloat(revenue.toString());
+            } catch (error) {
+                revenue = 0;
+            }
+        }
+        return sum + (revenue || 0);
+    }, 0);
+
+    const totalOrders = salesData.reduce((sum, item) => {
+        return sum + (item.orders || 0);
+    }, 0);
 
     return (
         <div className="analytics-card sales-analytics">
@@ -92,25 +108,11 @@ const SalesAnalytics = ({data = []}) => {
             <div className="chart-summary">
                 <div className="summary-item">
                     <div className="summary-label">Tổng doanh thu</div>
-                    <div className="summary-value">
-                        {formatCurrency(salesData.reduce((sum, item) => {
-                            let revenue = item.revenue;
-                            if (typeof revenue === 'object' && revenue !== null) {
-                                try {
-                                    revenue = parseFloat(revenue.toString());
-                                } catch (error) {
-                                    revenue = 0;
-                                }
-                            }
-                            return sum + (revenue || 0);
-                        }, 0))}
-                    </div>
+                    <div className="summary-value">{formatCurrency(totalRevenue)}</div>
                 </div>
                 <div className="summary-item">
                     <div className="summary-label">Tổng đơn hàng</div>
-                    <div className="summary-value">
-                        {salesData.reduce((sum, item) => sum + (item.orders || 0), 0)}
-                    </div>
+                    <div className="summary-value">{totalOrders}</div>
                 </div>
             </div>
         </div>

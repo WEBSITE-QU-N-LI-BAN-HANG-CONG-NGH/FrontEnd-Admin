@@ -7,7 +7,7 @@ import RevenueOverview from "../../components/features/dashboard/RevenueOverview
 import TopSellingProducts from "../../components/features/dashboard/TopSellingProducts";
 import Layout from "../../components/layout/Layout";
 import { useAuth } from "../../contexts/AuthContext";
-import { dashboardService, orderService, productService } from "../../services/api";
+import { dashboardService, orderService } from "../../services/api";
 import "../../styles/admin/dashboard/dashboard.css";
 
 const Dashboard = () => {
@@ -33,34 +33,29 @@ const Dashboard = () => {
                 if (overviewResponse.status === 200) {
                     const data = overviewResponse.data.data || {};
 
-                    // Cập nhật state với dữ liệu dashboard
+                    // Cập nhật state với dữ liệu đầy đủ từ API
                     setDashboardData({
                         revenueStats: data.revenue || {},
                         revenueDistribution: data.distribution || {},
-                        topProducts: [],
+                        topProducts: data.topProducts || [],
                         recentOrders: [],
-                        productStats: data.productStats || {}
+                        productStats: data.productStats || {
+                            totalProducts: 0,
+                            inStock: 0,
+                            soldItems: 0
+                        }
                     });
                 }
 
-                // Gọi API lấy sản phẩm bán chạy
-                try {
-                    const topProductsResponse = await productService.getTopSellingProducts(5);
-                    if (topProductsResponse.status === 200) {
-                        setDashboardData(prev => ({
-                            ...prev,
-                            topProducts: topProductsResponse.data.data || []
-                        }));
-                    }
-                } catch (err) {
-                    console.warn("Không thể tải dữ liệu sản phẩm bán chạy:", err);
-                }
-
-                // Gọi API lấy đơn hàng gần đây
+                // Vẫn giữ lại code lấy đơn hàng gần đây
                 try {
                     const ordersResponse = await orderService.getAllOrders();
                     if (ordersResponse.status === 200) {
-                        const recentOrders = (ordersResponse.data.data || [])
+                        // Xử lý dữ liệu đơn hàng gần đây
+                        const orderData = ordersResponse.data.data || [];
+
+                        // Chuyển đổi dữ liệu đơn hàng sang định dạng cần thiết
+                        const processedOrders = orderData
                             .slice(0, 5)
                             .map(order => {
                                 // Chuyển đổi dữ liệu đơn hàng thành định dạng cần thiết cho component
@@ -83,13 +78,12 @@ const Dashboard = () => {
 
                         setDashboardData(prev => ({
                             ...prev,
-                            recentOrders
+                            recentOrders: processedOrders
                         }));
                     }
                 } catch (err) {
                     console.warn("Không thể tải dữ liệu đơn hàng gần đây:", err);
                 }
-
             } catch (err) {
                 console.error("Lỗi khi tải dữ liệu dashboard:", err);
                 setError("Không thể tải dữ liệu dashboard. Vui lòng thử lại sau.");
@@ -116,7 +110,6 @@ const Dashboard = () => {
     return (
         <Layout>
             <div className="content-wrapper">
-
                 {isLoading ? (
                     <div className="loading-message" style={{ textAlign: 'center', padding: '50px' }}>
                         Đang tải dữ liệu dashboard...

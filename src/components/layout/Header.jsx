@@ -45,7 +45,7 @@ const Header = () => {
             subtitle = "Phân tích và quản lý sản phẩm theo hiệu suất bán hàng";
             actionButton = (
                 <button className="action-button">
-                    + Add Product
+                    + Thêm sản phẩm
                 </button>
             );
         } else if (path.includes("/admin/users")) {
@@ -53,7 +53,7 @@ const Header = () => {
             subtitle = "Quản lý tài khoản và phân quyền người dùng trong hệ thống";
             actionButton = (
                 <button className="action-button">
-                    + Add User
+                    + Thêm người dùng
                 </button>
             );
         } else if (path.includes("/admin/orders")) {

@@ -1,7 +1,7 @@
 // src/components/layout/Sidebar.jsx
 import React, {useState} from "react";
 import {Link, useLocation} from "react-router-dom";
-import {useAuth} from "../../contexts/AuthContext";
+import {useAuth} from "../../hooks/useAuth";
 import "../../styles/layout/sidebar.css";
 
 const Sidebar = () => {
@@ -35,14 +35,15 @@ const Sidebar = () => {
         products: "📦",
         users: "👥",
         orders: "🛒",
+        revenue: "💰",
     };
 
     return (
         <div className="sidebar">
-                <div className="sidebar-header">
-                    <img src="https://res.cloudinary.com/dgygvrrjs/image/upload/v1745387610/ChatGPT_Image_Apr_5_2025_12_08_58_AM_ociguu.png?fbclid=IwY2xjawJ4KxJleHRuA2FlbQIxMABicmlkETFnbUszR1o2RlZrQXJ2VFRXAR7SKjjUPYQHQovx3wZg3p14ksqpKnPTakahujkwPCwl21n8F7-sQJX0fXLfRg_aem_ghKIYi2m6VITMUEzqoiUOg" alt="Logo" className="logo" />
-                    <h1>TechShop</h1>
-                </div>
+            <div className="sidebar-header">
+                <img src="https://placehold.co/200" alt="Logo" className="logo" />
+                <h1>TechShop</h1>
+            </div>
 
             <div className="sidebar-section">
                 <ul className="sidebar-menu">
@@ -52,10 +53,16 @@ const Sidebar = () => {
                             Dashboard
                         </Link>
                     </li>
-                    <li className="sidebar-menu-item">
+                    <li className={`sidebar-menu-item ${isActive("/admin/analytics") ? "active" : ""}`}>
                         <Link to="/admin/analytics" className="sidebar-link">
                             <span className="icon">{icons.analytics}</span>
                             Phân tích
+                        </Link>
+                    </li>
+                    <li className={`sidebar-menu-item ${isActive("/admin/revenue") ? "active" : ""}`}>
+                        <Link to="/admin/revenue" className="sidebar-link">
+                            <span className="icon">{icons.revenue}</span>
+                            Doanh thu
                         </Link>
                     </li>
                     <li className={`sidebar-menu-item ${isActive("/admin/products") ? "active" : ""}`}>
@@ -64,16 +71,16 @@ const Sidebar = () => {
                             Sản phẩm
                         </Link>
                     </li>
+                    <li className={`sidebar-menu-item ${isActive("/admin/orders") ? "active" : ""}`}>
+                        <Link to="/admin/orders" className="sidebar-link">
+                            <span className="icon">{icons.orders}</span>
+                            Đơn hàng
+                        </Link>
+                    </li>
                     <li className={`sidebar-menu-item ${isActive("/admin/users") ? "active" : ""}`}>
                         <Link to="/admin/users" className="sidebar-link">
                             <span className="icon">{icons.users}</span>
                             Người dùng
-                        </Link>
-                    </li>
-                    <li className="sidebar-menu-item">
-                        <Link to="/admin/orders" className="sidebar-link">
-                            <span className="icon">{icons.orders}</span>
-                            Đơn hàng
                         </Link>
                     </li>
                 </ul>
@@ -81,16 +88,21 @@ const Sidebar = () => {
 
             <div className="admin-section" onClick={toggleLogout}>
                 <div className="admin-avatar">
-                    <img
-                        src="https://res.cloudinary.com/dgygvrrjs/image/upload/v1745387610/ChatGPT_Image_Apr_5_2025_12_08_58_AM_ociguu.png"
-                        alt="Avatar"
-                        className="avatar-img"
-                    />
+                    {user?.profileImage ? (
+                        <img
+                            src={user.profileImage}
+                            alt="Avatar"
+                            className="avatar-img"
+                        />
+                    ) : (
+                        <span>{user?.firstName?.[0] || 'A'}</span>
+                    )}
                 </div>
                 <div className="admin-info">
                     <div className="name">
-                        ADMIN
+                        {user?.firstName || 'Admin'}
                     </div>
+                    <div className="email">{user?.email || 'admin@example.com'}</div>
                 </div>
                 {showLogout && (
                     <div className="logout-dropdown">

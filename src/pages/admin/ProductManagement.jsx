@@ -78,11 +78,6 @@ const ProductManagement = () => {
     return (
         <Layout>
             <div className="products-container">
-                <div className="products-header">
-                    <h1>Quản lý sản phẩm</h1>
-                    <p>Phân tích và quản lý sản phẩm theo hiệu suất bán hàng</p>
-                </div>
-
                 <div className="stat-card combined-stats">
                     <div className="stat-info">
                         <div className="stat-title">Tổng số sản phẩm đã bán</div>

@@ -1,4 +1,3 @@
-// src/components/features/dashboard/RevenueBreakdown.jsx
 import React from 'react';
 import '../../../styles/admin/dashboard/breakdown.css';
 
@@ -11,7 +10,6 @@ const formatCurrency = (amount) => {
 const handleItemClick = (name, percentage) => {
     console.log(`Clicked on: ${name} (${percentage.toFixed(1)}%)`);
     // Có thể mở modal chi tiết hoặc navigate đến trang phân tích cụ thể
-    // window.location.href = `/admin/revenue?category=${name}`;
 };
 
 const RevenueBreakdown = ({ data = {} }) => {
@@ -29,8 +27,8 @@ const RevenueBreakdown = ({ data = {} }) => {
         // Nếu data là đối tượng với các cặp key-value
         storeData = Object.entries(data).map(([name, value]) => ({
             name,
-            percentage: typeof value === 'number' ? value : 0,
-            revenue: value || 0
+            percentage: typeof value === 'object' ? (value.percentage || 0) : (typeof value === 'number' ? value : 0),
+            revenue: typeof value === 'object' ? (value.revenue || 0) : (typeof value === 'number' ? 0 : 0)
         }));
     }
 
@@ -42,17 +40,17 @@ const RevenueBreakdown = ({ data = {} }) => {
     // Sắp xếp dữ liệu theo phần trăm giảm dần
     storeData.sort((a, b) => b.percentage - a.percentage);
 
-    // Lấy top 2 và gộp còn lại thành "Others" nếu có nhiều hơn 2 mục
+    // Lấy top 5 và gộp còn lại thành "Others" nếu có nhiều hơn 5 mục
     let displayData = storeData;
-    if (storeData.length > 2) {
-        const top2 = storeData.slice(0, 2);
-        const others = storeData.slice(2);
+    if (storeData.length > 5) {
+        const top5 = storeData.slice(0, 5);
+        const others = storeData.slice(5);
 
         const othersPercentage = others.reduce((sum, item) => sum + item.percentage, 0);
         const othersRevenue = others.reduce((sum, item) => sum + item.revenue, 0);
 
         displayData = [
-            ...top2,
+            ...top5,
             {
                 name: "Khác",
                 percentage: othersPercentage,
@@ -93,7 +91,7 @@ const RevenueBreakdown = ({ data = {} }) => {
 
     return (
         <div className="card revenue-breakdown">
-            <div className="breakdown-title">Revenue By Category</div>
+            <div className="breakdown-title">Phân bổ doanh thu</div>
             <div className="pie-chart-container">
                 <svg width="100%" height="100%" viewBox="0 0 100 100">
                     {createPieChartSegments()}

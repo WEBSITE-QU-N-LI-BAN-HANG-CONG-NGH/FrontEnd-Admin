@@ -21,11 +21,16 @@
 .user-stats {
     gap: 12px; /* Giảm gap */
     margin-bottom: 16px; /* Giảm margin */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Chia làm 3 cột bằng nhau */
 }
 
 .stat-card {
     padding: 16px; /* Giảm padding */
     border-radius: 6px; /* Giảm border-radius */
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    text-align: center; /* Canh giữa nội dung */
 }
 
 .stat-title {

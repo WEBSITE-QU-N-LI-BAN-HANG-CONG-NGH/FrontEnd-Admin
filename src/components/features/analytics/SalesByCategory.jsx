@@ -1,19 +1,45 @@
-// src/components/features/analytics/SalesByCategory.jsx - Cải thiện hiển thị với Others
 import React from "react";
 
 const SalesByCategory = ({data = []}) => {
-    const safeData = Array.isArray(data) ? data : [];
+    // Đảm bảo dữ liệu là mảng
+    let safeData = [];
+
+    // Xử lý các định dạng dữ liệu khác nhau có thể trả về từ API
+    if (Array.isArray(data)) {
+        safeData = data;
+    } else if (typeof data === 'object' && data !== null) {
+        // Chuyển đổi object sang mảng nếu data là object
+        safeData = Object.entries(data).map(([name, value]) => ({
+            name,
+            revenue: typeof value === 'number' ? value : 0
+        }));
+    }
 
     // Hàm định dạng số tiền thành VND
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
+        if (typeof amount === 'object' && amount !== null) {
+            try {
+                amount = parseFloat(amount.toString());
+            } catch (error) {
+                amount = 0;
+            }
+        }
+        return new Intl.NumberFormat("vi-VN").format(amount || 0) + "đ";
     };
 
     // Sắp xếp danh mục theo doanh thu giảm dần
-    const sortedData = [...safeData].sort((a, b) => b.revenue - a.revenue);
+    const sortedData = [...safeData].sort((a, b) => {
+        const revenueA = typeof a.revenue === 'object' ? parseFloat(a.revenue.toString()) : a.revenue || 0;
+        const revenueB = typeof b.revenue === 'object' ? parseFloat(b.revenue.toString()) : b.revenue || 0;
+        return revenueB - revenueA;
+    });
 
     // Tính tổng doanh thu để tính phần trăm
-    const totalRevenue = safeData.reduce((sum, item) => sum + (item.revenue || 0), 0);
+    const totalRevenue = safeData.reduce((sum, item) => {
+        const revenue = typeof item.revenue === 'object' ?
+            parseFloat(item.revenue.toString()) : (item.revenue || 0);
+        return sum + revenue;
+    }, 0);
 
     // Màu sắc cho biểu đồ
     const colors = ["#4A6CF7", "#6366F1", "#8B5CF6", "#EC4899", "#F97316", "#10B981", "#3B82F6"];
@@ -25,7 +51,11 @@ const SalesByCategory = ({data = []}) => {
         const others = sortedData.slice(5);
 
         // Tính tổng revenue cho Others
-        const othersRevenue = others.reduce((sum, item) => sum + (item.revenue || 0), 0);
+        const othersRevenue = others.reduce((sum, item) => {
+            const revenue = typeof item.revenue === 'object' ?
+                parseFloat(item.revenue.toString()) : (item.revenue || 0);
+            return sum + revenue;
+        }, 0);
 
         // Thêm mục Others vào dữ liệu hiển thị
         displayData = [
@@ -41,7 +71,7 @@ const SalesByCategory = ({data = []}) => {
         <div className="analytics-card sales-by-category">
             <h2 className="analytics-card-title">Doanh thu theo danh mục</h2>
 
-            {data.length > 0 ? (
+            {safeData.length > 0 ? (
                 <div className="category-revenue-container">
                     <div className="pie-chart-container">
                         <svg viewBox="0 0 100 100" className="pie-chart">
@@ -54,19 +84,27 @@ const SalesByCategory = ({data = []}) => {
                     </div>
 
                     <div className="category-list">
-                        {displayData.map((category, index) => (
-                            <div className="category-item" key={index}>
-                                <div
-                                    className="category-color"
-                                    style={{backgroundColor: colors[index % colors.length]}}
-                                ></div>
-                                <div className="category-name">{category.name}</div>
-                                <div className="category-percentage">
-                                    {((category.revenue / totalRevenue) * 100).toFixed(1)}%
+                        {displayData.map((category, index) => {
+                            const revenue = typeof category.revenue === 'object' ?
+                                parseFloat(category.revenue.toString()) : (category.revenue || 0);
+
+                            const percentage = totalRevenue > 0 ?
+                                (revenue / totalRevenue) * 100 : 0;
+
+                            return (
+                                <div className="category-item" key={index}>
+                                    <div
+                                        className="category-color"
+                                        style={{backgroundColor: colors[index % colors.length]}}
+                                    ></div>
+                                    <div className="category-name">{category.name}</div>
+                                    <div className="category-percentage">
+                                        {percentage.toFixed(1)}%
+                                    </div>
+                                    <div className="category-revenue">{formatCurrency(revenue)}</div>
                                 </div>
-                                <div className="category-revenue">{formatCurrency(category.revenue)}</div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             ) : (
@@ -80,7 +118,10 @@ const SalesByCategory = ({data = []}) => {
 const createPieChartSegments = (data, total, colors) => {
     let startAngle = 0;
     return data.map((item, index) => {
-        const percentage = item.revenue / total;
+        const revenue = typeof item.revenue === 'object' ?
+            parseFloat(item.revenue.toString()) : (item.revenue || 0);
+
+        const percentage = total > 0 ? revenue / total : 0;
         const angle = percentage * Math.PI * 2;
         const largeArcFlag = angle > Math.PI ? 1 : 0;
 

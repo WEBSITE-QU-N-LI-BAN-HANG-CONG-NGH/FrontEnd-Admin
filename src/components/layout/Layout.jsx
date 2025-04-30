@@ -1,14 +1,15 @@
+// src/components/layout/Layout.jsx
 import React from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import '../../styles/layout/layout.css';
 
-const Layout = ({children}) => {
+const Layout = ({ children }) => {
     return (
         <div className="app-container">
-            <Sidebar/>
+            <Sidebar />
             <div className="main-content">
-                <Header/>
+                <Header />
                 <div className="content-wrapper">
                     {children}
                 </div>

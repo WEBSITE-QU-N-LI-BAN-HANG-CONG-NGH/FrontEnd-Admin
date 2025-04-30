@@ -2,29 +2,6 @@ import React from 'react';
 import '../../../styles/admin/dashboard/overview.css';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Area, AreaChart } from 'recharts';
 
-// Dữ liệu mẫu cho biểu đồ
-const generateData = () => {
-    const data = [];
-    const now = new Date();
-    for (let i = 0; i < 24; i++) {
-        const hour = i;
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const hour12 = hour % 12 || 12;
-        const label = `${hour12}${ampm}`;
-
-        // Tạo một số ngẫu nhiên từ 1 đến 10 và nhân với 500000
-        const fluctuation = (Math.random() * 9 + 1) * 500000;
-        const baseValue = 2000000; // 2 triệu đồng
-
-        data.push({
-            hour: label,
-            revenue: Math.round(baseValue + fluctuation),
-            orders: Math.round(fluctuation / 100000)
-        });
-    }
-    return data;
-};
-
 // Hàm định dạng số tiền thành VND
 const formatCurrency = (amount) => {
     if (amount === undefined || amount === null) return '0đ';
@@ -38,7 +15,7 @@ const CustomTooltip = ({ active, payload, label }) => {
             <div className="chart-tooltip">
                 <p className="tooltip-label">{`${label}`}</p>
                 <p className="tooltip-revenue">{`Doanh thu: ${formatCurrency(payload[0].value)}`}</p>
-                <p className="tooltip-orders">{`Đơn hàng: ${payload[0].payload.orders}`}</p>
+                <p className="tooltip-orders">{`Đơn hàng: ${payload[0].payload.orders || 0}`}</p>
             </div>
         );
     }
@@ -46,20 +23,27 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const RevenueOverview = ({ data = {} }) => {
-    // Nhận dữ liệu từ props hoặc sử dụng giá trị mẫu nếu không có
+    // Nhận dữ liệu từ props hoặc sử dụng object rỗng nếu không có
     const {
         currentMonthIncome = 0,
         comparePercent = 0,
         compareDifference = 0
     } = data;
 
-    // Dữ liệu cho biểu đồ
-    const chartData = generateData();
+    // Chuẩn bị dữ liệu cho biểu đồ - sử dụng dữ liệu thực từ API nếu có
+    const chartData = data?.revenueByHour || [];
 
     return (
         <div className="card revenue-overview">
             <div className="revenue-header">
-                <div className="revenue-title">Chart By Revenue</div>
+                <div className="revenue-title">Doanh thu theo giờ</div>
+                <div className="revenue-amount">{formatCurrency(currentMonthIncome)}</div>
+                <div className={`revenue-change ${comparePercent >= 0 ? 'positive' : 'negative'}`}>
+                    {comparePercent >= 0 ? '+' : ''}{comparePercent}% so với tháng trước
+                </div>
+                <div className="revenue-previous">
+                    Chênh lệch: {formatCurrency(compareDifference)}
+                </div>
             </div>
             <div className="revenue-chart">
                 <ResponsiveContainer width="100%" height={200}>

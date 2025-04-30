@@ -182,11 +182,6 @@ const OrdersManagement = () => {
     return (
         <Layout>
             <div className="orders-container">
-                <div className="orders-header">
-                    <h1>Quản lý đơn hàng</h1>
-                    <p>Theo dõi và xử lý các đơn hàng trong hệ thống</p>
-                </div>
-
                 {/* Hiển thị thống kê đơn hàng */}
                 <OrderStats stats={stats} />
 

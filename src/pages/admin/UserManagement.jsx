@@ -146,11 +146,6 @@ const UserManagement = () => {
     return (
         <Layout>
             <div className="users-container">
-                <div className="users-header">
-                    <h1>Quản lý người dùng</h1>
-                    <p>Quản lý tài khoản và phân quyền người dùng trong hệ thống</p>
-                </div>
-
                 {/* Hiển thị thống kê */}
                 <UserStats stats={stats}/>
 

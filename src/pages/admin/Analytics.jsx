@@ -123,11 +123,6 @@ const Analytics = () => {
     return (
         <Layout>
             <div className="analytics-container">
-                <div className="analytics-header">
-                    <h1>Phân tích dữ liệu</h1>
-                    <p>Các chỉ số thống kê, phân tích và báo cáo chi tiết</p>
-                </div>
-
                 {isLoading ? (
                     <div className="loading-message">Đang tải dữ liệu phân tích...</div>
                 ) : error ? (
