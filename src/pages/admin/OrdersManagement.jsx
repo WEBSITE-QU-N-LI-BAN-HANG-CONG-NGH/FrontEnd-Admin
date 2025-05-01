@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
-import { useAuth } from "../../hooks/useAuth.js";
+import { useAuth } from "../../hooks/useAuth.jsx";
 import { orderService } from "../../services/index.js";
 import OrderList from "../../components/features/orders/OrderList";
 import OrderStats from "../../components/features/orders/OrderStats";

@@ -1,7 +1,7 @@
 // src/AppRouter.jsx
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useAuth } from "./hooks/useAuth";
+import { useAuth } from "./hooks/useAuth.jsx";
 
 // Import các pages
 import Dashboard from "./pages/admin/Dashboard";
@@ -11,7 +11,6 @@ import NotFound from "./pages/auth/NotFound";
 import UserManagement from "./pages/admin/UserManagement";
 import Analytics from "./pages/admin/Analytics";
 import OrdersManagement from "./pages/admin/OrdersManagement";
-import Revenue from "./pages/admin/Revenue";
 
 // Protected Route component đơn giản hóa
 const ProtectedRoute = ({ element, requiredRole }) => {
@@ -32,11 +31,11 @@ const AppRouter = () => {
 
             {/* Protected admin routes với cấu trúc đơn giản hơn */}
             <Route path="/admin" element={<ProtectedRoute element={<Dashboard />} requiredRole="ADMIN" />} />
-            <Route path="/admin/revenue" element={<ProtectedRoute element={<Revenue />} requiredRole="ADMIN" />} />
-            <Route path="/admin/products" element={<ProtectedRoute element={<ProductManagement />} requiredRole="ADMIN" />} />
-            <Route path="/admin/users" element={<ProtectedRoute element={<UserManagement />} requiredRole="ADMIN" />} />
             <Route path="/admin/analytics" element={<ProtectedRoute element={<Analytics />} requiredRole="ADMIN" />} />
+            <Route path="/admin/products" element={<ProtectedRoute element={<ProductManagement />} requiredRole="ADMIN" />} />
             <Route path="/admin/orders" element={<ProtectedRoute element={<OrdersManagement />} requiredRole="ADMIN" />} />
+            <Route path="/admin/users" element={<ProtectedRoute element={<UserManagement />} requiredRole="ADMIN" />} />
+
 
             {/* Redirect và 404 */}
             <Route path="/" element={<Navigate to="/admin" replace />} />

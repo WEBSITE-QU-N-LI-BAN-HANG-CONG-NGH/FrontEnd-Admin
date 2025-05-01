@@ -1,4 +1,4 @@
-// src/hooks/useOrders.js
+// src/hooks/useOrders.jsx
 import { useState, useEffect, useCallback } from "react";
 import * as orderService from "../services/orderService";
 

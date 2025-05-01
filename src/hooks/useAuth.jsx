@@ -1,4 +1,4 @@
-// src/hooks/useAuth.js
+// src/hooks/useAuth.jsx
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import * as authService from '../services/authService';

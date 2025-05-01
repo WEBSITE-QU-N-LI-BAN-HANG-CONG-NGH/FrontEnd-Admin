@@ -1,39 +1,39 @@
 .revenue-overview {
-    padding: 12px; /* Giảm padding */
-    border-radius: 6px; /* Giảm border-radius */
+    background-color: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
 }
 
 .revenue-overview:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .revenue-header {
-    margin-bottom: 15px; /* Giảm margin */
+    margin-bottom: 24px;
 }
-
 
 .revenue-title {
-    font-size: 14px; /* Giảm font-size */
-    margin-bottom: 4px; /* Giảm margin */
-}
-
-.revenue-subtitle {
-    font-size: 14px;
-    color: var(--secondary-color);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 16px;
 }
 
 .revenue-amount {
-    font-size: 22px; /* Giảm font-size */
-    margin-bottom: 6px; /* Giảm margin */
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 8px;
 }
 
 .revenue-change {
     display: flex;
     align-items: center;
-    gap: 8px;
     font-size: 14px;
-    margin-bottom: 8px;
     font-weight: 500;
+    margin-bottom: 4px;
 }
 
 .revenue-change.positive {
@@ -46,78 +46,66 @@
 
 .revenue-change.positive::before {
     content: "↑";
-    font-size: 16px;
+    margin-right: 4px;
 }
 
 .revenue-change.negative::before {
     content: "↓";
-    font-size: 16px;
-}
-
-.revenue-previous {
-    font-size: 13px;
-    color: var(--secondary-color);
-    margin-bottom: 24px;
+    margin-right: 4px;
 }
 
 .revenue-chart {
-    margin: 12px 0; /* Giảm margin */
+    height: 220px;
+    position: relative;
 }
 
 .chart-tooltip {
-    background-color: rgba(0, 0, 0, 0.75);
-    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 6px;
     padding: 12px;
     border: none;
     color: white;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 12px;
 }
 
 .tooltip-label {
-    margin: 0 0 6px 0;
+    margin: 0 0 8px 0;
     font-size: 14px;
     font-weight: 600;
-    color: #ffffff;
+    color: white;
 }
 
-.tooltip-revenue {
-    margin: 0 0 4px 0;
-    font-size: 13px;
-    color: #4A6CF7;
+.tooltip-revenue, .tooltip-orders {
+    margin: 4px 0;
+    color: rgba(255, 255, 255, 0.9);
 }
 
-.tooltip-orders {
-    margin: 0;
-    font-size: 13px;
-    color: #8B5CF6;
-}
-
-.store-highlights {
-    margin-top: 12px; /* Giảm margin */
-    gap: 8px; /* Giảm gap */
-}
-
-.highlight-card {
-    padding: 10px; /* Giảm padding */
-    border-radius: 6px; /* Giảm border-radius */
-}
-
-.highlight-card:hover {
-    background-color: rgba(74, 108, 247, 0.05);
-    transform: translateY(-2px);
-}
-
-.highlight-title {
-    font-size: 12px; /* Giảm font-size */
-    margin-bottom: 8px; /* Giảm margin */
-}
-
-.highlight-value {
-    font-size: 16px; /* Giảm font-size */
-}
-
-.highlight-subtitle {
+.no-data-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: var(--secondary-color);
-    font-size: 13px;
-    margin-top: 4px;
+    font-size: 14px;
+    font-style: italic;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .revenue-overview {
+        padding: 16px;
+    }
+
+    .revenue-title {
+        font-size: 16px;
+    }
+
+    .revenue-amount {
+        font-size: 24px;
+    }
+
+    .revenue-chart {
+        height: 180px;
+    }
 }

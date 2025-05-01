@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
-import { useAuth } from "../../hooks/useAuth.js";
+import { useAuth } from "../../hooks/useAuth.jsx";
 import { dashboardService } from "../../services/index.js";
 import RevenueOverview from "../../components/features/dashboard/RevenueOverview";
 import SalesAnalytics from "../../components/features/analytics/SalesAnalytics";

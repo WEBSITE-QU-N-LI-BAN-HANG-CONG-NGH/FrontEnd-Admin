@@ -1,4 +1,4 @@
-// src/hooks/useProducts.js
+// src/hooks/useProducts.jsx
 import { useState, useEffect, useCallback } from "react";
 import * as productService from "../services/productService";
 

@@ -1,4 +1,4 @@
-// src/hooks/useUsers.js
+// src/hooks/useUsers.jsx
 import { useState, useEffect, useCallback } from "react";
 import * as userService from "../services/userService";
 

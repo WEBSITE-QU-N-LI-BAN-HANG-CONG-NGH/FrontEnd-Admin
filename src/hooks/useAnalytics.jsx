@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { dashboardService, productService } from "../services/api";
+import { dashboardService, productService } from "../services/index.js";
 
 export const useAnalytics = () => {
     const [isLoading, setIsLoading] = useState(true);

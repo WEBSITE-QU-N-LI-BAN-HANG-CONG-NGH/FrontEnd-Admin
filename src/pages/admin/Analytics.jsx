@@ -1,8 +1,8 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
-import { useAuth } from "../../hooks/useAuth.js";
-import { useAnalytics } from "../../hooks/useAnalytics";
+import { useAuth } from "../../hooks/useAuth.jsx";
+import { useAnalytics } from "../../hooks/useAnalytics.jsx";
 import SalesAnalytics from "../../components/features/analytics/SalesAnalytics";
 import SalesByCategory from "../../components/features/analytics/SalesByCategory";
 import TopProductsList from "../../components/features/analytics/TopProductsList";

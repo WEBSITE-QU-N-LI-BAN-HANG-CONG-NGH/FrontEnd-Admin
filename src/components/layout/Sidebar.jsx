@@ -1,7 +1,7 @@
 // src/components/layout/Sidebar.jsx
 import React, {useState} from "react";
 import {Link, useLocation} from "react-router-dom";
-import {useAuth} from "../../hooks/useAuth";
+import {useAuth} from "../../hooks/useAuth.jsx";
 import "../../styles/layout/sidebar.css";
 
 const Sidebar = () => {
@@ -57,12 +57,6 @@ const Sidebar = () => {
                         <Link to="/admin/analytics" className="sidebar-link">
                             <span className="icon">{icons.analytics}</span>
                             Phân tích
-                        </Link>
-                    </li>
-                    <li className={`sidebar-menu-item ${isActive("/admin/revenue") ? "active" : ""}`}>
-                        <Link to="/admin/revenue" className="sidebar-link">
-                            <span className="icon">{icons.revenue}</span>
-                            Doanh thu
                         </Link>
                     </li>
                     <li className={`sidebar-menu-item ${isActive("/admin/products") ? "active" : ""}`}>

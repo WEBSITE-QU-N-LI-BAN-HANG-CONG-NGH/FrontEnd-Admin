@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Navigate} from "react-router-dom";
 import Layout from "../../components/layout/Layout";
-import { useAuth } from "../../hooks/useAuth.js";
+import { useAuth } from "../../hooks/useAuth.jsx";
 import {userService} from "../../services/index.js";
 import UserList from "../../components/features/users/UserList";
 import UserFilters from "../../components/features/users/UserFilters";

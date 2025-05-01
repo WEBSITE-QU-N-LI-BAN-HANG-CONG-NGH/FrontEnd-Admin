@@ -18,7 +18,6 @@ const Header = () => {
 
         // Cấu trúc mặc định
         let title = "Dashboard";
-        let subtitle = "Tổng quan về cửa hàng công nghệ";
         let actionButton = (
             <div className="date-filter">
                 <input
@@ -42,7 +41,6 @@ const Header = () => {
         // Xác định nội dung riêng cho từng trang
         if (path.includes("/admin/products")) {
             title = "Quản lý sản phẩm";
-            subtitle = "Phân tích và quản lý sản phẩm theo hiệu suất bán hàng";
             actionButton = (
                 <button className="action-button">
                     + Thêm sản phẩm
@@ -50,7 +48,6 @@ const Header = () => {
             );
         } else if (path.includes("/admin/users")) {
             title = "Quản lý người dùng";
-            subtitle = "Quản lý tài khoản và phân quyền người dùng trong hệ thống";
             actionButton = (
                 <button className="action-button">
                     + Thêm người dùng
@@ -58,51 +55,25 @@ const Header = () => {
             );
         } else if (path.includes("/admin/orders")) {
             title = "Quản lý đơn hàng";
-            subtitle = "Theo dõi và xử lý các đơn hàng trong hệ thống";
             actionButton = (
                 <div></div>
             );
         } else if (path.includes("/admin/analytics")) {
             title = "Phân tích dữ liệu";
-            subtitle = "Các chỉ số thống kê, phân tích và báo cáo chi tiết";
             actionButton = (
                 <div>
                 </div>
             );
-        } else if (path.includes("/admin/revenue")) {
-            title = "Doanh thu";
-            subtitle = "Chi tiết doanh thu theo thời gian và phân loại";
-            actionButton = (
-                <div className="date-filter">
-                    <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="date-input"
-                    />
-                    <input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="date-input"
-                    />
-                    <button className="filter-date-btn" onClick={handleDateFilter}>
-                        Lọc
-                    </button>
-                </div>
-            );
         }
-
-        return { title, subtitle, actionButton };
+        return { title, actionButton };
     };
 
-    const { title, subtitle, actionButton } = getHeaderContent();
+    const { title, actionButton } = getHeaderContent();
 
     return (
         <div className="header">
             <div>
                 <h1 className="header-title">{title}</h1>
-                <div className="header-subtitle">{subtitle}</div>
             </div>
             {actionButton}
         </div>
