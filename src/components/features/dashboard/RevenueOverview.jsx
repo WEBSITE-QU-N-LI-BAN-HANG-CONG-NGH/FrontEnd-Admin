@@ -22,7 +22,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-const RevenueOverview = ({ data = {} }) => {
+const RevenueOverview = ({ data = [] }) => {
     // Nhận dữ liệu từ props hoặc sử dụng object rỗng nếu không có
     const {
         currentMonthIncome = 0,
