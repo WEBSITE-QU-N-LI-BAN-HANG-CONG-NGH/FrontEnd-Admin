@@ -31,7 +31,6 @@ const Sidebar = () => {
     // Thêm các icon sử dụng UTF-8 characters
     const icons = {
         dashboard: "📊",
-        analytics: "📈",
         products: "📦",
         users: "👥",
         orders: "🛒",
@@ -51,12 +50,6 @@ const Sidebar = () => {
                         <Link to="/admin" className="sidebar-link">
                             <span className="icon">{icons.dashboard}</span>
                             Dashboard
-                        </Link>
-                    </li>
-                    <li className={`sidebar-menu-item ${isActive("/admin/analytics") ? "active" : ""}`}>
-                        <Link to="/admin/analytics" className="sidebar-link">
-                            <span className="icon">{icons.analytics}</span>
-                            Phân tích
                         </Link>
                     </li>
                     <li className={`sidebar-menu-item ${isActive("/admin/products") ? "active" : ""}`}>

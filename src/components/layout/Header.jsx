@@ -58,12 +58,6 @@ const Header = () => {
             actionButton = (
                 <div></div>
             );
-        } else if (path.includes("/admin/analytics")) {
-            title = "Phân tích dữ liệu";
-            actionButton = (
-                <div>
-                </div>
-            );
         }
         return { title, actionButton };
     };

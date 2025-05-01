@@ -9,7 +9,6 @@ import ProductManagement from "./pages/admin/ProductManagement";
 import Login from "./pages/auth/Login";
 import NotFound from "./pages/auth/NotFound";
 import UserManagement from "./pages/admin/UserManagement";
-import Analytics from "./pages/admin/Analytics";
 import OrdersManagement from "./pages/admin/OrdersManagement";
 
 // Protected Route component đơn giản hóa
@@ -31,7 +30,6 @@ const AppRouter = () => {
 
             {/* Protected admin routes với cấu trúc đơn giản hơn */}
             <Route path="/admin" element={<ProtectedRoute element={<Dashboard />} requiredRole="ADMIN" />} />
-            <Route path="/admin/analytics" element={<ProtectedRoute element={<Analytics />} requiredRole="ADMIN" />} />
             <Route path="/admin/products" element={<ProtectedRoute element={<ProductManagement />} requiredRole="ADMIN" />} />
             <Route path="/admin/orders" element={<ProtectedRoute element={<OrdersManagement />} requiredRole="ADMIN" />} />
             <Route path="/admin/users" element={<ProtectedRoute element={<UserManagement />} requiredRole="ADMIN" />} />

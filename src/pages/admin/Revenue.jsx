@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { dashboardService } from "../../services/index.js";
-import RevenueOverview from "../../components/features/dashboard/RevenueOverview";
+import RevenueByTime from "../../components/features/dashboard/RevenueByTime.jsx";
 import SalesAnalytics from "../../components/features/analytics/SalesAnalytics";
 import SalesByCategory from "../../components/features/analytics/SalesByCategory";
 
@@ -148,7 +148,7 @@ const Revenue = () => {
                 ) : (
                     <>
                         <div className="revenue-overview-section">
-                            <RevenueOverview data={revenueData} />
+                            <RevenueByTime data={revenueData} />
                         </div>
 
                         <div className="revenue-detail-section">

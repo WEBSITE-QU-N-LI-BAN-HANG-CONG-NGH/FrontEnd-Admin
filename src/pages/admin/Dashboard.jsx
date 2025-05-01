@@ -1,8 +1,8 @@
 import { Navigate } from "react-router-dom";
 import DashboardStats from "../../components/features/dashboard/DashboardStats";
 import RecentOrders from "../../components/features/dashboard/RecentOrders";
-import RevenueBreakdown from "../../components/features/dashboard/RevenueBreakdown";
-import RevenueOverview from "../../components/features/dashboard/RevenueOverview";
+import RevenueByCategory from "../../components/features/dashboard/RevenueByCategory.jsx";
+import RevenueByTime from "../../components/features/dashboard/RevenueByTime.jsx";
 import TopSellingProducts from "../../components/features/dashboard/TopSellingProducts";
 import Layout from "../../components/layout/Layout";
 import { useAuth } from "../../hooks/useAuth.jsx";
@@ -39,8 +39,11 @@ const Dashboard = () => {
                         <DashboardStats stats={dashboardData.productStats} />
 
                         <div className="dashboard-grid">
-                            <RevenueOverview data={dashboardData.weeklyRevenue, dashboardData.monthlyRevenue} />
-                            <RevenueBreakdown data={dashboardData.categoryRevenue} />
+                            <RevenueByTime
+                                weeklyRevenue={dashboardData.weeklyRevenue}
+                                monthlyRevenue={dashboardData.monthlyRevenue}
+                            />
+                            <RevenueByCategory data={dashboardData.categoryRevenue} />
                         </div>
 
                         <div className="dashboard-grid">

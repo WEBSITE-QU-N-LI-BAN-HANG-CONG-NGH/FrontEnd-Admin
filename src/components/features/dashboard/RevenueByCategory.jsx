@@ -12,7 +12,7 @@ const handleItemClick = (name, percentage) => {
     // Có thể mở modal chi tiết hoặc navigate đến trang phân tích cụ thể
 };
 
-const RevenueBreakdown = ({ data = {} }) => {
+const RevenueByCategory = ({ data = {} }) => {
     // Chuyển đổi dữ liệu từ nhiều định dạng có thể có
     let storeData = [];
 
@@ -126,4 +126,4 @@ const RevenueBreakdown = ({ data = {} }) => {
     );
 };
 
-export default RevenueBreakdown;
+export default RevenueByCategory;
