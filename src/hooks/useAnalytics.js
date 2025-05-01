@@ -1,8 +1,5 @@
-// src/hooks/useAnalytics.js
 import { useState, useEffect, useCallback } from "react";
-import * as dashboardService from "../services/dashboardService";
-import * as productService from "../services/productService";
-import * as analyticsService from "../services/analyticsService";
+import { dashboardService, productService } from "../services/api";
 
 export const useAnalytics = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -14,15 +11,19 @@ export const useAnalytics = () => {
         totalSales: 0
     });
     const [topProducts, setTopProducts] = useState([]);
-    const [timeRange, setTimeRange] = useState("month"); // month, quarter, year
-    const [dateRange, setDateRange] = useState({ start: "", end: "" });
 
+    // Hàm định dạng số tiền thành VND
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
+    };
+
+    // Hàm fetch tất cả dữ liệu phân tích
     const fetchAnalyticsData = useCallback(async () => {
         try {
             setIsLoading(true);
             setError(null);
 
-            // Lấy dữ liệu doanh thu theo tháng từ API
+            // 1. Lấy dữ liệu doanh thu theo tháng
             try {
                 const salesResponse = await dashboardService.getMonthlyRevenue();
                 if (salesResponse.status === 200) {
@@ -32,7 +33,7 @@ export const useAnalytics = () => {
                 console.warn("Không thể tải dữ liệu doanh thu theo tháng:", err);
             }
 
-            // Lấy dữ liệu doanh thu theo danh mục
+            // 2. Lấy dữ liệu doanh thu theo danh mục
             try {
                 const categoryResponse = await dashboardService.getRevenueDistribution();
                 if (categoryResponse.status === 200) {
@@ -42,7 +43,7 @@ export const useAnalytics = () => {
                 console.warn("Không thể tải dữ liệu phân bổ doanh thu:", err);
             }
 
-            // Lấy dữ liệu sản phẩm và tính toán tổng số, tổng doanh thu
+            // 3. Lấy dữ liệu sản phẩm và tính toán tổng số, tổng doanh thu
             try {
                 const productsResponse = await productService.getAllProducts();
                 if (productsResponse.status === 200) {
@@ -51,11 +52,9 @@ export const useAnalytics = () => {
                     // Tính tổng số sản phẩm
                     const totalProducts = products.length;
 
-                    // Tính tổng doanh thu
+                    // Tính tổng doanh thu và xử lý dữ liệu top products
                     let totalSales = 0;
-
-                    // Tạo mảng dữ liệu cho top products với total sales = price * quantitySold
-                    const topSellingProducts = products.map(product => {
+                    const processedProducts = products.map(product => {
                         const price = product.discountedPrice || product.price || 0;
                         const quantitySold = product.quantitySold || 0;
                         const totalSalesProduct = price * quantitySold;
@@ -74,7 +73,7 @@ export const useAnalytics = () => {
                     });
 
                     // Sắp xếp theo doanh thu giảm dần
-                    topSellingProducts.sort((a, b) => b.totalSales - a.totalSales);
+                    processedProducts.sort((a, b) => b.totalSales - a.totalSales);
 
                     // Cập nhật state
                     setSummary({
@@ -82,12 +81,11 @@ export const useAnalytics = () => {
                         totalSales
                     });
 
-                    setTopProducts(topSellingProducts);
+                    setTopProducts(processedProducts);
                 }
             } catch (err) {
                 console.warn("Không thể tải dữ liệu sản phẩm:", err);
             }
-
         } catch (err) {
             console.error("Lỗi khi tải dữ liệu phân tích:", err);
             setError("Không thể tải dữ liệu phân tích. Vui lòng thử lại sau.");
@@ -96,20 +94,12 @@ export const useAnalytics = () => {
         }
     }, []);
 
+    // Gọi hàm fetch khi hook được sử dụng lần đầu
     useEffect(() => {
         fetchAnalyticsData();
     }, [fetchAnalyticsData]);
 
-    // Xử lý thay đổi khoảng thời gian
-    const handleTimeRangeChange = useCallback((range) => {
-        setTimeRange(range);
-    }, []);
-
-    // Xử lý thay đổi khoảng ngày tùy chỉnh
-    const handleDateRangeChange = useCallback((startDate, endDate) => {
-        setDateRange({ start: startDate, end: endDate });
-    }, []);
-
+    // Trả về tất cả dữ liệu và hàm cần thiết
     return {
         isLoading,
         error,
@@ -117,10 +107,7 @@ export const useAnalytics = () => {
         categoryData,
         summary,
         topProducts,
-        timeRange,
-        dateRange,
-        handleTimeRangeChange,
-        handleDateRangeChange,
-        refreshData: fetchAnalyticsData
+        formatCurrency,
+        refreshData: fetchAnalyticsData // Hàm để làm mới dữ liệu khi cần
     };
 };

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Navigate} from "react-router-dom";
 import Layout from "../../components/layout/Layout";
-import {useAuth} from "../../contexts/AuthContext";
-import {userService} from "../../services/api";
+import { useAuth } from "../../hooks/useAuth.js";
+import {userService} from "../../services/index.js";
 import UserList from "../../components/features/users/UserList";
 import UserFilters from "../../components/features/users/UserFilters";
 import UserStats from "../../components/features/users/UserStats";

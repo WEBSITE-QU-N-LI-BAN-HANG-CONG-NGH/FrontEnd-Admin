@@ -6,8 +6,8 @@ import RevenueBreakdown from "../../components/features/dashboard/RevenueBreakdo
 import RevenueOverview from "../../components/features/dashboard/RevenueOverview";
 import TopSellingProducts from "../../components/features/dashboard/TopSellingProducts";
 import Layout from "../../components/layout/Layout";
-import { useAuth } from "../../contexts/AuthContext";
-import { dashboardService, orderService } from "../../services/api";
+import { useAuth } from "../../hooks/useAuth.js";
+import { dashboardService, orderService } from "../../services/index.js";
 import "../../styles/admin/dashboard/dashboard.css";
 
 const Dashboard = () => {
