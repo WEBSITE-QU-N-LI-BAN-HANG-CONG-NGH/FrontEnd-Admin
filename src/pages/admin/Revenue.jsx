@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
-import { useAuth } from "../../contexts/AuthContext";
-import { dashboardService } from "../../services/api";
+import { useAuth } from "../../hooks/useAuth.js";
+import { dashboardService } from "../../services/index.js";
 import RevenueOverview from "../../components/features/dashboard/RevenueOverview";
 import SalesAnalytics from "../../components/features/analytics/SalesAnalytics";
 import SalesByCategory from "../../components/features/analytics/SalesByCategory";
@@ -50,10 +50,6 @@ const Revenue = () => {
                     const day = String(date.getDate()).padStart(2, '0');
                     return `${year}-${month}-${day}`;
                 };
-
-                // Sử dụng các ngày đã tính toán
-                const formattedStartDate = formatDate(startDate);
-                const formattedEndDate = formatDate(endDate);
 
                 // Các API call với xử lý lỗi riêng biệt
                 try {
