@@ -43,14 +43,14 @@ const Header = () => {
             title = "Quản lý sản phẩm";
             actionButton = (
                 <button className="action-button">
-                    + Thêm sản phẩm
+                    +Add Product
                 </button>
             );
         } else if (path.includes("/admin/users")) {
             title = "Quản lý người dùng";
             actionButton = (
                 <button className="action-button">
-                    + Thêm người dùng
+                    +New User
                 </button>
             );
         } else if (path.includes("/admin/orders")) {

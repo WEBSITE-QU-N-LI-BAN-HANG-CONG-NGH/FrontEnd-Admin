@@ -9,6 +9,7 @@ const UserList = ({
                       onPageChange,
                       onToggleStatus,
                       onDeleteUser,
+                      onViewDetail
                   }) => {
     // Tạo một mảng các số trang để hiển thị
     const getPageNumbers = () => {
@@ -97,6 +98,13 @@ const UserList = ({
                                         </button>
                                     </div>
                                 </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                        <tbody>
+                        {users.map((user) => (
+                            <tr key={user.id} onClick={() => onViewDetail(user.id)} style={{cursor: 'pointer'}}>
+                                {/* ... mã hiện có */}
                             </tr>
                         ))}
                         </tbody>

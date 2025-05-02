@@ -19,6 +19,7 @@ const UserManagement = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedRole, setSelectedRole] = useState("");
+    const [selectedUser, setSelectedUser] = useState(null);
 
     const fetchUsers = async () => {
         try {
@@ -133,6 +134,27 @@ const UserManagement = () => {
         }
     };
 
+    // Hàm lấy chi tiết người dùng
+    const handleViewDetail = async (userId) => {
+        try {
+            setIsLoading(true);
+            const response = await userService.getUserDetails(userId);
+            if (response.status === 200) {
+                setSelectedUser(response.data.data);
+            }
+        } catch (err) {
+            console.error("Lỗi khi lấy chi tiết người dùng:", err);
+            setError("Không thể lấy chi tiết người dùng. Vui lòng thử lại sau.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Hàm đóng modal
+    const handleCloseDetail = () => {
+        setSelectedUser(null);
+    };
+
     // Nếu đang tải thông tin người dùng
     if (loading) {
         return <div>Đang tải...</div>;
@@ -168,7 +190,14 @@ const UserManagement = () => {
                     // onChangeRole={handleChangeRole}
                     onToggleStatus={handleToggleStatus}
                     onDeleteUser={handleDeleteUser}
+                    onViewDetail={handleViewDetail}
                 />
+                {selectedUser && (
+                    <UserDetailModal
+                        user={selectedUser}
+                        onClose={handleCloseDetail}
+                    />
+                )}
             </div>
         </Layout>
     );
