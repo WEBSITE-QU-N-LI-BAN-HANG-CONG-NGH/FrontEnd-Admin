@@ -1,17 +1,21 @@
-import React, {useEffect, useState} from "react";
-import {Navigate} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import { useAuth } from "../../hooks/useAuth.jsx";
-import {userService} from "../../services/index.js";
+import { userService } from "../../services/index.js";
 import UserList from "../../components/features/users/UserList";
 import UserFilters from "../../components/features/users/UserFilters";
 import UserStats from "../../components/features/users/UserStats";
+import UserDetailModal from "../../components/features/users/UserDetailModal"; // Đảm bảo import component mới
 import "../../styles/admin/user/users.css";
 
 const UserManagement = () => {
-    const {user, loading, isAdmin} = useAuth();
+    const { user, loading, isAdmin } = useAuth();
     const [users, setUsers] = useState([]);
-    const [stats, setStats] = useState({});
+    const [stats, setStats] = useState({
+        totalCustomers: 0,
+        totalSellers: 0
+    });
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
@@ -36,8 +40,8 @@ const UserManagement = () => {
 
             if (response.status === 200) {
                 const userData = response.data.data;
-                setUsers(userData.content);
-                setTotalPages(userData.totalPages);
+                setUsers(userData.content || []);
+                setTotalPages(userData.totalPages || 1);
             } else {
                 throw new Error("Không thể lấy dữ liệu người dùng");
             }
@@ -45,7 +49,12 @@ const UserManagement = () => {
             // Gọi API lấy thống kê về khách hàng
             const statsResponse = await userService.getCustomerStats();
             if (statsResponse.status === 200) {
-                setStats(statsResponse.data.data || {});
+                const statsData = statsResponse.data.data || {};
+                // Giả định thống kê về khách hàng và người bán
+                setStats({
+                    totalCustomers: statsData.totalCustomers || 0,
+                    totalSellers: users.filter(u => u.role === "SELLER").length || 0
+                });
             }
         } catch (err) {
             console.error("Lỗi khi tải dữ liệu người dùng:", err);
@@ -66,12 +75,6 @@ const UserManagement = () => {
         setCurrentPage(newPage);
     };
 
-    // // Xử lý khi người dùng thay đổi kích thước trang
-    // const handlePageSizeChange = (newSize) => {
-    //     setPageSize(newSize);
-    //     setCurrentPage(0); // Reset về trang đầu tiên khi thay đổi kích thước trang
-    // };
-
     // Xử lý khi người dùng tìm kiếm
     const handleSearch = (term) => {
         setSearchTerm(term);
@@ -84,21 +87,49 @@ const UserManagement = () => {
         setCurrentPage(0); // Reset về trang đầu tiên khi lọc
     };
 
-    // // Xử lý thay đổi vai trò của người dùng
-    // const handleChangeRole = async (userId, newRole) => {
-    //     try {
-    //         const response = await userService.changeUserRole(userId, newRole);
-    //         if (response.status === 200 && response.data.status) {
-    //             // Cập nhật lại danh sách người dùng
-    //             fetchUsers();
-    //         } else {
-    //             throw new Error("Không thể thay đổi vai trò người dùng");
-    //         }
-    //     } catch (err) {
-    //         console.error("Lỗi khi thay đổi vai trò người dùng:", err);
-    //         setError("Không thể thay đổi vai trò người dùng. Vui lòng thử lại sau.");
-    //     }
-    // };
+    // Xử lý cập nhật thông tin người dùng
+    const handleUpdateUser = async (updatedUser) => {
+        try {
+            // Gọi API cập nhật thông tin người dùng
+            const response = await userService.updateUser(updatedUser.id, {
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                mobile: updatedUser.mobile
+            });
+
+            if (response.status === 200) {
+                // Cập nhật lại danh sách người dùng
+                fetchUsers();
+                // Cập nhật thông tin người dùng đang xem
+                setSelectedUser(updatedUser);
+            }
+        } catch (err) {
+            console.error("Lỗi khi cập nhật thông tin người dùng:", err);
+            setError("Không thể cập nhật thông tin người dùng. Vui lòng thử lại sau.");
+        }
+    };
+
+    // Xử lý thay đổi vai trò người dùng
+    const handleChangeRole = async (userId, newRole) => {
+        try {
+            const response = await userService.changeUserRole(userId, newRole);
+            if (response.status === 200) {
+                // Cập nhật lại danh sách người dùng
+                fetchUsers();
+
+                // Nếu đang xem chi tiết người dùng này, cập nhật thông tin
+                if (selectedUser && selectedUser.id === userId) {
+                    setSelectedUser({
+                        ...selectedUser,
+                        role: newRole
+                    });
+                }
+            }
+        } catch (err) {
+            console.error("Lỗi khi thay đổi vai trò người dùng:", err);
+            setError("Không thể thay đổi vai trò người dùng. Vui lòng thử lại sau.");
+        }
+    };
 
     // Xử lý thay đổi trạng thái hoạt động của người dùng
     const handleToggleStatus = async (userId, isActive) => {
@@ -107,8 +138,14 @@ const UserManagement = () => {
             if (response.status === 200) {
                 // Cập nhật lại danh sách người dùng
                 fetchUsers();
-            } else {
-                throw new Error("Không thể thay đổi trạng thái người dùng");
+
+                // Nếu đang xem chi tiết người dùng này, cập nhật thông tin
+                if (selectedUser && selectedUser.id === userId) {
+                    setSelectedUser({
+                        ...selectedUser,
+                        active: !isActive
+                    });
+                }
             }
         } catch (err) {
             console.error("Lỗi khi thay đổi trạng thái người dùng:", err);
@@ -125,6 +162,11 @@ const UserManagement = () => {
         try {
             const response = await userService.deleteUser(userId);
             if (response.status === 200) {
+                // Đóng modal nếu đang xem chi tiết người dùng bị xóa
+                if (selectedUser && selectedUser.id === userId) {
+                    setSelectedUser(null);
+                }
+
                 // Cập nhật lại danh sách người dùng
                 fetchUsers();
             }
@@ -162,14 +204,14 @@ const UserManagement = () => {
 
     // Nếu người dùng không đăng nhập hoặc không phải admin
     if (!user || !isAdmin()) {
-        return <Navigate to="/login" replace/>;
+        return <Navigate to="/login" replace />;
     }
 
     return (
         <Layout>
             <div className="users-container">
                 {/* Hiển thị thống kê */}
-                <UserStats stats={stats}/>
+                <UserStats stats={stats} />
 
                 {/* Bộ lọc và tìm kiếm */}
                 <UserFilters
@@ -187,15 +229,19 @@ const UserManagement = () => {
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
-                    // onChangeRole={handleChangeRole}
                     onToggleStatus={handleToggleStatus}
                     onDeleteUser={handleDeleteUser}
                     onViewDetail={handleViewDetail}
                 />
+
+                {/* Modal chi tiết người dùng */}
                 {selectedUser && (
                     <UserDetailModal
                         user={selectedUser}
                         onClose={handleCloseDetail}
+                        onUpdateUser={handleUpdateUser}
+                        onChangeRole={handleChangeRole}
+                        onToggleStatus={handleToggleStatus}
                     />
                 )}
             </div>

@@ -11,6 +11,17 @@ const UserList = ({
                       onDeleteUser,
                       onViewDetail
                   }) => {
+
+    const formatDate = (dateTimeStr) => {
+        if (!dateTimeStr) return "N/A";
+        const date = new Date(dateTimeStr);
+        return new Intl.DateTimeFormat("vi-VN", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        }).format(date);
+    };
+
     // Tạo một mảng các số trang để hiển thị
     const getPageNumbers = () => {
         const pageNumbers = [];
@@ -67,22 +78,31 @@ const UserList = ({
                             <th>Email</th>
                             <th>Họ tên</th>
                             <th>Vai trò</th>
+                            <th>Ngày đăng ký</th> {/* Thêm cột mới */}
                             <th>Trạng thái</th>
                             <th>Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
                         {users.map((user) => (
-                            <tr key={user.id}>
+                            <tr key={user.id} onClick={() => onViewDetail(user.id)} style={{cursor: 'pointer'}}>
                                 <td>{user.id}</td>
                                 <td>{user.email}</td>
-                                <td>{`${user.firstName || ''} ${user.lastName || ''}`}</td>
+                                <td>
+                                    {user.firstName || user.lastName
+                                        ? `${user.firstName || ''} ${user.lastName || ''}`
+                                        : 'Chưa cập nhật'}
+                                </td>
                                 <td>{user.role === "CUSTOMER" ? "Khách hàng" : "Người bán"}</td>
+                                <td>{formatDate(user.createdAt)}</td> {/* Hiển thị ngày đăng ký */}
                                 <td>
                                     <div className="status-toggle">
                                         <button
                                             className={`status-btn ${user.active ? 'active' : 'inactive'}`}
-                                            onClick={() => onToggleStatus(user.id, user.active)}
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Ngăn sự kiện click lan tỏa
+                                                onToggleStatus(user.id, user.active);
+                                            }}
                                         >
                                             {user.active ? 'Hoạt động' : 'Bị khóa'}
                                         </button>
@@ -92,19 +112,15 @@ const UserList = ({
                                     <div className="action-buttons">
                                         <button
                                             className="action-btn delete-btn"
-                                            onClick={() => onDeleteUser(user.id)}
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Ngăn sự kiện click lan tỏa
+                                                onDeleteUser(user.id);
+                                            }}
                                         >
                                             Xóa
                                         </button>
                                     </div>
                                 </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                        <tbody>
-                        {users.map((user) => (
-                            <tr key={user.id} onClick={() => onViewDetail(user.id)} style={{cursor: 'pointer'}}>
-                                {/* ... mã hiện có */}
                             </tr>
                         ))}
                         </tbody>
