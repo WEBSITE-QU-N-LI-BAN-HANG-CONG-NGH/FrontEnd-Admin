@@ -21,15 +21,11 @@ const OrderStats = ({ stats }) => {
             <div className="stat-card">
                 <div className="stat-title">Tổng đơn hàng</div>
                 <div className="stat-value">{safeStats.totalOrders || 0}</div>
-                <div className={`stat-change ${safeStats.growthRate >= 0 ? 'positive' : 'negative'}`}>
-                    {safeStats.growthRate >= 0 ? '+' : ''}{safeStats.growthRate || 0}% so với kỳ trước
-                </div>
             </div>
 
             <div className="stat-card">
                 <div className="stat-title">Đơn chờ xác nhận</div>
                 <div className="stat-value">{safeStats.pendingOrders || 0}</div>
-                <div className="stat-subtitle">Cần xử lý</div>
             </div>
 
             <div className="stat-card">
@@ -45,11 +41,6 @@ const OrderStats = ({ stats }) => {
             <div className="stat-card">
                 <div className="stat-title">Tổng doanh thu</div>
                 <div className="stat-value">{formatCurrency(safeStats.totalRevenue)}</div>
-                <div className="stat-subtitle">
-                    {safeStats.completedOrders > 0
-                        ? `Giá trị trung bình: ${formatCurrency((safeStats.totalRevenue || 0) / (safeStats.completedOrders || 1))}`
-                        : 'Giá trị trung bình: 0đ'}
-                </div>
             </div>
         </div>
     );
