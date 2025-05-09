@@ -29,9 +29,9 @@ const UserFilters = ({onSearch, onRoleFilter, selectedRole}) => {
                 <select
                     value={selectedRole}
                     onChange={(e) => onRoleFilter(e.target.value)}
-                    className="role-filter"
+                    className="export-btn"
                 >
-                    <option value="">Tất cả vai trò</option>
+                    <option value="">Tất cả user</option>
                     <option value="CUSTOMER">Khách hàng</option>
                     <option value="SELLER">Người bán</option>
                 </select>

@@ -1,33 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../../styles/admin/dashboard/overview.css';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
-// Hàm định dạng số tiền thành VND
-const formatCurrency = (amount) => {
-    if (amount === undefined || amount === null) return '0đ';
-    return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
-};
+const RevenueByTime = ({ weeklyRevenue = {}, monthlyRevenue = {} }) => {
+    const [timePeriod, setTimePeriod] = useState('week'); // Mặc định hiển thị theo tuần
 
-const RevenueByTime = (weeklyRevenue = [],
-                       monthlyRevenue = []) => {
+    // Lấy dữ liệu theo thời gian đã chọn
+    const selectedData = timePeriod === 'week' ? weeklyRevenue : monthlyRevenue;
 
-    const chartData = weeklyRevenue.length > 0
-        ? weeklyRevenue.map(item => ({
-            name: item.day || '',
-            revenue: item.revenue || 0,
-            orders: item.orders || 0
-        }))
-        : [];
+    // Lấy mảng dữ liệu cho biểu đồ
+    const chartData = selectedData?.data || [];
+
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (active && payload && payload.length) {
+            return (
+                <div className="custom-tooltip">
+                    <p className="label">{`${label}: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(payload[0].value)}`}</p>
+                </div>
+            );
+        }
+        return null;
+    };
 
     return (
         <div className="revenue-chart-container">
-            <h3 className="chart-title">Doanh thu trong tuần</h3>
+            <div className="chart-header">
+                <div className="chart-title-wrapper">
+                    <h3 className="chart-title">Doanh thu</h3>
+                </div>
+                <div className="chart-period-selector">
+                    <button
+                        className={`period-button ${timePeriod === 'week' ? 'active' : ''}`}
+                        onClick={() => setTimePeriod('week')}
+                    >
+                        Theo tuần
+                    </button>
+                    <button
+                        className={`period-button ${timePeriod === 'month' ? 'active' : ''}`}
+                        onClick={() => setTimePeriod('month')}
+                    >
+                        Theo tháng
+                    </button>
+                </div>
+            </div>
+
             {chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={chartData}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
-                            dataKey="name"
+                            dataKey={timePeriod === 'week' ? 'day' : 'week'}
                             tick={{ fontSize: 12 }}
                             axisLine={false}
                             tickLine={false}
@@ -35,7 +57,8 @@ const RevenueByTime = (weeklyRevenue = [],
                         />
                         <YAxis
                             tickFormatter={(value) =>
-                                value >= 1000000 ? `${value/1000000}M` : value
+                                value >= 1000000 ? `${(value/1000000).toFixed(1)}M` :
+                                    value >= 1000 ? `${(value/1000).toFixed(1)}K` : value
                             }
                             tick={{ fontSize: 12 }}
                             axisLine={false}
@@ -52,7 +75,7 @@ const RevenueByTime = (weeklyRevenue = [],
                     </AreaChart>
                 </ResponsiveContainer>
             ) : (
-                <p className="no-data-message">Không có dữ liệu doanh thu trong tuần</p>
+                <p className="no-data-message">Không có dữ liệu doanh thu {timePeriod === 'week' ? 'theo tuần' : 'theo tháng'}</p>
             )}
         </div>
     );

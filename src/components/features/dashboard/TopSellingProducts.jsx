@@ -16,6 +16,7 @@ const formatCurrency = (amount) => {
 const TopSellingProducts = ({ products = [] }) => {
     // Đảm bảo products là mảng
     const safeProducts = Array.isArray(products) ? products : [];
+    console.log("Product data:", safeProducts[0]);
 
     // Tạo stars từ rating (nếu có)
     const renderStars = (rating) => {
@@ -50,10 +51,10 @@ const TopSellingProducts = ({ products = [] }) => {
                     {safeProducts.map((product) => (
                         <div key={product.id} className="top-product-item">
                             <div className="top-product-img">
-                                {product.image_url ? (
-                                    <img src={product.image_url} alt={product.title || product.name} />
+                                {product.imageUrl ? (
+                                    <img src={product.imageUrl} alt={product.name} />
                                 ) : (
-                                    <div className="placeholder-img">No image</div>
+                                    <div className="product-image-placeholder"></div>
                                 )}
                             </div>
                             <div className="top-product-info">

@@ -1,7 +1,6 @@
 // src/hooks/useDashboard.jsx
 import { useState, useEffect, useCallback } from "react";
 import * as dashboardService from "../services/dashboardService";
-import {getRevenueByCategory} from "../services/dashboardService";
 
 export const useDashboard = () => {
     const [dashboardData, setDashboardData] = useState({

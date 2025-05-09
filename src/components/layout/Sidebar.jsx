@@ -85,7 +85,6 @@ const Sidebar = () => {
                     <div className="name">
                         {user?.firstName || 'Admin'}
                     </div>
-                    <div className="email">{user?.email || 'admin@example.com'}</div>
                 </div>
                 {showLogout && (
                     <div className="logout-dropdown">

@@ -1,14 +1,28 @@
 /* Cấu trúc chung */
-.products-container {
+.users-container {
     padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Phần thống kê sản phẩm */
-.product-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+.user-stats {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 15px;
     margin-bottom: 20px;
+}
+
+.user-filters {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filter-dropdown {
+    display: flex;
+    align-items: center;
 }
 
 .stat-card {
@@ -17,13 +31,11 @@
     padding: 16px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     display: flex;
+    flex-direction: column;
     align-items: center;
     transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+    gap: 5px;
 }
 
 .stat-icon {
@@ -64,7 +76,6 @@
 .stat-value {
     font-size: 18px;
     font-weight: 600;
-    margin-bottom: 4px;
 }
 
 .stat-title {
@@ -96,6 +107,7 @@
     border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .search-btn {
@@ -129,7 +141,7 @@
     background-color: white;
     border-radius: 4px;
     width: 30px;
-    height: 38px;
+    height: 35.2px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -31,11 +31,6 @@ const OrderStats = ({ stats }) => {
             <div className="stat-card">
                 <div className="stat-title">Đơn đã hoàn thành</div>
                 <div className="stat-value">{safeStats.completedOrders || 0}</div>
-                <div className="stat-subtitle">
-                    {safeStats.totalOrders > 0
-                        ? Math.round((safeStats.completedOrders || 0) / safeStats.totalOrders * 100)
-                        : 0}% tỷ lệ hoàn thành
-                </div>
             </div>
 
             <div className="stat-card">

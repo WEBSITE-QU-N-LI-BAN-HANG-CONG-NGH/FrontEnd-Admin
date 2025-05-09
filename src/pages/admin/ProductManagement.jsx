@@ -1,110 +1,129 @@
-import React, { useEffect, useState } from "react";
+// src/pages/admin/ProductManagement.jsx - Cập nhật và hoàn thiện
+import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import { useAuth } from "../../hooks/useAuth.jsx";
-import { productService } from "../../services/index.js";
 import ProductList from "../../components/features/products/ProductList";
+import ProductFilters from "../../components/features/products/ProductFilters";
+import ProductDetailModal from "../../components/features/products/ProductDetailModal";
+import ProductFormModal from "../../components/features/products/ProductFormModal";
+import { useProducts } from "../../hooks/useProducts";
+import { ToastProvider, useToast } from "../../contexts/ToastContext";
 import "../../styles/admin/product/products.css";
 
-const ProductManagement = () => {
+// Wrapper component để sử dụng toast trong component chính
+const ProductManagementContent = () => {
     const { user, loading, isAdmin } = useAuth();
-    const [products, setProducts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const toast = useToast();
 
-    // State cho việc lọc và sắp xếp
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("");
-    const [sortBy, setSortBy] = useState("dateAdded"); // Mặc định sắp xếp theo ngày thêm mới nhất
-    const [sortOrder, setSortOrder] = useState("desc"); // Mặc định theo thứ tự giảm dần
+    // State để quản lý modal
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                setIsLoading(true);
-                setError(null);
+    // Hook quản lý sản phẩm
+    const {
+        products,
+        categories,
+        isLoading,
+        error,
+        selectedCategory,
+        sortBy,
+        sortOrder,
+        handleSearch,
+        handleCategoryFilter,
+        handleSort,
+        handleAddProduct,
+        handleUpdateProduct,
+        handleDeleteProduct,
+        handleDeleteMultipleProducts,
+        refreshProducts
+    } = useProducts();
 
-                // Lấy danh sách sản phẩm
-                const response = await productService.getAllProducts();
-                const productsData = response.data?.data || [];
-                setProducts(productsData);
-            } catch (err) {
-                console.error("Lỗi khi tải dữ liệu sản phẩm:", err);
-                setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại sau.");
-            } finally {
-                setIsLoading(false);
+    // Xử lý khi chọn xem chi tiết sản phẩm
+    const handleViewProduct = (product) => {
+        setSelectedProduct(product);
+        setIsDetailModalOpen(true);
+    };
+
+    // Xử lý khi chọn sửa sản phẩm
+    const handleEditProduct = (product) => {
+        setSelectedProduct(product);
+        setIsEditMode(true);
+        setIsFormModalOpen(true);
+        // Đóng modal chi tiết nếu đang mở
+        setIsDetailModalOpen(false);
+    };
+
+    // Xử lý khi chọn thêm sản phẩm mới
+    const handleAddNewProduct = () => {
+        setSelectedProduct(null);
+        setIsEditMode(false);
+        setIsFormModalOpen(true);
+    };
+
+    // Xử lý lưu sản phẩm (thêm mới hoặc cập nhật)
+    const handleSaveProduct = async (productData) => {
+        try {
+            let result;
+
+            if (isEditMode) {
+                // Cập nhật sản phẩm
+                result = await handleUpdateProduct(productData.id, productData);
+                if (result.success) {
+                    toast.success("Cập nhật sản phẩm thành công!");
+                } else {
+                    toast.error(`Lỗi cập nhật sản phẩm: ${result.error}`);
+                }
+            } else {
+                // Thêm sản phẩm mới
+                result = await handleAddProduct(productData);
+                if (result.success) {
+                    toast.success("Thêm sản phẩm mới thành công!");
+                } else {
+                    toast.error(`Lỗi thêm sản phẩm: ${result.error}`);
+                }
             }
-        };
 
-        if (!loading && user) {
-            fetchProducts();
-        }
-    }, [loading, user]);
+            // Đóng modal nếu thành công
+            if (result.success) {
+                setIsFormModalOpen(false);
+            }
 
-    // Xử lý tìm kiếm sản phẩm
-    const handleSearch = (term) => {
-        setSearchTerm(term);
-    };
-
-    // Xử lý lọc theo danh mục
-    const handleCategoryFilter = (category) => {
-        setSelectedCategory(category);
-    };
-
-    // Xử lý sắp xếp
-    const handleSort = (field) => {
-        if (sortBy === field) {
-            // Nếu đang sắp xếp theo field này rồi, thì đổi thứ tự
-            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-        } else {
-            // Nếu đổi sang field mới
-            setSortBy(field);
-            setSortOrder('desc'); // Mặc định là giảm dần
+            return result.success;
+        } catch (err) {
+            toast.error(`Đã xảy ra lỗi: ${err.message}`);
+            return false;
         }
     };
 
-    // Lọc và sắp xếp sản phẩm
-    const getFilteredProducts = () => {
-        return products
-            .filter(product => {
-                // Lọc theo từ khóa
-                if (searchTerm && !product.title?.toLowerCase().includes(searchTerm.toLowerCase())) {
-                    return false;
-                }
+    // Xử lý xóa một sản phẩm
+    const handleDelete = async (productId) => {
+        try {
+            const result = await handleDeleteProduct(productId);
+            if (result.success) {
+                toast.success("Xóa sản phẩm thành công!");
+            } else {
+                toast.error(`Lỗi xóa sản phẩm: ${result.error}`);
+            }
+        } catch (err) {
+            toast.error(`Đã xảy ra lỗi: ${err.message}`);
+        }
+    };
 
-                // Lọc theo danh mục
-                if (selectedCategory && product.category?.name !== selectedCategory) {
-                    return false;
-                }
-
-                return true;
-            })
-            .sort((a, b) => {
-                // Sắp xếp theo trường được chọn
-                switch (sortBy) {
-                    case 'price':
-                        return sortOrder === 'asc'
-                            ? (a.price || 0) - (b.price || 0)
-                            : (b.price || 0) - (a.price || 0);
-
-                    case 'quantity':
-                        return sortOrder === 'asc'
-                            ? (a.quantity || 0) - (b.quantity || 0)
-                            : (b.quantity || 0) - (a.quantity || 0);
-
-                    case 'id':
-                        return sortOrder === 'asc'
-                            ? Number(a.id) - Number(b.id)
-                            : Number(b.id) - Number(a.id);
-
-                    case 'dateAdded':
-                    default:
-                        // Sắp xếp theo ngày tạo mới nhất (giả định có trường createdAt)
-                        const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
-                        const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
-                        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-                }
-            });
+    // Xử lý xóa nhiều sản phẩm
+    const handleMultipleDelete = async (productIds) => {
+        try {
+            const result = await handleDeleteMultipleProducts(productIds);
+            if (result.success) {
+                toast.success(`Đã xóa ${result.count} sản phẩm thành công!`);
+            } else {
+                toast.error(`Lỗi xóa sản phẩm: ${result.error}`);
+            }
+        } catch (err) {
+            toast.error(`Đã xảy ra lỗi: ${err.message}`);
+        }
     };
 
     // Nếu đang tải thông tin người dùng
@@ -117,35 +136,25 @@ const ProductManagement = () => {
         return <Navigate to="/login" replace />;
     }
 
-    // Lấy danh sách sản phẩm đã lọc và sắp xếp
-    const filteredProducts = getFilteredProducts();
-
-    // Lấy danh sách danh mục từ sản phẩm
-    const categories = [...new Set(products
-        .map(product => product.category?.name)
-        .filter(Boolean))];
-
     return (
         <Layout>
             <div className="products-container">
-                {/* Thanh tìm kiếm và nút thêm sản phẩm */}
-                <div className="product-header">
-                    <div className="search-box">
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm sản phẩm..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <button className="search-button">🔍</button>
-                    </div>
-                    <button className="add-product-btn">+ Thêm sản phẩm</button>
-                </div>
+                {/* Bộ lọc sản phẩm */}
+                <ProductFilters
+                    onSearch={handleSearch}
+                    onCategoryFilter={handleCategoryFilter}
+                    onSort={handleSort}
+                    sortBy={sortBy}
+                    sortOrder={sortOrder}
+                    categories={categories}
+                    onAddNewClick={handleAddNewProduct}
+                />
 
                 {error && <div className="error-message">{error}</div>}
 
+                {/* Danh sách sản phẩm */}
                 <ProductList
-                    products={filteredProducts}
+                    products={products}
                     isLoading={isLoading}
                     categories={categories}
                     onCategoryFilter={handleCategoryFilter}
@@ -153,9 +162,41 @@ const ProductManagement = () => {
                     onSort={handleSort}
                     sortBy={sortBy}
                     sortOrder={sortOrder}
+                    onEdit={handleEditProduct}
+                    onView={handleViewProduct}
+                    onDelete={handleDelete}
+                    onMultipleDelete={handleMultipleDelete}
                 />
+
+                {/* Modal chi tiết sản phẩm */}
+                {isDetailModalOpen && selectedProduct && (
+                    <ProductDetailModal
+                        product={selectedProduct}
+                        onClose={() => setIsDetailModalOpen(false)}
+                        onEdit={handleEditProduct}
+                    />
+                )}
+
+                {/* Modal thêm/sửa sản phẩm */}
+                {isFormModalOpen && (
+                    <ProductFormModal
+                        product={isEditMode ? selectedProduct : null}
+                        categories={categories}
+                        onClose={() => setIsFormModalOpen(false)}
+                        onSave={handleSaveProduct}
+                    />
+                )}
             </div>
         </Layout>
+    );
+};
+
+// Wrapper với ToastProvider
+const ProductManagement = () => {
+    return (
+        <ToastProvider>
+            <ProductManagementContent />
+        </ToastProvider>
     );
 };
 
