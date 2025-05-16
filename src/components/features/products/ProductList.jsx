@@ -186,7 +186,7 @@ const ProductList = ({
                                     </div>
                                 </td>
                                 <td>
-                                    <span className={`status-badge ${stockStatus.className}`}>
+                                    <span className={`status-badge-product ${stockStatus.className}`}>
                                         {stockStatus.label}
                                     </span>
                                 </td>

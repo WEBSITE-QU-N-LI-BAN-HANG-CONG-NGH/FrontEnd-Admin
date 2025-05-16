@@ -11,6 +11,7 @@ const UserFilters = ({onSearch, onRoleFilter, selectedRole}) => {
 
     return (
         <div className="user-filters">
+            <div className="filter-duo">
             <form className="search-form" onSubmit={handleSearchSubmit}>
                 <div className="search-box">
                     <input
@@ -35,6 +36,7 @@ const UserFilters = ({onSearch, onRoleFilter, selectedRole}) => {
                     <option value="CUSTOMER">Khách hàng</option>
                     <option value="SELLER">Người bán</option>
                 </select>
+            </div>
             </div>
 
             <button className="export-btn">

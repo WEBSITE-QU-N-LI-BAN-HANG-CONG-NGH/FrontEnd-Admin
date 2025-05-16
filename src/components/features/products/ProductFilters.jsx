@@ -38,40 +38,6 @@ const ProductFilters = ({
                 </div>
             </form>
 
-            <div className="filter-dropdown">
-                <select
-                    onChange={(e) => onCategoryFilter(e.target.value)}
-                    className="category-filter"
-                >
-                    <option value="">Tất cả danh mục</option>
-                    {categories.map((category, index) => (
-                        <option key={index} value={category}>
-                            {category}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <div className="sort-controls">
-                <select
-                    onChange={(e) => handleSortChange(e.target.value)}
-                    value={sortBy}
-                    className="sort-select"
-                >
-                    <option value="createdAt">Ngày thêm</option>
-                    <option value="quantitySold">Số lượng bán</option>
-                    <option value="price">Giá bán</option>
-                    <option value="quantity">Tồn kho</option>
-                </select>
-                <button
-                    className="sort-direction-btn"
-                    onClick={() => onSort(sortBy)}
-                    title={sortOrder === 'asc' ? "Sắp xếp tăng dần" : "Sắp xếp giảm dần"}
-                >
-                    {sortOrder === 'asc' ? '↑' : '↓'}
-                </button>
-            </div>
-
             <button className="add-product-btn" onClick={onAddNewClick}>
                 + Thêm sản phẩm mới
             </button>
