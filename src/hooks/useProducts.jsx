@@ -1,6 +1,6 @@
 // src/hooks/useProducts.jsx
 import { useState, useEffect, useCallback } from "react";
-import * as productService from "../services/productService";
+import {productService} from "../services/index.js";
 
 export const useProducts = () => {
     const [products, setProducts] = useState([]);

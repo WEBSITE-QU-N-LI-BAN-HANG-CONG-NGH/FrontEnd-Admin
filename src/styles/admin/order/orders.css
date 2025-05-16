@@ -30,6 +30,12 @@
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
 
 .stat-title {
@@ -41,7 +47,9 @@
 .stat-value {
     font-size: 24px;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    color: var(--primary-color);
+    line-height: 1.5;
 }
 
 .stat-change {
@@ -64,6 +72,10 @@
 /* Order filters */
 .order-filters {
     margin-bottom: 24px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .filter-tabs {
@@ -80,6 +92,7 @@
     color: var(--secondary-color);
     cursor: pointer;
     position: relative;
+    transition: color 0.3s ease;
 }
 
 .filter-tab.active {
@@ -95,6 +108,10 @@
     width: 100%;
     height: 2px;
     background-color: var(--primary-color);
+}
+
+.filter-tab:hover:not(.active) {
+    color: var(--text-color);
 }
 
 .filters-actions {
@@ -120,6 +137,13 @@
     border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-box input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+    outline: none;
 }
 
 .search-btn {
@@ -144,6 +168,12 @@
     border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.date-input:focus {
+    border-color: var(--primary-color);
+    outline: none;
 }
 
 .filter-btn {
@@ -153,6 +183,11 @@
     border-radius: 4px;
     font-size: 14px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.filter-btn:hover {
+    background-color: #E8E8E8;
 }
 
 .export-btn {
@@ -165,6 +200,7 @@
     align-items: center;
     gap: 8px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .export-btn:hover {
@@ -173,13 +209,16 @@
 
 /* Orders table */
 .orders-table-container {
-    padding: 16px; /* Giảm padding */
-    border-radius: 6px; /* Giảm border-radius */
+    background-color: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .orders-table-container h2 {
-    font-size: 16px; /* Giảm font-size */
-    margin-bottom: 16px; /* Giảm margin */
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: var(--text-color);
 }
 
 .orders-table {
@@ -188,14 +227,20 @@
 }
 
 .orders-table th, .orders-table td {
-    padding: 12px; /* Giảm padding */
-    font-size: 13px; /* Giảm font-size */
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.orders-table tr:hover {
+    background-color: var(--light-gray);
 }
 
 .orders-table th {
     color: var(--secondary-color);
     font-weight: 500;
     font-size: 13px;
+    background-color: var(--light-gray);
 }
 
 .customer-info {
@@ -214,6 +259,7 @@
 
 .order-amount {
     font-weight: 500;
+    color: var(--primary-color);
 }
 
 .status-badge {
@@ -223,6 +269,14 @@
     font-size: 12px;
     font-weight: 500;
     background-color: var(--light-gray);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.status-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .status-pending {
@@ -285,6 +339,11 @@
     font-size: 12px;
     cursor: pointer;
     background-color: var(--light-gray);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
 }
 
 .confirm-btn {
@@ -332,12 +391,80 @@
     background-color: rgba(244, 67, 54, 0.2);
 }
 
+/* Status dropdown */
+.status-dropdown {
+    position: absolute;
+    z-index: 100;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    width: 150px;
+    top: 100%;
+    left: 0;
+    margin-top: 5px;
+}
+
+.status-dropdown button {
+    width: 100%;
+    padding: 8px 12px;
+    text-align: left;
+    background: none;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.status-dropdown button:hover {
+    background-color: var(--light-gray);
+}
+
+.status-btn {
+    position: relative;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 8px;
+}
+
+.pagination-btn {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pagination-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.pagination-btn:hover:not(.active):not(:disabled) {
+    background-color: var(--light-gray);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Loading and empty states */
 .loading-message, .empty-message {
     text-align: center;
     padding: 30px;
     color: var(--secondary-color);
     font-size: 16px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .error-message {
@@ -352,8 +479,9 @@
 /* Responsive */
 @media (max-width: 1024px) {
     .order-stats {
-        gap: 12px; /* Giảm gap */
-        margin-bottom: 16px; /* Giảm margin */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
     }
 
     .filters-actions {
@@ -369,5 +497,28 @@
     .date-filters {
         margin-right: 0;
         margin-bottom: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .order-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .orders-table th:nth-child(4),
+    .orders-table td:nth-child(4),
+    .orders-table th:nth-child(6),
+    .orders-table td:nth-child(6) {
+        display: none;
+    }
+
+    .filter-tabs {
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+
+    .filter-tab {
+        padding: 10px 15px;
+        white-space: nowrap;
     }
 }

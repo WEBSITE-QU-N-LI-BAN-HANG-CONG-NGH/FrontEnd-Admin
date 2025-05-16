@@ -1,30 +1,13 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "../../../styles/admin/order/orders.css";
 import OrderDetailModal from "./OrderDetailModal";
+import { formatCurrency, formatDateTime } from "../../../utils/format.js";
 
 const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showStatusDropdown, setShowStatusDropdown] = useState({});
-    const [showPaymentDropdown, setShowPaymentDropdown] = useState({});
-    // Hàm định dạng số tiền
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
-    };
 
-    // Hàm định dạng ngày giờ
-    const formatDateTime = (dateTimeStr) => {
-        if (!dateTimeStr) return "N/A";
-        const date = new Date(dateTimeStr);
-        return new Intl.DateTimeFormat("vi-VN", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit"
-        }).format(date);
-    };
-
-    const getStatusBadge = (status) => {
+    const getStatusBadge = (status, orderId) => {
         if (!status) return <span className="status-badge">Không xác định</span>;
 
         const statusMap = {
@@ -37,83 +20,58 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
 
         const statusInfo = statusMap[status] || {className: "", label: status};
 
-        return <span className={`status-badge ${statusInfo.className}`}>{statusInfo.label}</span>;
-    };
-
-    const getActionButtons = (order) => {
-        const status = order.orderStatus;
-
         return (
-            <div className="order-actions">
-                {status === "PENDING" && (
-                    <>
-                        <button
-                            className="action-btn confirm-btn"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onStatusChange(order.id, "confirm");
-                            }}
-                        >
-                            Xác nhận
-                        </button>
-                        <button
-                            className="action-btn cancel-btn"
-                            onClick={() => onStatusChange(order.id, "cancel")}
-                        >
-                            Hủy
-                        </button>
-                        <button
-                            className="action-btn status-btn"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setShowStatusDropdown({
-                                    ...showStatusDropdown,
-                                    [order.id]: !showStatusDropdown[order.id]
-                                });
-                            }}
-                        >
-                            Đổi trạng thái
-                        </button>
-                    </>
-                )}
+            <div style={{ position: "relative" }}>
+                <span
+                    className={`status-badge ${statusInfo.className}`}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setShowStatusDropdown({
+                            ...showStatusDropdown,
+                            [orderId]: !showStatusDropdown[orderId]
+                        });
+                    }}
+                >
+                    {statusInfo.label}
+                </span>
 
-                {showStatusDropdown[order.id] && (
+                {showStatusDropdown[orderId] && (
                     <div className="status-dropdown">
                         <button onClick={(e) => {
                             e.stopPropagation();
-                            onStatusChange(order.id, "confirm");
-                            setShowStatusDropdown({...showStatusDropdown, [order.id]: false});
+                            onStatusChange(orderId, "confirm");
+                            setShowStatusDropdown({...showStatusDropdown, [orderId]: false});
                         }}>Xác nhận</button>
                         <button onClick={(e) => {
                             e.stopPropagation();
-                            onStatusChange(order.id, "ship");
-                            setShowStatusDropdown({...showStatusDropdown, [order.id]: false});
+                            onStatusChange(orderId, "ship");
+                            setShowStatusDropdown({...showStatusDropdown, [orderId]: false});
                         }}>Giao hàng</button>
-                        {/* Thêm các trạng thái khác tương tự */}
+                        <button onClick={(e) => {
+                            e.stopPropagation();
+                            onStatusChange(orderId, "deliver");
+                            setShowStatusDropdown({...showStatusDropdown, [orderId]: false});
+                        }}>Đã giao</button>
+                        <button onClick={(e) => {
+                            e.stopPropagation();
+                            onStatusChange(orderId, "cancel");
+                            setShowStatusDropdown({...showStatusDropdown, [orderId]: false});
+                        }}>Hủy đơn</button>
                     </div>
                 )}
+            </div>
+        );
+    };
 
-                {status === "CONFIRMED" && (
-                    <button
-                        className="action-btn ship-btn"
-                        onClick={() => onStatusChange(order.id, "ship")}
-                    >
-                        Giao hàng
-                    </button>
-                )}
-
-                {status === "SHIPPED" && (
-                    <button
-                        className="action-btn deliver-btn"
-                        onClick={() => onStatusChange(order.id, "deliver")}
-                    >
-                        Đã giao
-                    </button>
-                )}
-
+    const getActionButtons = (order) => {
+        return (
+            <div className="order-actions">
                 <button
                     className="action-btn delete-btn"
-                    onClick={() => onDeleteOrder(order.id)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteOrder(order.id);
+                    }}
                 >
                     Xóa
                 </button>
@@ -130,6 +88,18 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
     const closeOrderDetail = () => {
         setSelectedOrder(null);
     };
+
+    // Đóng dropdown khi click ra ngoài
+    React.useEffect(() => {
+        const handleClickOutside = () => {
+            setShowStatusDropdown({});
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="orders-table-container">
@@ -170,7 +140,7 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
                             </td>
                             <td>{formatDateTime(order.orderDate)}</td>
                             <td className="order-amount">{formatCurrency(order.totalAmount)}</td>
-                            <td>{getStatusBadge(order.orderStatus)}</td>
+                            <td>{getStatusBadge(order.orderStatus, order.id)}</td>
                             <td>
                                 <div className="payment-info">
                                     <div>{order.paymentMethod || "COD"}</div>

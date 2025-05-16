@@ -1,7 +1,7 @@
 // src/hooks/useDashboard.jsx
-import { useState, useEffect, useCallback } from "react";
-import * as dashboardService from "../services/dashboardService";
-import {getRevenueByCategory} from "../services/dashboardService";
+import {useCallback, useEffect, useState} from "react";
+import {dashboardService} from "../services/index.js";
+
 
 export const useDashboard = () => {
     const [dashboardData, setDashboardData] = useState({
@@ -34,7 +34,7 @@ export const useDashboard = () => {
             if (weeklyRevenueResponse.status === 200) {
                 setDashboardData(prevData => ({
                     ...prevData,
-                    weeklyRevenue: weeklyRevenueResponse.data.data || {}
+                    weeklyRevenue: weeklyRevenueResponse.data.data.data || []
                 }));
             }
 
@@ -43,7 +43,7 @@ export const useDashboard = () => {
             if (monthlyRevenueResponse.status === 200) {
                 setDashboardData(prevData => ({
                     ...prevData,
-                    monthlyRevenue: monthlyRevenueResponse.data.data || {}
+                    monthlyRevenue: monthlyRevenueResponse.data.data.data || []
                 }));
             }
 
@@ -52,7 +52,7 @@ export const useDashboard = () => {
             if (categoryRevenueResponse.status === 200) {
                 setDashboardData(prevData => ({
                     ...prevData,
-                    categoryRevenue: categoryRevenueResponse.data.data || {}
+                    categoryRevenue: categoryRevenueResponse.data.data.categories || {}
                 }));
             }
 

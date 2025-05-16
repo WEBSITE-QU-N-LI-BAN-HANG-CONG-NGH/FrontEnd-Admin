@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../../styles/admin/dashboard/overview.css';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
-// Hàm định dạng số tiền thành VND
-const formatCurrency = (amount) => {
-    if (amount === undefined || amount === null) return '0đ';
-    return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="custom-tooltip">
+                <p className="label">{`${label}`}</p>
+                <p className="info">{`Doanh thu: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(payload[0].value)}`}</p>
+            </div>
+        );
+    }
+    return null;
 };
 
-const RevenueByTime = (weeklyRevenue = [],
-                       monthlyRevenue = []) => {
+const RevenueByTime = ({ weeklyRevenue = [], monthlyRevenue = [] }) => {
+    const [timeFrame, setTimeFrame] = useState('week'); // 'week' hoặc 'month'
 
-    const chartData = weeklyRevenue.length > 0
+    const weeklyData = weeklyRevenue.length > 0
         ? weeklyRevenue.map(item => ({
             name: item.day || '',
             revenue: item.revenue || 0,
@@ -19,9 +25,40 @@ const RevenueByTime = (weeklyRevenue = [],
         }))
         : [];
 
+    const monthlyData = monthlyRevenue.length > 0
+        ? monthlyRevenue.map(item => ({
+            name: item.date || '',
+            revenue: item.revenue || 0,
+            orders: item.orders || 0
+        }))
+        : [];
+
+    const chartData = timeFrame === 'week' ? weeklyData : monthlyData;
+    const title = timeFrame === 'week' ? 'Doanh thu theo tuần' : 'Doanh thu theo tháng';
+    const noDataMessage = timeFrame === 'week'
+        ? 'Không có dữ liệu doanh thu trong tuần'
+        : 'Không có dữ liệu doanh thu trong tháng';
+
     return (
         <div className="revenue-chart-container">
-            <h3 className="chart-title">Doanh thu trong tuần</h3>
+            <div className="chart-header">
+                <h3 className="chart-title">{title}</h3>
+                <div className="time-frame-toggle">
+                    <button
+                        className={`toggle-btn ${timeFrame === 'week' ? 'active' : ''}`}
+                        onClick={() => setTimeFrame('week')}
+                    >
+                        WEEK
+                    </button>
+                    <button
+                        className={`toggle-btn ${timeFrame === 'month' ? 'active' : ''}`}
+                        onClick={() => setTimeFrame('month')}
+                    >
+                        MONTH
+                    </button>
+                </div>
+            </div>
+
             {chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={chartData}>
@@ -52,7 +89,7 @@ const RevenueByTime = (weeklyRevenue = [],
                     </AreaChart>
                 </ResponsiveContainer>
             ) : (
-                <p className="no-data-message">Không có dữ liệu doanh thu trong tuần</p>
+                <p className="no-data-message">{noDataMessage}</p>
             )}
         </div>
     );

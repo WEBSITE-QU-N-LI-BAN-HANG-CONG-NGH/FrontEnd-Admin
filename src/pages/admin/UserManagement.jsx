@@ -16,7 +16,6 @@ const UserManagement = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedRole, setSelectedRole] = useState("");
@@ -30,7 +29,6 @@ const UserManagement = () => {
             // Gọi API lấy danh sách người dùng với phân trang và lọc
             const response = await userService.getAllUsers(
                 currentPage,
-                pageSize,
                 searchTerm,
                 selectedRole
             );
@@ -65,7 +63,7 @@ const UserManagement = () => {
         if (!loading && user) {
             fetchUsers();
         }
-    }, [loading, user, currentPage, pageSize, searchTerm, selectedRole]);
+    }, [loading, user, currentPage, searchTerm, selectedRole]);
 
     // Xử lý khi người dùng thay đổi trang
     const handlePageChange = (newPage) => {

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { formatCurrency, formatDate } from "../../../utils/format.js";
+
 
 const ProductList = ({
                          products,
@@ -13,10 +15,6 @@ const ProductList = ({
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
 
-    // Hàm định dạng số tiền
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
-    };
 
     // Xử lý khi chọn tất cả
     const handleSelectAll = () => {
@@ -46,17 +44,6 @@ const ProductList = ({
         if (quantity <= 0) return { label: "Hết hàng", className: "out-of-stock" };
         if (quantity < 20) return { label: "Ít hàng", className: "low-stock" };
         return { label: "Còn hàng", className: "in-stock" };
-    };
-
-    // Định dạng ngày
-    const formatDate = (dateString) => {
-        if (!dateString) return "N/A";
-        const date = new Date(dateString);
-        return new Intl.DateTimeFormat("vi-VN", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric"
-        }).format(date);
     };
 
     return (
@@ -162,7 +149,7 @@ const ProductList = ({
                                     </div>
                                 </td>
                                 <td>#{product.id}</td>
-                                <td>{product.category?.name || "Chưa phân loại"}</td>
+                                <td>{product.topLevelCategory || "Chưa phân loại"}</td>
                                 <td>
                                     <div className="price-info">
                                         <div className="current-price">{formatCurrency(product.discountedPrice || product.price)}</div>

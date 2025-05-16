@@ -91,7 +91,7 @@ const OrderFilters = ({ currentFilter, onFilterChange, onSearch }) => {
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                     />
-                    <button className="filter-btn" onClick={handleDateFilter}>Lọc</button>
+                    <button className="export-btn" onClick={handleDateFilter}>Lọc</button>
                 </div>
 
                 <button className="export-btn">

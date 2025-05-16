@@ -1,35 +1,32 @@
 import React from 'react';
 import '../../../styles/admin/dashboard/breakdown.css';
 
-// Hàm định dạng số tiền thành VND
-const formatCurrency = (amount) => {
-    if (amount === undefined || amount === null) return '0đ';
-    return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
-};
-
-const handleItemClick = (name, percentage) => {
-    console.log(`Clicked on: ${name} (${percentage.toFixed(1)}%)`);
-    // Có thể mở modal chi tiết hoặc navigate đến trang phân tích cụ thể
-};
-
 const RevenueByCategory = ({ data = {} }) => {
+    // Hàm xử lý khi click vào một mục danh mục
+    const handleItemClick = (name, percentage) => {
+        console.log(`Clicked on: ${name} (${percentage.toFixed(1)}%)`);
+        // Có thể mở modal chi tiết hoặc navigate đến trang phân tích cụ thể
+    };
+
     // Chuyển đổi dữ liệu từ nhiều định dạng có thể có
     let storeData = [];
 
-    if (Array.isArray(data)) {
-        // Nếu data là mảng các đối tượng
-        storeData = data.map(item => ({
-            name: item.name || 'Không xác định',
-            percentage: item.percentage || (item.revenue / data.reduce((sum, i) => sum + (i.revenue || 0), 1) * 100) || 0,
-            revenue: item.revenue || 0
-        }));
-    } else if (typeof data === 'object' && data !== null) {
-        // Nếu data là đối tượng với các cặp key-value
-        storeData = Object.entries(data).map(([name, value]) => ({
-            name,
-            percentage: typeof value === 'object' ? (value.percentage || 0) : (typeof value === 'number' ? value : 0),
-            revenue: typeof value === 'object' ? (value.revenue || 0) : (typeof value === 'number' ? 0 : 0)
-        }));
+    if (typeof data === 'object' && data !== null) {
+        if (data.categories) {
+            // Nếu data có cấu trúc { categories: {...} }
+            storeData = Object.entries(data.categories).map(([name, info]) => ({
+                name,
+                percentage: info.percentage || 0,
+                revenue: info.value || 0
+            }));
+        } else {
+            // Nếu data là đối tượng với các cặp key-value trực tiếp
+            storeData = Object.entries(data).map(([name, info]) => ({
+                name,
+                percentage: typeof info === 'object' ? (info.percentage || 0) : 0,
+                revenue: typeof info === 'object' ? (info.value || 0) : 0
+            }));
+        }
     }
 
     // Nếu không có dữ liệu, hiển thị một mục mặc định
@@ -37,26 +34,23 @@ const RevenueByCategory = ({ data = {} }) => {
         storeData = [{ name: "Chưa có dữ liệu", percentage: 100, revenue: 0 }];
     }
 
-    // Sắp xếp dữ liệu theo phần trăm giảm dần
-    storeData.sort((a, b) => b.percentage - a.percentage);
+    // Xử lý dữ liệu để đảm bảo "Khác" luôn ở cuối
+    let displayData = [...storeData];
 
-    // Lấy top 5 và gộp còn lại thành "Others" nếu có nhiều hơn 5 mục
-    let displayData = storeData;
-    if (storeData.length > 5) {
-        const top5 = storeData.slice(0, 5);
-        const others = storeData.slice(5);
+    // Tìm và loại bỏ phần tử "Khác" (nếu có)
+    const otherIndex = displayData.findIndex(item => item.name === "Khác");
+    let otherItem = null;
 
-        const othersPercentage = others.reduce((sum, item) => sum + item.percentage, 0);
-        const othersRevenue = others.reduce((sum, item) => sum + item.revenue, 0);
+    if (otherIndex !== -1) {
+        otherItem = displayData.splice(otherIndex, 1)[0];
+    }
 
-        displayData = [
-            ...top5,
-            {
-                name: "Khác",
-                percentage: othersPercentage,
-                revenue: othersRevenue
-            }
-        ];
+    // Sắp xếp các phần tử còn lại theo phần trăm giảm dần
+    displayData.sort((a, b) => b.percentage - a.percentage);
+
+    // Thêm lại phần tử "Khác" vào cuối danh sách
+    if (otherItem) {
+        displayData.push(otherItem);
     }
 
     // Màu sắc cho biểu đồ tròn
@@ -91,7 +85,7 @@ const RevenueByCategory = ({ data = {} }) => {
 
     return (
         <div className="card revenue-breakdown">
-            <div className="breakdown-title">Phân bổ doanh thu</div>
+            <div className="breakdown-title">Doanh thu theo danh mục</div>
             <div className="pie-chart-container">
                 <svg width="100%" height="100%" viewBox="0 0 100 100">
                     {createPieChartSegments()}
@@ -99,10 +93,10 @@ const RevenueByCategory = ({ data = {} }) => {
             </div>
 
             <ul className="breakdown-list">
-                {displayData.map((store, index) => (
+                {displayData.map((item, index) => (
                     <li key={index}
                         className="breakdown-item"
-                        onClick={() => handleItemClick(store.name, store.percentage)}
+                        onClick={() => handleItemClick(item.name, item.percentage)}
                         style={{ cursor: 'pointer' }}
                     >
                         <span className="store-name" style={{display: "flex", alignItems: "center"}}>
@@ -116,9 +110,9 @@ const RevenueByCategory = ({ data = {} }) => {
                                     marginRight: "8px",
                                 }}
                             ></span>
-                            {store.name}
+                            {item.name}
                         </span>
-                        <span className="store-percentage">{store.percentage.toFixed(1)}%</span>
+                        <span className="store-percentage">{item.percentage.toFixed(1)}%</span>
                     </li>
                 ))}
             </ul>
