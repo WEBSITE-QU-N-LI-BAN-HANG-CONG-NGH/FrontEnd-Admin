@@ -102,8 +102,9 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
     }, []);
 
     return (
-        <div className="orders-table-container">
-            <h2>Danh sách đơn hàng</h2>
+    <div>
+    <h2>Danh sách đơn hàng</h2>
+    <div className="orders-table-container">
 
             {/* Modal chi tiết đơn hàng */}
             {selectedOrder && (
@@ -159,6 +160,7 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
                 </table>
             )}
         </div>
+    </div>
     );
 };
 

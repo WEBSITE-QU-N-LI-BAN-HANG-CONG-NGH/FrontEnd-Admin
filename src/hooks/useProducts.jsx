@@ -1,4 +1,4 @@
-// src/hooks/useProducts.jsx
+// src/hooks/useProducts.jsx - Updated
 import { useState, useEffect, useCallback } from "react";
 import {productService} from "../services/index.js";
 
@@ -10,11 +10,11 @@ export const useProducts = () => {
         totalProducts: 0,
         totalRevenue: 0,
     });
-    const [selectedTab, setSelectedTab] = useState("bestselling");
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
-    const [sortBy, setSortBy] = useState("quantitySold");
-    const [sortOrder, setSortOrder] = useState("desc");
+    const [sortBy, setSortBy] = useState("createdAt"); // Mặc định sắp xếp theo ngày thêm mới nhất
+    const [sortOrder, setSortOrder] = useState("desc"); // Mặc định theo thứ tự giảm dần
+    const [categories, setCategories] = useState([]);
 
     const fetchProducts = useCallback(async () => {
         try {
@@ -22,27 +22,47 @@ export const useProducts = () => {
             setError(null);
 
             // Lấy danh sách sản phẩm
-            const response = await productService.getAllProducts();
-            if (response.status === 200) {
-                const productsData = response.data?.data || [];
-                setProducts(productsData);
+            const response = await productService.getAllProducts({
+                search: searchTerm,
+                category: selectedCategory,
+                sort: sortBy,
+                order: sortOrder
+            });
 
-                // Tính tổng doanh thu từ sản phẩm
-                let totalRev = 0;
-                if (Array.isArray(productsData)) {
-                    productsData.forEach((product) => {
-                        const sold = product.quantitySold || 0;
-                        const price = product.discountedPrice || product.price || 0;
-                        totalRev += sold * price;
-                    });
-                }
+            const productsData = response.data?.data || [];
+            setProducts(productsData);
 
-                setStats({
-                    totalProducts: Array.isArray(productsData) ? productsData.length : 0,
-                    totalRevenue: totalRev,
+            // Tính tổng doanh thu từ sản phẩm
+            let totalRev = 0;
+            if (Array.isArray(productsData)) {
+                productsData.forEach((product) => {
+                    const sold = product.quantitySold || 0;
+                    const price = product.discountedPrice || product.price || 0;
+                    totalRev += sold * price;
                 });
-            } else {
-                throw new Error("Không thể tải dữ liệu sản phẩm");
+            }
+
+            setStats({
+                totalProducts: Array.isArray(productsData) ? productsData.length : 0,
+                totalRevenue: totalRev,
+            });
+
+            // Lấy danh sách danh mục
+            try {
+                const categoryResponse = await productService.getProductCategories();
+                if (categoryResponse.status === 200) {
+                    const categoryData = categoryResponse.data?.data || [];
+                    // Lấy chỉ tên danh mục
+                    const categoryNames = categoryData.map(cat => cat.name);
+                    setCategories(categoryNames);
+                }
+            } catch (catError) {
+                console.warn("Không thể tải danh mục sản phẩm:", catError);
+                // Từ danh sách sản phẩm, tạo danh sách danh mục (backup nếu API không trả về)
+                const uniqueCategories = [...new Set(productsData
+                    .map(product => product.category?.name)
+                    .filter(Boolean))];
+                setCategories(uniqueCategories);
             }
         } catch (err) {
             console.error("Lỗi khi tải dữ liệu sản phẩm:", err);
@@ -50,7 +70,7 @@ export const useProducts = () => {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [searchTerm, selectedCategory, sortBy, sortOrder]);
 
     useEffect(() => {
         fetchProducts();
@@ -86,13 +106,13 @@ export const useProducts = () => {
             if (response.status === 200) {
                 // Cập nhật lại danh sách sản phẩm
                 await fetchProducts();
-                return true;
+                return { success: true, data: response.data?.data };
             }
-            return false;
+            return { success: false, error: "Không thể thêm sản phẩm" };
         } catch (err) {
             console.error("Lỗi khi thêm sản phẩm:", err);
             setError("Không thể thêm sản phẩm. Vui lòng thử lại sau.");
-            return false;
+            return { success: false, error: err.message || "Lỗi không xác định" };
         }
     }, [fetchProducts]);
 
@@ -104,111 +124,86 @@ export const useProducts = () => {
             if (response.status === 200) {
                 // Cập nhật lại danh sách sản phẩm
                 await fetchProducts();
-                return true;
+                return { success: true, data: response.data?.data };
             }
-            return false;
+            return { success: false, error: "Không thể cập nhật sản phẩm" };
         } catch (err) {
             console.error("Lỗi khi cập nhật sản phẩm:", err);
             setError("Không thể cập nhật sản phẩm. Vui lòng thử lại sau.");
-            return false;
+            return { success: false, error: err.message || "Lỗi không xác định" };
         }
     }, [fetchProducts]);
 
     // Xử lý xóa sản phẩm
     const handleDeleteProduct = useCallback(async (productId) => {
-        if (!window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-            return false;
-        }
-
         try {
             setError(null);
             const response = await productService.deleteProduct(productId);
             if (response.status === 200) {
                 // Cập nhật lại danh sách sản phẩm
                 await fetchProducts();
-                return true;
+                return { success: true };
             }
-            return false;
+            return { success: false, error: "Không thể xóa sản phẩm" };
         } catch (err) {
             console.error("Lỗi khi xóa sản phẩm:", err);
             setError("Không thể xóa sản phẩm. Vui lòng thử lại sau.");
-            return false;
+            return { success: false, error: err.message || "Lỗi không xác định" };
         }
     }, [fetchProducts]);
 
-    // Lấy danh sách sản phẩm đã lọc và sắp xếp
-    const getFilteredProducts = useCallback(() => {
-        // Lọc sản phẩm
-        const filtered = products.filter(product => {
-            // Lọc theo từ khóa tìm kiếm
-            if (searchTerm) {
-                const searchLower = searchTerm.toLowerCase();
-                const productName = (product.title || '').toLowerCase();
-                const productId = (product.id || '').toString();
-
-                if (!productName.includes(searchLower) && !productId.includes(searchLower)) {
-                    return false;
-                }
+    // Xử lý xóa nhiều sản phẩm
+    const handleDeleteMultipleProducts = useCallback(async (productIds) => {
+        try {
+            setError(null);
+            const response = await productService.deleteMultipleProducts(productIds);
+            if (response.status === 200) {
+                // Cập nhật lại danh sách sản phẩm
+                await fetchProducts();
+                return { success: true, count: productIds.length };
             }
+            return { success: false, error: "Không thể xóa sản phẩm" };
+        } catch (err) {
+            console.error("Lỗi khi xóa nhiều sản phẩm:", err);
+            setError("Không thể xóa sản phẩm. Vui lòng thử lại sau.");
+            return { success: false, error: err.message || "Lỗi không xác định" };
+        }
+    }, [fetchProducts]);
 
-            // Lọc theo danh mục
-            if (selectedCategory && product.category?.name !== selectedCategory) {
-                return false;
+    // Lấy chi tiết sản phẩm (có thể sử dụng khi cần load lại thông tin chi tiết)
+    const getProductDetail = useCallback(async (productId) => {
+        try {
+            setError(null);
+            const response = await productService.getProductById(productId);
+            if (response.status === 200) {
+                return { success: true, data: response.data?.data };
             }
-
-            return true;
-        });
-
-        // Sắp xếp sản phẩm
-        return filtered.sort((a, b) => {
-            let valueA, valueB;
-
-            // Xác định giá trị để so sánh
-            switch (sortBy) {
-                case 'price':
-                    valueA = a.price || 0;
-                    valueB = b.price || 0;
-                    break;
-                case 'quantitySold':
-                    valueA = a.quantitySold || 0;
-                    valueB = b.quantitySold || 0;
-                    break;
-                case 'quantity':
-                    valueA = a.quantity || 0;
-                    valueB = b.quantity || 0;
-                    break;
-                case 'title':
-                    valueA = a.title || '';
-                    valueB = b.title || '';
-                    return sortOrder === 'asc'
-                        ? valueA.localeCompare(valueB)
-                        : valueB.localeCompare(valueA);
-                default:
-                    valueA = a[sortBy] || 0;
-                    valueB = b[sortBy] || 0;
-            }
-
-            // So sánh và trả về kết quả
-            return sortOrder === 'asc' ? valueA - valueB : valueB - valueA;
-        });
-    }, [products, searchTerm, selectedCategory, sortBy, sortOrder]);
+            return { success: false, error: "Không thể lấy thông tin sản phẩm" };
+        } catch (err) {
+            console.error("Lỗi khi lấy thông tin sản phẩm:", err);
+            setError("Không thể lấy thông tin sản phẩm. Vui lòng thử lại sau.");
+            return { success: false, error: err.message || "Lỗi không xác định" };
+        }
+    }, []);
 
     return {
         products,
-        filteredProducts: getFilteredProducts(),
+        categories,
         stats,
         isLoading,
         error,
-        selectedTab,
-        setSelectedTab,
+        searchTerm,
+        selectedCategory,
+        sortBy,
+        sortOrder,
         handleSearch,
         handleCategoryFilter,
         handleSort,
         handleAddProduct,
         handleUpdateProduct,
         handleDeleteProduct,
-        refreshProducts: fetchProducts,
-        sortBy,
-        sortOrder
+        handleDeleteMultipleProducts,
+        getProductDetail,
+        refreshProducts: fetchProducts
     };
 };

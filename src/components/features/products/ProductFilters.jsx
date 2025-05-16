@@ -1,4 +1,6 @@
+// src/components/features/products/ProductFilters.jsx - Updated
 import React, { useState } from "react";
+import "../../../styles/admin/product/products.css";
 
 const ProductFilters = ({
                             onSearch,
@@ -6,7 +8,8 @@ const ProductFilters = ({
                             onSort,
                             sortBy,
                             sortOrder,
-                            categories = []
+                            categories = [],
+                            onAddNewClick
                         }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -49,16 +52,15 @@ const ProductFilters = ({
                 </select>
             </div>
 
-            <div className="sort-dropdown">
+            <div className="sort-controls">
                 <select
                     onChange={(e) => handleSortChange(e.target.value)}
                     value={sortBy}
                     className="sort-select"
                 >
-                    <option value="dateAdded">Thời gian thêm</option>
+                    <option value="createdAt">Ngày thêm</option>
                     <option value="quantitySold">Số lượng bán</option>
                     <option value="price">Giá bán</option>
-                    <option value="revenue">Doanh thu</option>
                     <option value="quantity">Tồn kho</option>
                 </select>
                 <button
@@ -70,7 +72,7 @@ const ProductFilters = ({
                 </button>
             </div>
 
-            <button className="add-product-btn">
+            <button className="add-product-btn" onClick={onAddNewClick}>
                 + Thêm sản phẩm mới
             </button>
         </div>

@@ -10,7 +10,11 @@ const ProductList = ({
                          selectedCategory,
                          onSort,
                          sortBy,
-                         sortOrder
+                         sortOrder,
+                         onEdit,
+                         onView,
+                         onDelete,
+                         onMultipleDelete
                      }) => {
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
@@ -27,7 +31,10 @@ const ProductList = ({
     };
 
     // Xử lý khi chọn một sản phẩm
-    const handleSelectProduct = (productId) => {
+    const handleSelectProduct = (e, productId) => {
+        // Ngăn sự kiện click lan tỏa đến hàng (để tránh mở modal chi tiết)
+        e.stopPropagation();
+
         if (selectedProducts.includes(productId)) {
             setSelectedProducts(selectedProducts.filter(id => id !== productId));
             setSelectAll(false);
@@ -46,6 +53,21 @@ const ProductList = ({
         return { label: "Còn hàng", className: "in-stock" };
     };
 
+    // Xử lý xóa nhiều sản phẩm
+    const handleDeleteSelected = () => {
+        if (selectedProducts.length === 0) return;
+
+        const confirmDelete = window.confirm(
+            `Bạn có chắc chắn muốn xóa ${selectedProducts.length} sản phẩm đã chọn?`
+        );
+
+        if (confirmDelete && onMultipleDelete) {
+            onMultipleDelete(selectedProducts);
+            setSelectedProducts([]);
+            setSelectAll(false);
+        }
+    };
+
     return (
         <div className="products-table-container">
             <div className="table-filters">
@@ -55,8 +77,12 @@ const ProductList = ({
                     </div>
                     {selectedProducts.length > 0 && (
                         <div className="bulk-actions">
-                            <button className="bulk-action-btn">Cập nhật</button>
-                            <button className="bulk-action-btn danger">Xóa</button>
+                            <button
+                                className="bulk-action-btn danger"
+                                onClick={handleDeleteSelected}
+                            >
+                                Xóa {selectedProducts.length} sản phẩm
+                            </button>
                         </div>
                     )}
                 </div>
@@ -81,6 +107,7 @@ const ProductList = ({
                         <option value="id">ID</option>
                         <option value="price">Giá bán</option>
                         <option value="quantity">Kho hàng</option>
+                        <option value="quantitySold">Đã bán</option>
                     </select>
 
                     <button
@@ -121,12 +148,12 @@ const ProductList = ({
                         const stockStatus = getStockStatus(product.quantity || 0);
 
                         return (
-                            <tr key={product.id}>
-                                <td>
+                            <tr key={product.id} onClick={() => onView(product)}>
+                                <td onClick={(e) => e.stopPropagation()}>
                                     <input
                                         type="checkbox"
                                         checked={selectedProducts.includes(product.id)}
-                                        onChange={() => handleSelectProduct(product.id)}
+                                        onChange={(e) => handleSelectProduct(e, product.id)}
                                     />
                                 </td>
                                 <td>
@@ -159,23 +186,58 @@ const ProductList = ({
                                     </div>
                                 </td>
                                 <td>
-                    <span className={`status-badge ${stockStatus.className}`}>
-                      {stockStatus.label}
-                    </span>
+                                    <span className={`status-badge ${stockStatus.className}`}>
+                                        {stockStatus.label}
+                                    </span>
                                 </td>
                                 <td>{formatDate(product.createdAt)}</td>
-                                <td>
+                                <td onClick={(e) => e.stopPropagation()}>
                                     <div className="product-actions">
-                                        <button className="action-btn edit-btn" title="Sửa">
-                                            ✏️
+                                        <button
+                                            className="action-btn edit-btn"
+                                            title="Sửa"
+                                            onClick={() => onEdit(product)}
+                                        >
+                                            <img
+                                                src="https://cdn-icons-png.flaticon.com/512/1159/1159633.png"
+                                                alt="Sửa"
+                                                width={20}
+                                                height={20}
+                                            />
                                         </button>
-                                        <button className="action-btn view-btn" title="Xem">
-                                            👁️
+                                        <button
+                                            className="action-btn view-btn"
+                                            title="Xem"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onView(product);
+                                            }}
+                                        >
+                                            <img
+                                                src="https://cdn-icons-png.flaticon.com/512/159/159604.png"
+                                                alt="Xem"
+                                                width={20}
+                                                height={20}
+                                            />
                                         </button>
-                                        <button className="action-btn delete-btn" title="Xóa">
-                                            🗑️
+                                        <button
+                                            className="action-btn delete-btn"
+                                            title="Xóa"
+                                            onClick={() => {
+                                                if (window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${product.title}"?`)) {
+                                                    onDelete(product.id);
+                                                }
+                                            }}
+                                        >
+                                            <img
+                                                src="https://cdn-icons-png.flaticon.com/512/1214/1214428.png"
+                                                alt="Xóa"
+                                                width={20}
+                                                height={20}
+                                            />
                                         </button>
                                     </div>
+
                                 </td>
                             </tr>
                         );

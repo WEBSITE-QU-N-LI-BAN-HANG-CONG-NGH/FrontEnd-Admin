@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '../../../utils/format.js';
 
-
 const RecentOrders = ({ orders = [] }) => {
     // Đảm bảo orders là mảng
     const safeOrders = Array.isArray(orders) ? orders : [];

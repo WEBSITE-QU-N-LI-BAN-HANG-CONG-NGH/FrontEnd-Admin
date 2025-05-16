@@ -40,8 +40,8 @@ const Dashboard = () => {
 
                         <div className="dashboard-grid">
                             <RevenueByTime
-                                weeklyRevenue={dashboardData.weeklyRevenue}
-                                monthlyRevenue={dashboardData.monthlyRevenue}
+                                weeklyRevenue={dashboardData.weeklyRevenue || []}
+                                monthlyRevenue={dashboardData.monthlyRevenue || []}
                             />
                             <RevenueByCategory data={dashboardData.categoryRevenue} />
                         </div>
