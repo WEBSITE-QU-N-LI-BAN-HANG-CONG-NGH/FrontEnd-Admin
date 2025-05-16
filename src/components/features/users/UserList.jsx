@@ -1,5 +1,6 @@
 import React from "react";
 import "../../../styles/admin/user/users.css";
+import {formatDate} from "../../../utils/format.js";
 
 const UserList = ({
                       users,
@@ -12,15 +13,6 @@ const UserList = ({
                       onViewDetail
                   }) => {
 
-    const formatDate = (dateTimeStr) => {
-        if (!dateTimeStr) return "N/A";
-        const date = new Date(dateTimeStr);
-        return new Intl.DateTimeFormat("vi-VN", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit"
-        }).format(date);
-    };
 
     // Tạo một mảng các số trang để hiển thị
     const getPageNumbers = () => {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { dashboardService, productService } from "../services/index.js";
+import { formatCurrency } from "../utils/format.js";
 
 export const useAnalytics = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -12,10 +13,6 @@ export const useAnalytics = () => {
     });
     const [topProducts, setTopProducts] = useState([]);
 
-    // Hàm định dạng số tiền thành VND
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
-    };
 
     // Hàm fetch tất cả dữ liệu phân tích
     const fetchAnalyticsData = useCallback(async () => {

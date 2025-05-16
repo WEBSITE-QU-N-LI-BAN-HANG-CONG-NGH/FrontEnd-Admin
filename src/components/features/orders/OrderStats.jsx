@@ -1,17 +1,8 @@
 import React from "react";
+import "../../../styles/admin/order/orders.css";
+import { formatCurrency } from "../../../utils/format.js";
 
 const OrderStats = ({ stats }) => {
-    // Hàm định dạng số tiền
-    const formatCurrency = (amount) => {
-        if (typeof amount === 'object' && amount !== null) {
-            try {
-                amount = parseFloat(amount.toString());
-            } catch (error) {
-                amount = 0;
-            }
-        }
-        return new Intl.NumberFormat("vi-VN").format(amount || 0) + "đ";
-    };
 
     // Đảm bảo stats là object
     const safeStats = stats && typeof stats === 'object' ? stats : {};
@@ -31,11 +22,6 @@ const OrderStats = ({ stats }) => {
             <div className="stat-card">
                 <div className="stat-title">Đơn đã hoàn thành</div>
                 <div className="stat-value">{safeStats.completedOrders || 0}</div>
-                <div className="stat-subtitle">
-                    {safeStats.totalOrders > 0
-                        ? Math.round((safeStats.completedOrders || 0) / safeStats.totalOrders * 100)
-                        : 0}% tỷ lệ hoàn thành
-                </div>
             </div>
 
             <div className="stat-card">

@@ -1,6 +1,6 @@
 // src/hooks/useOrders.jsx
 import { useState, useEffect, useCallback } from "react";
-import * as orderService from "../services/orderService";
+import {orderService} from "../services/index.js";
 
 export const useOrders = () => {
     const [orders, setOrders] = useState([]);

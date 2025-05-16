@@ -1,31 +1,10 @@
 import React from "react";
 import "../../../styles/admin/order/order-detail.css";
+import { formatCurrency, formatDateTime } from "../../../utils/format.js";
 
 const OrderDetailModal = ({ order, onClose }) => {
     if (!order) return null;
 
-    // Hàm định dạng số tiền
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
-    };
-
-    // Hàm định dạng ngày giờ
-    const formatDateTime = (dateTimeStr) => {
-        if (!dateTimeStr) return "N/A";
-        try {
-            const date = new Date(dateTimeStr);
-            return new Intl.DateTimeFormat("vi-VN", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit"
-            }).format(date);
-        } catch (error) {
-            console.error("Error formatting date:", error);
-            return "N/A";
-        }
-    };
 
     return (
         <div className="modal-overlay" onClick={onClose}>

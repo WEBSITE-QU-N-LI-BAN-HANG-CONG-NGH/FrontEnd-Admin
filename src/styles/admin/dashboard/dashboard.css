@@ -10,7 +10,7 @@
     margin-bottom: 12px; /* Giảm margin */
 }
 
-.stat-card {
+.stat-card-db {
     background-color: white;
     border-radius: 6px; /* Giảm border-radius */
     padding: 10px; /* Giảm padding */
@@ -19,18 +19,14 @@
     align-items: center;
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-}
-
 .stat-icon {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     align-items: center;
     justify-content: center;
     object-fit: contain;
     margin-right: 20px;
+    margin-left: 10px;
 }
 
 .stat-icon img {
@@ -39,20 +35,6 @@
     object-fit: contain;
 }
 
-.orders-icon {
-    background-color: rgba(74, 108, 247, 0.12);
-    color: #4A6CF7;
-}
-
-.stock-icon {
-    background-color: rgba(76, 175, 80, 0.12);
-    color: #4CAF50;
-}
-
-.products-icon {
-    background-color: rgba(156, 39, 176, 0.12);
-    color: #9C27B0;
-}
 
 .stat-content {
     flex: 1;
@@ -60,20 +42,21 @@
     flex-direction: column;
     justify-content: flex-start; /* Thêm dòng này để căn trái */
     align-items: flex-start; /* Thêm dòng này để căn trái */
+    gap: 5px;
 }
 
 
-.stat-title {
+.stat-title-db {
     font-size: 12px; /* Giữ nguyên font-size nhỏ */
     color: var(--secondary-color);
     line-height: 1;
     text-align: left;
+    
 }
-.stat-value {
+.stat-value-db {
     font-size: 24px; /* Tăng kích thước và độ đậm cho số */
     font-weight: 700;
     color: var(--primary-color);
-    margin-bottom: 4px;
     line-height: 1;
     text-align: left;
 }

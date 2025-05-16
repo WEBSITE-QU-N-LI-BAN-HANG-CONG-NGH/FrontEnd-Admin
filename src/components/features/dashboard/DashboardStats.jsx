@@ -1,4 +1,5 @@
 import React from 'react';
+import "../../../styles/admin/dashboard/dashboard.css";
 
 const DashboardStats = ({ stats = {} }) => {
     const {
@@ -9,7 +10,7 @@ const DashboardStats = ({ stats = {} }) => {
 
     return (
         <div className="dashboard-stats">
-            <div className="stat-card">
+            <div className="stat-card-db">
                 <div className="stat-icon products-icon">
                     <img
                         src="https://res.cloudinary.com/dgwfnyn86/image/upload/v1746095542/Heart_vn3d8d.png"
@@ -18,12 +19,12 @@ const DashboardStats = ({ stats = {} }) => {
                     />
                 </div>
                 <div className="stat-content">
-                    <div className="stat-value">{totalProducts}+</div>
-                    <div className="stat-title">Save Products</div>
+                    <div className="stat-value-db">{totalProducts}+</div>
+                    <div className="stat-title-db">Save Products</div>
                 </div>
             </div>
 
-            <div className="stat-card">
+            <div className="stat-card-db">
                 <div className="stat-icon stock-icon">
                     <img
                         src="https://res.cloudinary.com/dgwfnyn86/image/upload/v1746095542/Game_ta9txl.png"
@@ -32,12 +33,12 @@ const DashboardStats = ({ stats = {} }) => {
                     />
                 </div>
                 <div className="stat-content">
-                    <div className="stat-value">{inStock}+</div>
-                    <div className="stat-title">Stock Products</div>
+                    <div className="stat-value-db">{inStock}+</div>
+                    <div className="stat-title-db">Stock Products</div>
                 </div>
             </div>
 
-            <div className="stat-card">
+            <div className="stat-card-db">
                 <div className="stat-icon orders-icon">
                     <img
                         src="https://res.cloudinary.com/dgwfnyn86/image/upload/v1746095541/Bag_nuchmh.png"
@@ -46,8 +47,8 @@ const DashboardStats = ({ stats = {} }) => {
                     />
                 </div>
                 <div className="stat-content">
-                    <div className="stat-value">{soldItems}+</div>
-                    <div className="stat-title">Sold Products</div>
+                    <div className="stat-value-db">{soldItems}+</div>
+                    <div className="stat-title-db">Sold Products</div>
                 </div>
             </div>
         </div>

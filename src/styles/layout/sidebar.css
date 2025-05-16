@@ -22,7 +22,7 @@
     width: 32px; /* Giảm kích thước logo */
     height: 32px;
     margin-right: 8px;
-    border-radius: 50%;
+    border-radius: 10%;
     object-fit: cover;
 }
 
@@ -34,13 +34,15 @@
 .sidebar-menu {
     list-style: none;
     padding-top: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar-menu-item {
     display: flex;
     align-items: center;
-    padding: 8px 12px; /* Giảm padding */
-    margin-bottom: 2px; /* Giảm margin */
+    flex-direction: row;
+    padding: 8px 12px;
 }
 
 .sidebar-menu-item .icon {
@@ -70,7 +72,8 @@
 
 .sidebar-link {
     display: flex; /* Thay đổi từ block sang flex */
-    align-items: center; /* Căn giữa các phần tử con */
+    flex-direction: row;
+    justify-items: center;
     width: 100%;
     height: 100%;
     color: inherit;
@@ -100,7 +103,7 @@
 .admin-section .admin-avatar {
     width: 38px;
     height: 38px;
-    border-radius: 50%;
+    border-radius: 10%;
     background: linear-gradient(45deg, #4A6CF7, #8B5CF6);
     color: white;
     margin-right: 12px;
@@ -122,6 +125,7 @@
     color: #FFFFFF;
     font-size: 16px;
     text-transform: uppercase;
+    margin-left: 20px;
 }
 
 .admin-info {

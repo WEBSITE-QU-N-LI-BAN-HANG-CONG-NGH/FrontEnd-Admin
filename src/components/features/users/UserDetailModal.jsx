@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../../../styles/admin/user/users.css";
+import { formatDate } from "../../../utils/format.js";
 
 const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleStatus }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -45,20 +46,6 @@ const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleSt
         }
     };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return "N/A";
-
-        try {
-            const date = new Date(dateString);
-            return new Intl.DateTimeFormat("vi-VN", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-            }).format(date);
-        } catch (e) {
-            return "N/A";
-        }
-    };
 
     return (
         <div className="modal-overlay" onClick={onClose}>

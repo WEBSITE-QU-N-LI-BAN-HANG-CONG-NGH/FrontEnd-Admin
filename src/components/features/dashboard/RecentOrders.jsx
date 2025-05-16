@@ -1,36 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
-// Hàm định dạng số tiền thành VND
-const formatCurrency = (amount) => {
-    if (typeof amount === 'object' && amount !== null) {
-        try {
-            amount = parseFloat(amount.toString());
-        } catch (error) {
-            amount = 0;
-        }
-    }
-    return new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
-};
-
-// Hàm định dạng ngày giờ
-const formatDate = (dateStr) => {
-    if (!dateStr) return 'N/A';
-
-    try {
-        const date = new Date(dateStr);
-        return new Intl.DateTimeFormat('vi-VN', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        }).format(date);
-    } catch (e) {
-        console.error("Lỗi định dạng ngày:", e);
-        return 'N/A';
-    }
-};
+import { formatCurrency } from '../../../utils/format.js';
 
 const RecentOrders = ({ orders = [] }) => {
     // Đảm bảo orders là mảng

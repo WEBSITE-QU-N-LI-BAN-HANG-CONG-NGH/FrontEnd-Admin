@@ -1,6 +1,6 @@
 // src/hooks/useUsers.jsx
 import { useState, useEffect, useCallback } from "react";
-import * as userService from "../services/userService";
+import userService from "../services/api.js";
 
 export const useUsers = () => {
     const [users, setUsers] = useState([]);

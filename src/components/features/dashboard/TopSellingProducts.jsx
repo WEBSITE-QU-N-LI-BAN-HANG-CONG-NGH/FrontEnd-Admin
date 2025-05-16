@@ -1,45 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
-// Hàm định dạng số tiền thành VND
-const formatCurrency = (amount) => {
-    if (typeof amount === 'object' && amount !== null) {
-        try {
-            amount = parseFloat(amount.toString());
-        } catch (error) {
-            amount = 0;
-        }
-    }
-    return new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
-};
+import { formatCurrency } from '../../../utils/format.js';
 
 const TopSellingProducts = ({ products = [] }) => {
     // Đảm bảo products là mảng
     const safeProducts = Array.isArray(products) ? products : [];
-
-    // Tạo stars từ rating (nếu có)
-    const renderStars = (rating) => {
-        if (rating === undefined || rating === null) return '';
-
-        const stars = [];
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating - fullStars >= 0.5;
-
-        for (let i = 0; i < fullStars; i++) {
-            stars.push('★');
-        }
-
-        if (hasHalfStar) {
-            stars.push('✭');
-        }
-
-        const emptyStars = 5 - stars.length;
-        for (let i = 0; i < emptyStars; i++) {
-            stars.push('☆');
-        }
-
-        return stars.join('');
-    };
 
     return (
         <div className="top-selling-card">
@@ -50,8 +15,8 @@ const TopSellingProducts = ({ products = [] }) => {
                     {safeProducts.map((product) => (
                         <div key={product.id} className="top-product-item">
                             <div className="top-product-img">
-                                {product.image_url ? (
-                                    <img src={product.image_url} alt={product.title || product.name} />
+                                {product.imageUrl ? (
+                                    <img src={product.imageUrl} alt={product.title || product.name} />
                                 ) : (
                                     <div className="placeholder-img">No image</div>
                                 )}
@@ -69,10 +34,7 @@ const TopSellingProducts = ({ products = [] }) => {
                                     )}
                                 </div>
                                 <div className="top-product-rating">
-                                    {product.rating && (
-                                        <span className="stars">{renderStars(product.rating)}</span>
-                                    )}
-                                    <span className="sold-count">| Đã bán: {product.quantity_sold || 0}</span>
+                                    <span className="sold-count">| Đã bán: {product.quantitySold || 0}</span>
                                 </div>
                             </div>
                         </div>

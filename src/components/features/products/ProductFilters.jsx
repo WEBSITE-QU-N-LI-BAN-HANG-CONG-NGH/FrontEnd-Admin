@@ -1,4 +1,6 @@
+// src/components/features/products/ProductFilters.jsx - Updated
 import React, { useState } from "react";
+import "../../../styles/admin/product/products.css";
 
 const ProductFilters = ({
                             onSearch,
@@ -6,7 +8,8 @@ const ProductFilters = ({
                             onSort,
                             sortBy,
                             sortOrder,
-                            categories = []
+                            categories = [],
+                            onAddNewClick
                         }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -35,42 +38,7 @@ const ProductFilters = ({
                 </div>
             </form>
 
-            <div className="filter-dropdown">
-                <select
-                    onChange={(e) => onCategoryFilter(e.target.value)}
-                    className="category-filter"
-                >
-                    <option value="">Tất cả danh mục</option>
-                    {categories.map((category, index) => (
-                        <option key={index} value={category}>
-                            {category}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <div className="sort-dropdown">
-                <select
-                    onChange={(e) => handleSortChange(e.target.value)}
-                    value={sortBy}
-                    className="sort-select"
-                >
-                    <option value="dateAdded">Thời gian thêm</option>
-                    <option value="quantitySold">Số lượng bán</option>
-                    <option value="price">Giá bán</option>
-                    <option value="revenue">Doanh thu</option>
-                    <option value="quantity">Tồn kho</option>
-                </select>
-                <button
-                    className="sort-direction-btn"
-                    onClick={() => onSort(sortBy)}
-                    title={sortOrder === 'asc' ? "Sắp xếp tăng dần" : "Sắp xếp giảm dần"}
-                >
-                    {sortOrder === 'asc' ? '↑' : '↓'}
-                </button>
-            </div>
-
-            <button className="add-product-btn">
+            <button className="add-product-btn" onClick={onAddNewClick}>
                 + Thêm sản phẩm mới
             </button>
         </div>
