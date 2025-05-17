@@ -1,6 +1,6 @@
 // src/components/features/orders/OrderFilters.jsx - Thêm prop onSearch và dùng nó
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const OrderFilters = ({ currentFilter, onFilterChange, onSearch }) => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -10,13 +10,43 @@ const OrderFilters = ({ currentFilter, onFilterChange, onSearch }) => {
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         if (onSearch) {
-            onSearch(searchTerm);
+            onSearch(searchTerm, startDate, endDate);
         }
     };
 
     const handleDateFilter = () => {
         if (onSearch) {
             onSearch(searchTerm, startDate, endDate);
+        }
+    };
+
+    useEffect(() => {
+        if (startDate && endDate && onSearch) {
+            // Chỉ áp dụng khi cả hai đều đã được chọn
+            const startDateObj = new Date(startDate);
+            const endDateObj = new Date(endDate);
+
+            // Kiểm tra ngày bắt đầu <= ngày kết thúc
+            if (startDateObj <= endDateObj) {
+                onSearch(searchTerm, startDate, endDate);
+            }
+        }
+    }, [startDate, endDate, searchTerm, onSearch]);
+
+    // Khi thay đổi tab, reset lại search nếu có searchTerm
+    useEffect(() => {
+        if (searchTerm && onSearch) {
+            onSearch(searchTerm, startDate, endDate);
+        }
+    }, [currentFilter]);
+
+    // Xử lý xóa bộ lọc
+    const handleClearFilters = () => {
+        setSearchTerm("");
+        setStartDate("");
+        setEndDate("");
+        if (onSearch) {
+            onSearch("", "", "");
         }
     };
 

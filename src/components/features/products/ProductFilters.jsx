@@ -1,34 +1,34 @@
 // src/components/features/products/ProductFilters.jsx - Updated
-import React, { useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import "../../../styles/admin/product/products.css";
+import { debounce } from 'lodash';
 
-const ProductFilters = ({
-                            onSearch,
-                            onCategoryFilter,
-                            onSort,
-                            sortBy,
-                            sortOrder,
-                            categories = [],
-                            onAddNewClick
-                        }) => {
+const ProductFilters = ({ onSearch, onCategoryFilter, onSort, sortBy, sortOrder, categories = [], onAddNewClick }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        onSearch(searchTerm);
-    };
+    // Sử dụng useCallback để tạo hàm debounced chỉ một lần
+    const debouncedSearch = useCallback(
+        debounce((term) => {
+            onSearch(term);
+        }, 500), // 500ms delay
+        [onSearch]
+    );
 
-    const handleSortChange = (field) => {
-        onSort(field);
-    };
+    // Gọi tìm kiếm khi searchTerm thay đổi
+    useEffect(() => {
+        debouncedSearch(searchTerm);
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [searchTerm, debouncedSearch]);
 
     return (
         <div className="product-filters">
-            <form className="search-form" onSubmit={handleSearchSubmit}>
+            <form className="search-form">
                 <div className="search-box">
                     <input
                         type="text"
-                        placeholder="Tìm kiếm sản phẩm..."
+                        placeholder="Tìm kiếm sản phẩm theo tên..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />

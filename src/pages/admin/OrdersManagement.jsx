@@ -36,7 +36,7 @@ const OrdersManagement = () => {
                     const cancelledOrders = ordersData.filter(order => order.orderStatus === "CANCELLED").length;
                     const totalRevenue = ordersData
                         .filter(order => order.orderStatus === "DELIVERED")
-                        .reduce((sum, order) => sum + order.totalAmount, 0);
+                        .reduce((sum, order) => sum + order.totalDiscountedPrice, 0);
 
                     setStats({
                         totalOrders: ordersData.length,

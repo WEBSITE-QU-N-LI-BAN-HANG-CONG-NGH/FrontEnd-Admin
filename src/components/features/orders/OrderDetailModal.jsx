@@ -36,7 +36,7 @@ const OrderDetailModal = ({ order, onClose }) => {
                             </div>
                             <div className="info-group">
                                 <div className="info-label">Phương thức thanh toán:</div>
-                                <div className="info-value">{order.paymentMethod || "COD"}</div>
+                                <div className="info-value">{order.paymentMethod || ""}</div>
                             </div>
                             <div className="info-group">
                                 <div className="info-label">Trạng thái thanh toán:</div>
@@ -58,7 +58,7 @@ const OrderDetailModal = ({ order, onClose }) => {
                             </div>
                             <div className="info-group">
                                 <div className="info-label">Số điện thoại:</div>
-                                <div className="info-value">{order.user?.phone || 'Không có'}</div>
+                                <div className="info-value">{order.user?.mobile || 'Không có'}</div>
                             </div>
                         </div>
                     </div>
@@ -111,15 +111,15 @@ const OrderDetailModal = ({ order, onClose }) => {
                                     <td>
                                         <div className="product-cell">
                                             <div className="product-image">
-                                                {item.product?.images && item.product.images.length > 0 ? (
-                                                    <img src={item.product.images[0].downloadUrl} alt={item.product.title} />
+                                                {item.imageUrl ? (
+                                                    <img src={item.imageUrl} alt={item.productTitle} />
                                                 ) : (
                                                     <div className="no-image">Không có ảnh</div>
                                                 )}
                                             </div>
                                             <div className="product-details">
-                                                <div className="product-name">{item.product?.title || "Sản phẩm không tồn tại"}</div>
-                                                <div className="product-id">#{item.product?.id || "N/A"}</div>
+                                                <div className="product-name">{item.productTitle || "Sản phẩm không tồn tại"}</div>
+                                                <div className="product-id">#{item.productId || "N/A"}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -147,7 +147,7 @@ const OrderDetailModal = ({ order, onClose }) => {
                     <div className="order-summary">
                         <div className="summary-row">
                             <div>Tổng tiền hàng:</div>
-                            <div>{formatCurrency(order.totalAmount)}</div>
+                            <div>{formatCurrency(order.originalPrice)}</div>
                         </div>
                         {order.discount > 0 && (
                             <div className="summary-row">
@@ -161,7 +161,7 @@ const OrderDetailModal = ({ order, onClose }) => {
                         </div>
                         <div className="summary-row total">
                             <div>Tổng thanh toán:</div>
-                            <div>{formatCurrency(order.totalAmount-order.discount)}</div>
+                            <div>{formatCurrency(order.totalDiscountedPrice)}</div>
                         </div>
                     </div>
                 </div>

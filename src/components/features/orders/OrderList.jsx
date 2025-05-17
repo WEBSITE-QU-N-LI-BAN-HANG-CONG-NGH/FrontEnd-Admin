@@ -10,7 +10,7 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
     const getStatusBadge = (status, orderId) => {
         if (!status) return <span className="status-badge">Không xác định</span>;
 
-        const statusMap = {
+        const orderStatusMap = {
             "PENDING": {className: "status-pending", label: "Chờ xác nhận"},
             "CONFIRMED": {className: "status-confirmed", label: "Đã xác nhận"},
             "SHIPPED": {className: "status-shipped", label: "Đang giao"},
@@ -18,7 +18,7 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
             "CANCELLED": {className: "status-cancelled", label: "Đã hủy"}
         };
 
-        const statusInfo = statusMap[status] || {className: "", label: status};
+        const statusInfo = orderStatusMap[status] || {className: "", label: status};
 
         return (
             <div style={{ position: "relative" }}>
@@ -101,6 +101,21 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
         };
     }, []);
 
+    const getPaymentStatusInfo = (paymentStatus) => {
+        if (!paymentStatus) return { text: "Không xác định", isPaid: false, className: "unknown" };
+
+        // Ánh xạ trạng thái thanh toán từ backend
+        const statusMap = {
+            "PENDING": { text: "Chờ thanh toán", isPaid: false, className: "unpaid" },
+            "COMPLETED": { text: "Đã thanh toán", isPaid: true, className: "paid" },
+            "FAILED": { text: "Thanh toán thất bại", isPaid: false, className: "failed" },
+            "CANCELLED": { text: "Đã hủy thanh toán", isPaid: false, className: "cancelled" },
+            "REFUNDED": { text: "Đã hoàn tiền", isPaid: false, className: "refunded" }
+        };
+
+        return statusMap[paymentStatus] || { text: paymentStatus, isPaid: false, className: "unknown" };
+    };
+
     return (
     <div>
     <h2>Danh sách đơn hàng</h2>
@@ -140,15 +155,14 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
                                 </div>
                             </td>
                             <td>{formatDateTime(order.orderDate)}</td>
-                            <td className="order-amount">{formatCurrency(order.totalAmount)}</td>
+                            <td className="order-amount">{formatCurrency(order.totalDiscountedPrice)}</td>
                             <td>{getStatusBadge(order.orderStatus, order.id)}</td>
                             <td>
                                 <div className="payment-info">
                                     <div>{order.paymentMethod || "COD"}</div>
                                     {order.paymentStatus && (
-                                        <div
-                                            className={`payment-status ${order.paymentStatus.toLowerCase() === 'paid' ? 'paid' : 'unpaid'}`}>
-                                            {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                                        <div className={`payment-status ${getPaymentStatusInfo(order.paymentStatus).className}`}>
+                                            {getPaymentStatusInfo(order.paymentStatus).text}
                                         </div>
                                     )}
                                 </div>
