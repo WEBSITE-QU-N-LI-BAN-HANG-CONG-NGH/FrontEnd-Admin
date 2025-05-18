@@ -157,14 +157,6 @@ const OrderFilters = ({ currentFilter, onFilterChange, onSearch }) => {
                     />
                     <button className="export-btn" onClick={handleDateFilter}>Lọc</button>
                 </div>
-
-                <button className="export-btn" onClick={handleClearFilters}>
-                    Xóa bộ lọc
-                </button>
-
-                <button className="export-btn">
-                    Xuất Excel
-                </button>
             </div>
         </div>
     );

@@ -75,16 +75,6 @@ const UserFilters = ({ onSearch, onRoleFilter, selectedRole }) => {
                     </select>
                 </div>
             </div>
-
-            <div className="filter-actions">
-                <button className="filter-btn" onClick={handleClearFilters}>
-                    Xóa bộ lọc
-                </button>
-
-                <button className="export-btn">
-                    Xuất báo cáo
-                </button>
-            </div>
         </div>
     );
 };

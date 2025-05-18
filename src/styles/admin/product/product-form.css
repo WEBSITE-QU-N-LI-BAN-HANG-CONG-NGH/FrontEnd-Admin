@@ -135,8 +135,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     margin-bottom: 16px;
 }
+
 
 .image-upload-input {
     display: none;
@@ -161,8 +163,16 @@
 
 .upload-icon {
     font-size: 24px;
-    margin-bottom: 8px;
     color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .image-preview-container {

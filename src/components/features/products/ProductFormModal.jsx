@@ -1,6 +1,7 @@
 // src/components/features/products/ProductFormModal.jsx
 import React, { useState, useEffect } from "react";
 import "../../../styles/admin/product/product-form.css";
+import ProductNewCategory from "./ProductNewCategory";
 
 const ProductFormModal = ({ product, categories, onClose, onSave }) => {
     const isEditing = !!product;
@@ -19,6 +20,7 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
     const [errors, setErrors] = useState({});
     const [availableSizes, setAvailableSizes] = useState(["S", "M", "L", "XL", "XXL"]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showCategoryForm, setShowCategoryForm] = useState(false);
 
     // Khi component mount hoặc product thay đổi
     useEffect(() => {
@@ -39,6 +41,12 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        
+        if (name === "category" && value === "add-new") {
+            setShowCategoryForm(true);
+            return;
+        }
+        
         setFormData(prev => ({
             ...prev,
             [name]: name === "price" || name === "discountedPrice" || name === "quantity"
@@ -102,6 +110,16 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
 
         onSave(productData);
     };
+    
+    const handleCategoryCreated = (newCategory) => {
+        setShowCategoryForm(false);
+        setFormData(prev => ({
+            ...prev,
+            category: newCategory.id
+        }));
+        
+        // Thêm logic mấy cái category ở đây dùm =))
+    };
 
     return (
         <div className="modal-overlay" onClick={onClose}>
@@ -111,7 +129,12 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
                     <button className="close-btn" onClick={onClose}>×</button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="product-form">
+                {showCategoryForm ? (
+                    <ProductNewCategory 
+                        onSave={handleCategoryCreated} 
+                        onCancel={() => setShowCategoryForm(false)} 
+                    />
+                ) : (<form onSubmit={handleSubmit} className="product-form">
                     <div className="modal-body">
                         <div className="form-grid">
                             <div className="form-left">
@@ -192,6 +215,7 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
                                             onChange={handleInputChange}
                                         >
                                             <option value="">Chọn danh mục</option>
+                                            <option value="add-new">Thêm danh mục</option>
                                             {categories.map((cat, index) => (
                                                 <option key={index} value={cat.id || cat}>{cat.name || cat}</option>
                                             ))}
@@ -229,7 +253,7 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
                                         />
                                         <label htmlFor="productImages" className="image-upload-label">
                                             <div className="upload-icon">+</div>
-                                            <div>Chọn ảnh</div>
+                                            <div className="upload-text">Chọn ảnh</div>
                                         </label>
                                     </div>
 
@@ -278,6 +302,7 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
                         </button>
                     </div>
                 </form>
+                )}
             </div>
         </div>
     );
