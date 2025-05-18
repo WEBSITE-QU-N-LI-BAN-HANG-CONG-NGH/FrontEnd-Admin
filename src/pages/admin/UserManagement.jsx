@@ -26,16 +26,21 @@ const UserManagement = () => {
             setIsLoading(true);
             setError(null);
 
+            const pageNumber = parseInt(currentPage, 10) || 0;
+            const pageSizeNumber = 10;
+
             // Gọi API lấy danh sách người dùng với phân trang và lọc
             const response = await userService.getAllUsers(
-                currentPage,
+                pageNumber,
+                pageSizeNumber,
                 searchTerm,
                 selectedRole
             );
 
             if (response.status === 200) {
                 const userData = response.data.data;
-                setUsers(userData.content || []);
+                const filteredUsers = (userData.content || []).filter(user => user.role !== "ADMIN");
+                setUsers(filteredUsers);
                 setTotalPages(userData.totalPages || 1);
             } else {
                 throw new Error("Không thể lấy dữ liệu người dùng");

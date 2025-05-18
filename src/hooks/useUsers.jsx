@@ -18,9 +18,12 @@ export const useUsers = () => {
             setIsLoading(true);
             setError(null);
 
+            const pageNumber = parseInt(currentPage, 10) || 0;
+            const pageSize = 10;
+
             // Gọi API lấy danh sách người dùng với phân trang và lọc
             const response = await userService.getAllUsers(
-                currentPage,
+                pageNumber,
                 pageSize,
                 searchTerm,
                 selectedRole
@@ -28,8 +31,9 @@ export const useUsers = () => {
 
             if (response.status === 200) {
                 const userData = response.data.data;
-                setUsers(userData.content);
-                setTotalPages(userData.totalPages);
+                const filteredUsers = (userData.content || []).filter(user => user.role !== "ADMIN");
+                setUsers(filteredUsers);
+                setTotalPages(userData.totalPages || 1);
             } else {
                 throw new Error("Không thể lấy dữ liệu người dùng");
             }

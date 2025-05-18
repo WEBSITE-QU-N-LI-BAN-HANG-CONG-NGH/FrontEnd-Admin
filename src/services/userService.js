@@ -1,8 +1,11 @@
 // src/services/userService.js
 import api from './api';
 
-export const getAllUsers = (page = 0, size = 10, search = "", role = "") =>
-    api.get(`/admin/users/all?page=${page}&size=${size}&search=${search}&role=${role}`);
+export const getAllUsers = (page = 0, size = 10, search = "", role = "") => {
+    const validPage = Number.isInteger(Number(page)) ? page : 0;
+    const validSize = Number.isInteger(Number(size)) ? size : 10;
+    return api.get(`/admin/users/all?page=${validPage}&size=${validSize}&search=${search}&role=${role}`);
+};
 
 export const getUserDetails = (userId) => api.get(`/admin/users/${userId}`);
 

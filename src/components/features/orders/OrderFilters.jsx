@@ -1,12 +1,30 @@
-// src/components/features/orders/OrderFilters.jsx - Thêm prop onSearch và dùng nó
-
-import {useEffect, useState} from "react";
+import { useEffect, useState, useCallback } from "react";
+import { debounce } from 'lodash';
 
 const OrderFilters = ({ currentFilter, onFilterChange, onSearch }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
+    // Tạo hàm debounce để tối ưu hóa hiệu suất khi tìm kiếm
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debouncedSearch = useCallback(
+        debounce((term, start, end) => {
+            if (onSearch) {
+                onSearch(term, start, end);
+            }
+        }, 500),
+        [onSearch]
+    );
+
+    // Xử lý khi người dùng nhập vào ô tìm kiếm
+    const handleSearchChange = (e) => {
+        const term = e.target.value;
+        setSearchTerm(term);
+        debouncedSearch(term, startDate, endDate);
+    };
+
+    // Xử lý khi người dùng submit form tìm kiếm
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         if (onSearch) {
@@ -14,30 +32,39 @@ const OrderFilters = ({ currentFilter, onFilterChange, onSearch }) => {
         }
     };
 
+    // Xử lý khi thay đổi date filters
+    const handleDateChange = (field, value) => {
+        if (field === 'start') {
+            setStartDate(value);
+        } else {
+            setEndDate(value);
+        }
+
+        // Chỉ áp dụng filter khi cả hai ngày đã được chọn
+        if ((field === 'start' && endDate) || (field === 'end' && startDate)) {
+            const start = field === 'start' ? value : startDate;
+            const end = field === 'end' ? value : endDate;
+
+            const startDateObj = new Date(start);
+            const endDateObj = new Date(end);
+
+            // Kiểm tra ngày bắt đầu <= ngày kết thúc
+            if (startDateObj <= endDateObj) {
+                debouncedSearch(searchTerm, start, end);
+            }
+        }
+    };
+
     const handleDateFilter = () => {
-        if (onSearch) {
+        if (startDate && endDate && onSearch) {
             onSearch(searchTerm, startDate, endDate);
         }
     };
 
+    // Khi thay đổi tab, áp dụng lại filter với searchTerm và date hiện tại
     useEffect(() => {
-        if (startDate && endDate && onSearch) {
-            // Chỉ áp dụng khi cả hai đều đã được chọn
-            const startDateObj = new Date(startDate);
-            const endDateObj = new Date(endDate);
-
-            // Kiểm tra ngày bắt đầu <= ngày kết thúc
-            if (startDateObj <= endDateObj) {
-                onSearch(searchTerm, startDate, endDate);
-            }
-        }
-    }, [startDate, endDate, searchTerm, onSearch]);
-
-    // Khi thay đổi tab, reset lại search nếu có searchTerm
-    useEffect(() => {
-        if (searchTerm && onSearch) {
-            onSearch(searchTerm, startDate, endDate);
-        }
+        debouncedSearch(searchTerm, startDate, endDate);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentFilter]);
 
     // Xử lý xóa bộ lọc
@@ -49,6 +76,13 @@ const OrderFilters = ({ currentFilter, onFilterChange, onSearch }) => {
             onSearch("", "", "");
         }
     };
+
+    // Hủy debounce khi component unmount
+    useEffect(() => {
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [debouncedSearch]);
 
     return (
         <div className="order-filters">
@@ -98,7 +132,7 @@ const OrderFilters = ({ currentFilter, onFilterChange, onSearch }) => {
                             type="text"
                             placeholder="Tìm kiếm đơn hàng..."
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={handleSearchChange}
                         />
                         <button type="submit" className="search-btn">
                             🔍
@@ -112,17 +146,21 @@ const OrderFilters = ({ currentFilter, onFilterChange, onSearch }) => {
                         placeholder="Từ ngày"
                         className="date-input"
                         value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
+                        onChange={(e) => handleDateChange('start', e.target.value)}
                     />
                     <input
                         type="date"
                         placeholder="Đến ngày"
                         className="date-input"
                         value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
+                        onChange={(e) => handleDateChange('end', e.target.value)}
                     />
                     <button className="export-btn" onClick={handleDateFilter}>Lọc</button>
                 </div>
+
+                <button className="export-btn" onClick={handleClearFilters}>
+                    Xóa bộ lọc
+                </button>
 
                 <button className="export-btn">
                     Xuất Excel
