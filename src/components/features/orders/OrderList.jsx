@@ -146,7 +146,7 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
                     <tbody>
                     {orders.map((order) => (
                         <tr key={order.id} onClick={() => openOrderDetail(order)} style={{cursor: 'pointer'}}>
-                            <td>#{order.id}</td>
+                            <td className="order-id">#{order.id}</td>
                             <td>
                                 <div className="customer-info">
                                     <span
@@ -154,10 +154,10 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
                                     <span className="customer-email">{order.user?.email}</span>
                                 </div>
                             </td>
-                            <td>{formatDateTime(order.orderDate)}</td>
+                            <td className="order-date">{formatDateTime(order.orderDate)}</td>
                             <td className="order-amount">{formatCurrency(order.totalDiscountedPrice)}</td>
-                            <td>{getStatusBadge(order.orderStatus, order.id)}</td>
-                            <td>
+                            <td className="order-status">{getStatusBadge(order.orderStatus, order.id)}</td>
+                            <td className="order-payment">
                                 <div className="payment-info">
                                     <div>{order.paymentMethod || "COD"}</div>
                                     {order.paymentStatus && (
@@ -166,8 +166,8 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
                                         </div>
                                     )}
                                 </div>
-                            </td>
-                            <td onClick={(e) => e.stopPropagation()}>{getActionButtons(order)}</td>
+                            </td >
+                            <td className="order-control" onClick={(e) => e.stopPropagation()}>{getActionButtons(order)}</td>
                         </tr>
                     ))}
                     </tbody>
