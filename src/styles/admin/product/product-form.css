@@ -258,7 +258,7 @@
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-darker);
+    background-color: #2779bd;
 }
 
 .btn-primary:disabled {

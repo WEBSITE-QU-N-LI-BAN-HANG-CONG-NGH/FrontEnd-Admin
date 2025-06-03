@@ -5,7 +5,6 @@ import { formatCurrency, formatDateTime } from "../../../utils/format.js";
 
 const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder, onViewOrder }) => {
     const [selectedOrder, setSelectedOrder] = useState(null);
-    const [showStatusDropdown, setShowStatusDropdown] = useState({});
 
     const getStatusBadge = (status, orderId) => {
         if (!status) return <span className="status-badge">Không xác định</span>;
@@ -21,45 +20,9 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder, onViewOrde
         const statusInfo = orderStatusMap[status] || {className: "", label: status};
 
         return (
-            <div style={{ position: "relative" }}>
-                <span
-                    className={`status-badge ${statusInfo.className}`}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setShowStatusDropdown({
-                            ...showStatusDropdown,
-                            [orderId]: !showStatusDropdown[orderId]
-                        });
-                    }}
-                >
-                    {statusInfo.label}
-                </span>
-
-                {showStatusDropdown[orderId] && (
-                    <div className="status-dropdown">
-                        <button onClick={(e) => {
-                            e.stopPropagation();
-                            onStatusChange(orderId, "confirm");
-                            setShowStatusDropdown({...showStatusDropdown, [orderId]: false});
-                        }}>Xác nhận</button>
-                        <button onClick={(e) => {
-                            e.stopPropagation();
-                            onStatusChange(orderId, "ship");
-                            setShowStatusDropdown({...showStatusDropdown, [orderId]: false});
-                        }}>Giao hàng</button>
-                        <button onClick={(e) => {
-                            e.stopPropagation();
-                            onStatusChange(orderId, "deliver");
-                            setShowStatusDropdown({...showStatusDropdown, [orderId]: false});
-                        }}>Đã giao</button>
-                        <button onClick={(e) => {
-                            e.stopPropagation();
-                            onStatusChange(orderId, "cancel");
-                            setShowStatusDropdown({...showStatusDropdown, [orderId]: false});
-                        }}>Hủy đơn</button>
-                    </div>
-                )}
-            </div>
+            <span className={`status-badge ${statusInfo.className}`}>
+                {statusInfo.label}
+            </span>
         );
     };
 
@@ -104,17 +67,6 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder, onViewOrde
         setSelectedOrder(null);
     };
 
-    // Đóng dropdown khi click ra ngoài
-    React.useEffect(() => {
-        const handleClickOutside = () => {
-            setShowStatusDropdown({});
-        };
-
-        document.addEventListener('click', handleClickOutside);
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    }, []);
 
     const getPaymentStatusInfo = (paymentStatus) => {
         if (!paymentStatus) return { text: "Không xác định", isPaid: false, className: "unknown" };

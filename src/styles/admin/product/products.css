@@ -246,12 +246,13 @@
 }
 
 .search-icon {
-    position: absolute;
-    left: 0.625rem;
-    top: 0.625rem;
-    width: 1rem;
-    height: 1rem;
     color: #6b7280;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 .search-input {

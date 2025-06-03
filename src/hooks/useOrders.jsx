@@ -1,6 +1,9 @@
-
+// src/hooks/useOrders.jsx
+import { useState, useEffect, useCallback } from "react";
+import { orderService } from "../services/index.js";
 
 export const useOrders = () => {
+    // State management
     const [orders, setOrders] = useState([]);
     const [pagination, setPagination] = useState({
         currentPage: 0,
@@ -25,7 +28,7 @@ export const useOrders = () => {
     const [dateRange, setDateRange] = useState({ start: "", end: "" });
 
     // Fetch orders with backend filtering
-    const fetchOrders = useCallback(async (page = 0) => {
+    const fetchOrders = useCallback(async (page = 0, size = 10) => {
         try {
             setIsLoading(true);
             setError(null);
@@ -35,7 +38,7 @@ export const useOrders = () => {
 
             const response = await orderService.getAllOrders(
                 page,
-                pagination.pageSize,
+                size,
                 searchTerm,
                 apiStatus,
                 dateRange.start,
@@ -47,18 +50,18 @@ export const useOrders = () => {
                 setOrders(responseData.orders || []);
                 setPagination(responseData.pagination || pagination);
             } else {
-                throw new Error("Không thể tải dữ liệu đơn hàng");
+                throw new Error("Cannot load orders data");
             }
         } catch (err) {
-            console.error("Lỗi khi tải dữ liệu đơn hàng:", err);
-            setError("Không thể tải danh sách đơn hàng. Vui lòng thử lại sau.");
+            console.error("Error loading orders:", err);
+            setError("Cannot load orders. Please try again.");
             setOrders([]);
         } finally {
             setIsLoading(false);
         }
     }, [filter, searchTerm, dateRange, pagination.pageSize]);
 
-    // Fetch statistics separately
+    // Fetch stats separately for more accurate data
     const fetchStats = useCallback(async () => {
         try {
             const response = await orderService.getOrderStats(dateRange.start, dateRange.end);
@@ -66,13 +69,13 @@ export const useOrders = () => {
                 setStats(response.data.data || stats);
             }
         } catch (err) {
-            console.error("Lỗi khi tải thống kê:", err);
+            console.error("Error loading stats:", err);
         }
     }, [dateRange]);
 
-    // Fetch data when dependencies change
+    // Effects for data fetching
     useEffect(() => {
-        fetchOrders(0); // Reset to first page when filters change
+        fetchOrders(0, pagination.pageSize);
     }, [filter, searchTerm, dateRange]);
 
     useEffect(() => {
@@ -90,7 +93,7 @@ export const useOrders = () => {
 
     // Handle pagination
     const handlePageChange = useCallback((newPage) => {
-        fetchOrders(newPage);
+        fetchOrders(newPage, pagination.pageSize);
     }, [fetchOrders]);
 
     // Handle status change
@@ -112,25 +115,25 @@ export const useOrders = () => {
                     response = await orderService.cancelOrder(orderId);
                     break;
                 default:
-                    throw new Error("Hành động không hợp lệ");
+                    throw new Error("Invalid action");
             }
 
             if (response.status === 200) {
                 // Refresh current page to get updated data
-                fetchOrders(pagination.currentPage);
+                fetchOrders(pagination.currentPage, pagination.pageSize);
                 return true;
             }
             return false;
         } catch (err) {
-            console.error(`Lỗi khi thay đổi trạng thái đơn hàng ${orderId}:`, err);
-            setError(`Không thể cập nhật trạng thái đơn hàng. Vui lòng thử lại sau.`);
+            console.error(`Error changing order status ${orderId}:`, err);
+            setError(`Cannot update order status. Please try again.`);
             return false;
         }
-    }, [fetchOrders, pagination.currentPage]);
+    }, [fetchOrders, pagination.currentPage, pagination.pageSize]);
 
     // Handle delete order
     const handleDeleteOrder = useCallback(async (orderId) => {
-        if (!window.confirm("Bạn có chắc chắn muốn xóa đơn hàng này?")) {
+        if (!window.confirm("Are you sure you want to delete this order?")) {
             return false;
         }
 
@@ -138,29 +141,50 @@ export const useOrders = () => {
             const response = await orderService.deleteOrder(orderId);
             if (response.status === 200) {
                 // Refresh current page to get updated data
-                fetchOrders(pagination.currentPage);
+                fetchOrders(pagination.currentPage, pagination.pageSize);
                 return true;
             }
             return false;
         } catch (err) {
-            console.error(`Lỗi khi xóa đơn hàng ${orderId}:`, err);
-            setError(`Không thể xóa đơn hàng. Vui lòng thử lại sau.`);
+            console.error(`Error deleting order ${orderId}:`, err);
+            setError(`Cannot delete order. Please try again.`);
             return false;
         }
-    }, [fetchOrders, pagination.currentPage]);
+    }, [fetchOrders, pagination.currentPage, pagination.pageSize]);
+
+    // View order details
+    const handleViewOrder = useCallback(async (orderId) => {
+        try {
+            // Find order in current list or fetch from API if needed
+            const orderToView = orders.find(order => order.id === orderId);
+            return orderToView;
+        } catch (err) {
+            console.error("Error viewing order details:", err);
+            setError("Cannot load order details. Please try again.");
+            return null;
+        }
+    }, [orders]);
 
     return {
+        // State
         orders,
         pagination,
         stats,
         isLoading,
         error,
         filter,
+        searchTerm,
+        dateRange,
+
+        // Actions
         setFilter,
         handleSearch,
         handleStatusChange,
         handleDeleteOrder,
+        handleViewOrder,
         handlePageChange,
-        refreshOrders: () => fetchOrders(pagination.currentPage)
+
+        // Utilities
+        refreshOrders: () => fetchOrders(pagination.currentPage, pagination.pageSize)
     };
 };

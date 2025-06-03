@@ -45,15 +45,11 @@ const ProductDetailModal = ({ product, onClose, onEdit }) => {
                                 </div>
                                 <div className="info-group">
                                     <div className="info-label">Danh mục:</div>
-                                    <div className="info-value">{product.category?.name || "Chưa phân loại"}</div>
+                                    <div className="info-value">{product.topLevelCategory || "Chưa phân loại"}</div>
                                 </div>
                                 <div className="info-group">
                                     <div className="info-label">Ngày thêm:</div>
                                     <div className="info-value">{formatDateTime(product.createdAt)}</div>
-                                </div>
-                                <div className="info-group">
-                                    <div className="info-label">Cập nhật lần cuối:</div>
-                                    <div className="info-value">{formatDateTime(product.updatedAt)}</div>
                                 </div>
                             </div>
 
@@ -119,9 +115,6 @@ const ProductDetailModal = ({ product, onClose, onEdit }) => {
 
                 <div className="modal-footer">
                     <button className="btn-secondary" onClick={onClose}>Đóng</button>
-                    <button className="btn-primary" onClick={() => onEdit(product)}>
-                        Chỉnh sửa
-                    </button>
                 </div>
             </div>
         </div>

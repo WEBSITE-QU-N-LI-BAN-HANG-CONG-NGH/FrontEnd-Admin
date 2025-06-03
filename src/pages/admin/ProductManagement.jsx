@@ -1,25 +1,14 @@
 // src/pages/admin/ProductManagement.jsx - Updated to use AddProduct and EditProduct pages
-import React, { useState, useEffect, useRef } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import {
-    Download,
-    Edit,
-    MoreHorizontal,
-    Plus,
-    Search,
-    SlidersHorizontal,
-    Trash2,
-    X,
-    ChevronDown
-} from "lucide-react";
+import React, {useEffect, useRef, useState} from "react";
+import {Navigate, useNavigate} from "react-router-dom";
+import {Search} from "lucide-react";
 import Layout from "../../components/layout/Layout";
-import { useAuth } from "../../hooks/useAuth.jsx";
+import {useAuth} from "../../hooks/useAuth.jsx";
 import ProductList from "../../components/features/products/ProductList";
-import ProductFilters from "../../components/features/products/ProductFilters";
-import ProductDetailModal from "../../components/features/products/ProductDetailModal";
-import { useProducts } from "../../hooks/useProducts";
-import { ToastProvider, useToast } from "../../contexts/ToastContext";
+import {useProducts} from "../../hooks/useProducts";
+import {ToastProvider, useToast} from "../../contexts/ToastContext";
 import "../../styles/admin/product/products.css";
+import ProductDetailModal from "../../components/features/products/ProductDetailModal";
 
 // Wrapper component to use toast in main component
 const ProductManagementContent = () => {
@@ -454,6 +443,19 @@ const ProductManagementContent = () => {
                 </div>
 
             </div>
+            {isDetailModalOpen && selectedProduct && (
+                <ProductDetailModal
+                    product={selectedProduct}
+                    onClose={() => {
+                        setIsDetailModalOpen(false);
+                        setSelectedProduct(null);
+                    }}
+                    onEdit={(product) => {
+                        // Handle edit functionality if needed
+                        console.log("Edit product:", product);
+                    }}
+                />
+            )}
         </Layout>
     );
 };
