@@ -18,3 +18,9 @@ export const updateUserStatus = (userId, active) =>
 export const deleteUser = (userId) => api.delete(`/admin/users/${userId}`);
 
 export const getCustomerStats = () => api.get("/admin/users/customers/stats");
+
+export const banUser = (userId, banned) =>
+    api.put(`/admin/users/${userId}/ban?banned=${banned}`);
+
+export const updateUser = (userId, userData) =>
+    api.put(`/admin/users/${userId}`, userData);

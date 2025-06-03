@@ -85,9 +85,24 @@ const ProductDetailModal = ({ product, onClose, onEdit }) => {
                                 <div className="variant-section">
                                     <h4>Các kích cỡ:</h4>
                                     <div className="size-list">
-                                        {product.sizes.map((size, index) => (
-                                            <span key={index} className="size-tag">{size}</span>
-                                        ))}
+                                        {product.sizes.map((size, index) => {
+                                            // Handle ProductSizeDTO structure: {name, quantity}
+                                            let displayText = '';
+                                            if (typeof size === 'object' && size !== null) {
+                                                displayText = size.name || 'Unknown Size';
+                                                if (size.quantity !== undefined) {
+                                                    displayText += ` (${size.quantity})`;
+                                                }
+                                            } else {
+                                                displayText = String(size);
+                                            }
+
+                                            return (
+                                                <span key={index} className="size-tag">
+                                                    {displayText}
+                                                </span>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}

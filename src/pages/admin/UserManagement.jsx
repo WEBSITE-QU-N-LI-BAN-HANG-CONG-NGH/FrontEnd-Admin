@@ -90,18 +90,32 @@ const UserManagement = () => {
     // Xử lý cập nhật thông tin người dùng
     const handleUpdateUser = async (updatedUser) => {
         try {
+            setIsLoading(true);
+            const currentUser = selectedUser;
             // Gọi API cập nhật thông tin người dùng
-            const response = await userService.updateUser(updatedUser.id, {
-                firstName: updatedUser.firstName,
-                lastName: updatedUser.lastName,
-                mobile: updatedUser.mobile
-            });
+            if (updatedUser.firstName !== currentUser.firstName ||
+                updatedUser.lastName !== currentUser.lastName ||
+                updatedUser.mobile !== currentUser.mobile) {
 
-            if (response.status === 200) {
-                // Cập nhật lại danh sách người dùng
-                fetchUsers();
-                // Cập nhật thông tin người dùng đang xem
-                setSelectedUser(updatedUser);
+                await userService.updateUser(updatedUser.id, {
+                    firstName: updatedUser.firstName,
+                    lastName: updatedUser.lastName,
+                    mobile: updatedUser.mobile
+                });
+            }
+            if (updatedUser.role !== currentUser.role) {
+                await userService.changeUserRole(updatedUser.id, {
+                    role: updatedUser.role
+                });
+            }
+            fetchUsers();
+
+            if (selectedUser && selectedUser.id === updatedUser.id) {
+                // Fetch lại thông tin chi tiết để đảm bảo dữ liệu mới nhất
+                const response = await userService.getUserDetails(updatedUser.id);
+                if (response.status === 200) {
+                    setSelectedUser(response.data.data);
+                }
             }
         } catch (err) {
             console.error("Lỗi khi cập nhật thông tin người dùng:", err);
@@ -132,9 +146,9 @@ const UserManagement = () => {
     };
 
     // Xử lý thay đổi trạng thái hoạt động của người dùng
-    const handleToggleStatus = async (userId, isActive) => {
+    const handleToggleStatus = async (userId, shouldBeBanned) => {
         try {
-            const response = await userService.updateUserStatus(userId, !isActive);
+            const response = await userService.banUser(userId, shouldBeBanned);
             if (response.status === 200) {
                 // Cập nhật lại danh sách người dùng
                 fetchUsers();
@@ -143,7 +157,7 @@ const UserManagement = () => {
                 if (selectedUser && selectedUser.id === userId) {
                     setSelectedUser({
                         ...selectedUser,
-                        active: !isActive
+                        banned: shouldBeBanned
                     });
                 }
             }

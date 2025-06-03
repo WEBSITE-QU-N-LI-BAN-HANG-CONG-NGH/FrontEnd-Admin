@@ -11,7 +11,7 @@ const ProductList = ({
                          onSort,
                          sortBy,
                          sortOrder,
-                         onEdit,
+
                          onView,
                          onDelete,
                          onMultipleDelete
@@ -86,37 +86,6 @@ const ProductList = ({
                         </div>
                     )}
                 </div>
-                <div className="filter-right">
-                    <select
-                        className="category-dropdown"
-                        value={selectedCategory}
-                        onChange={(e) => onCategoryFilter(e.target.value)}
-                    >
-                        <option value="">Tất cả danh mục</option>
-                        {categories.map((category, index) => (
-                            <option key={index} value={category}>{category}</option>
-                        ))}
-                    </select>
-
-                    <select
-                        className="sort-dropdown"
-                        value={sortBy}
-                        onChange={(e) => onSort(e.target.value)}
-                    >
-                        <option value="dateAdded">Ngày thêm</option>
-                        <option value="id">ID</option>
-                        <option value="price">Giá bán</option>
-                        <option value="quantity">Kho hàng</option>
-                        <option value="quantitySold">Đã bán</option>
-                    </select>
-
-                    <button
-                        className="sort-direction-btn"
-                        onClick={() => onSort(sortBy)}
-                    >
-                        {sortOrder === 'asc' ? '↑' : '↓'}
-                    </button>
-                </div>
             </div>
 
             {isLoading ? (
@@ -128,11 +97,11 @@ const ProductList = ({
                     <thead>
                     <tr>
                         <th>
-                            <input
+                            {/*<input
                                 type="checkbox"
                                 checked={selectAll}
                                 onChange={handleSelectAll}
-                            />
+                            />*/}
                         </th>
                         <th>Sản phẩm</th>
                         <th>ID</th>
@@ -168,9 +137,9 @@ const ProductList = ({
                                         <div>
                                             <div className="product-name">{product.title}</div>
                                             <div className="product-variant">
-                                                {product.sizes && product.sizes.length > 0
-                                                    ? `${product.sizes.length} loại`
-                                                    : "Không có loại"}
+                                                {product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0
+                                                    ? `${product.sizes.length} kích cỡ`
+                                                    : "Không có kích cỡ"}
                                             </div>
                                         </div>
                                     </div>
@@ -193,18 +162,6 @@ const ProductList = ({
                                 <td>{formatDate(product.createdAt)}</td>
                                 <td onClick={(e) => e.stopPropagation()}>
                                     <div className="product-actions">
-                                        <button
-                                            className="action-btn edit-btn"
-                                            title="Sửa"
-                                            onClick={() => onEdit(product)}
-                                        >
-                                            <img
-                                                src="https://cdn-icons-png.flaticon.com/512/1159/1159633.png"
-                                                alt="Sửa"
-                                                width={20}
-                                                height={20}
-                                            />
-                                        </button>
                                         <button
                                             className="action-btn view-btn"
                                             title="Xem"

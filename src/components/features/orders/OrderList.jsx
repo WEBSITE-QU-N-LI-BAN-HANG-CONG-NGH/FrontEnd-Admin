@@ -3,7 +3,7 @@ import "../../../styles/admin/order/orders.css";
 import OrderDetailModal from "./OrderDetailModal";
 import { formatCurrency, formatDateTime } from "../../../utils/format.js";
 
-const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
+const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder, onViewOrder }) => {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showStatusDropdown, setShowStatusDropdown] = useState({});
 
@@ -66,6 +66,21 @@ const OrderList = ({orders, isLoading, onStatusChange, onDeleteOrder}) => {
     const getActionButtons = (order) => {
         return (
             <div className="order-actions">
+                <button
+                    className="action-btn view-btn"
+                    title="Xem"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onViewOrder(order.id);
+                    }}
+                >
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/159/159604.png"
+                        alt="Xem"
+                        width={20}
+                        height={20}
+                    />
+                </button>
                 <button
                     className="action-btn delete-btn"
                     onClick={(e) => {

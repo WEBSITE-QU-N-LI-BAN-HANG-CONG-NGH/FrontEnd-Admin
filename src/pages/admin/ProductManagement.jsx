@@ -1,109 +1,175 @@
-// src/pages/admin/ProductManagement.jsx - Cập nhật và hoàn thiện
-import React, { useState } from "react";
-import { Navigate } from "react-router-dom";
+// src/pages/admin/ProductManagement.jsx - Updated to use AddProduct and EditProduct pages
+import React, { useState, useEffect, useRef } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import {
+    Download,
+    Edit,
+    MoreHorizontal,
+    Plus,
+    Search,
+    SlidersHorizontal,
+    Trash2,
+    X,
+    ChevronDown
+} from "lucide-react";
 import Layout from "../../components/layout/Layout";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import ProductList from "../../components/features/products/ProductList";
 import ProductFilters from "../../components/features/products/ProductFilters";
 import ProductDetailModal from "../../components/features/products/ProductDetailModal";
-import ProductFormModal from "../../components/features/products/ProductFormModal";
 import { useProducts } from "../../hooks/useProducts";
 import { ToastProvider, useToast } from "../../contexts/ToastContext";
 import "../../styles/admin/product/products.css";
 
-// Wrapper component để sử dụng toast trong component chính
+// Wrapper component to use toast in main component
 const ProductManagementContent = () => {
     const { user, loading, isAdmin } = useAuth();
+    const navigate = useNavigate();
     const toast = useToast();
 
-    // State để quản lý modal
+    // State for managing modal
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-    const [isEditMode, setIsEditMode] = useState(false);
+    const searchTimeout = useRef(null);
 
-    // Hook quản lý sản phẩm
+    // Filter and search state
+    const [searchQuery, setSearchQuery] = useState("");
+    const [subcategories, setSubcategories] = useState([]);
+    const [pageInput, setPageInput] = useState("");
+
+    // Local filter state (same as Product.jsx)
+    const [localFilterState, setLocalFilterState] = useState({
+        topLevelCategory: '',
+        secondLevelCategory: '',
+        minPrice: '',
+        maxPrice: '',
+        status: 'all'
+    });
+
+    // Product management hook - now includes pagination
     const {
         products,
         categories,
+        pagination,
         isLoading,
         error,
         selectedCategory,
         sortBy,
         sortOrder,
+        filters,
         handleSearch,
         handleCategoryFilter,
         handleSort,
-        handleAddProduct,
-        handleUpdateProduct,
         handleDeleteProduct,
         handleDeleteMultipleProducts,
+        handlePageChange,
+        updateFilters,
+        clearFilters,
         refreshProducts
     } = useProducts();
 
-    // Xử lý khi chọn xem chi tiết sản phẩm
+    useEffect(() => {
+        return () => {
+            if (searchTimeout.current) {
+                clearTimeout(searchTimeout.current);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        if (filters.topLevelCategory) {
+            // Get subcategories for selected category from hook's categories
+            const subcats = categories?.secondLevel?.[filters.topLevelCategory] || [];
+            setSubcategories(subcats);
+        } else {
+            setSubcategories([]);
+        }
+    }, [filters.topLevelCategory, categories]);
+
+    useEffect(() => {
+        setLocalFilterState({
+            topLevelCategory: filters.topLevelCategory || '',
+            secondLevelCategory: filters.secondLevelCategory || '',
+            minPrice: filters.minPrice || '',
+            maxPrice: filters.maxPrice || '',
+            status: filters.status || 'all'
+        });
+    }, [filters]);
+
+    // Apply filters (same logic as Product.jsx)
+    const handleApplyFilters = () => {
+        updateFilters({
+            topLevelCategory: localFilterState.topLevelCategory,
+            secondLevelCategory: localFilterState.secondLevelCategory,
+            minPrice: localFilterState.minPrice ? parseInt(localFilterState.minPrice) : null,
+            maxPrice: localFilterState.maxPrice ? parseInt(localFilterState.maxPrice) : null,
+            status: localFilterState.status
+        });
+    };
+
+    // Clear filters
+    const handleClearFilters = () => {
+        setLocalFilterState({
+            topLevelCategory: '',
+            secondLevelCategory: '',
+            minPrice: '',
+            maxPrice: '',
+            status: 'all'
+        });
+        clearFilters();
+    };
+
+    // Pagination handlers
+    const goToPage = (page) => {
+        if (page >= 0 && page < pagination.totalPages) {
+            handlePageChange(page);
+        }
+    };
+
+    const nextPage = () => {
+        if (pagination.hasNext) {
+            goToPage(pagination.currentPage + 1);
+        }
+    };
+
+    const previousPage = () => {
+        if (pagination.hasPrevious) {
+            goToPage(pagination.currentPage - 1);
+        }
+    };
+
+    const handlePageInputChange = (e) => {
+        setPageInput(e.target.value);
+    };
+
+    const handlePageInputKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            const pageNumber = parseInt(pageInput);
+            if (pageNumber >= 1 && pageNumber <= pagination.totalPages) {
+                goToPage(pageNumber - 1); // Convert to 0-based index
+            }
+            setPageInput("");
+        }
+    };
+
+    // Handle viewing product details
     const handleViewProduct = (product) => {
         setSelectedProduct(product);
         setIsDetailModalOpen(true);
     };
-
-    // Xử lý khi chọn sửa sản phẩm
-    const handleEditProduct = (product) => {
-        setSelectedProduct(product);
-        setIsEditMode(true);
-        setIsFormModalOpen(true);
-        // Đóng modal chi tiết nếu đang mở
-        setIsDetailModalOpen(false);
-    };
-
-    // Xử lý khi chọn thêm sản phẩm mới
-    const handleAddNewProduct = () => {
-        setSelectedProduct(null);
-        setIsEditMode(false);
-        setIsFormModalOpen(true);
-    };
-
-    // Xử lý lưu sản phẩm (thêm mới hoặc cập nhật)
-    const handleSaveProduct = async (productData) => {
-        try {
-            let result;
-
-            if (isEditMode) {
-                // Cập nhật sản phẩm
-                result = await handleUpdateProduct(productData.id, productData);
-                if (result.success) {
-                    toast.success("Cập nhật sản phẩm thành công!");
-                } else {
-                    toast.error(`Lỗi cập nhật sản phẩm: ${result.error}`);
-                }
-            } else {
-                // Thêm sản phẩm mới
-                result = await handleAddProduct(productData);
-                if (result.success) {
-                    toast.success("Thêm sản phẩm mới thành công!");
-                } else {
-                    toast.error(`Lỗi thêm sản phẩm: ${result.error}`);
-                }
-            }
-
-            // Đóng modal nếu thành công
-            if (result.success) {
-                setIsFormModalOpen(false);
-            }
-
-            return result.success;
-        } catch (err) {
-            toast.error(`Đã xảy ra lỗi: ${err.message}`);
-            return false;
-        }
-    };
-
-    // Xử lý xóa một sản phẩm
+    // Handle deleting a single product
     const handleDelete = async (productId) => {
         try {
             const result = await handleDeleteProduct(productId);
             if (result.success) {
                 toast.success("Xóa sản phẩm thành công!");
+
+                // Check if current page becomes empty after deletion
+                const remainingItems = products.length - 1;
+                if (remainingItems === 0 && pagination.currentPage > 0) {
+                    // Go to previous page if current page becomes empty
+                    goToPage(pagination.currentPage - 1);
+                }
             } else {
                 toast.error(`Lỗi xóa sản phẩm: ${result.error}`);
             }
@@ -112,12 +178,19 @@ const ProductManagementContent = () => {
         }
     };
 
-    // Xử lý xóa nhiều sản phẩm
+    // Handle deleting multiple products
     const handleMultipleDelete = async (productIds) => {
         try {
             const result = await handleDeleteMultipleProducts(productIds);
             if (result.success) {
                 toast.success(`Đã xóa ${result.count} sản phẩm thành công!`);
+
+                // Check if current page becomes empty after deletion
+                const remainingItems = products.length - productIds.length;
+                if (remainingItems === 0 && pagination.currentPage > 0) {
+                    // Go to previous page if current page becomes empty
+                    goToPage(pagination.currentPage - 1);
+                }
             } else {
                 toast.error(`Lỗi xóa sản phẩm: ${result.error}`);
             }
@@ -126,12 +199,12 @@ const ProductManagementContent = () => {
         }
     };
 
-    // Nếu đang tải thông tin người dùng
+    // If loading user information
     if (loading) {
         return <div>Đang tải...</div>;
     }
 
-    // Nếu người dùng không đăng nhập hoặc không phải admin
+    // If user is not logged in or not admin
     if (!user || !isAdmin()) {
         return <Navigate to="/login" replace />;
     }
@@ -139,59 +212,253 @@ const ProductManagementContent = () => {
     return (
         <Layout>
             <div className="products-container">
-                {/* Bộ lọc sản phẩm */}
-                <ProductFilters
-                    onSearch={handleSearch}
-                    onCategoryFilter={handleCategoryFilter}
-                    onSort={handleSort}
-                    sortBy={sortBy}
-                    sortOrder={sortOrder}
-                    categories={categories}
-                    onAddNewClick={handleAddNewProduct}
-                />
+                {/* Page Header */}
+                <div className="page-header">
+                    <h1 className="page-title">Quản lý sản phẩm</h1>
+                </div>
 
-                {error && <div className="error-message">{error}</div>}
+                <div className="card">
+                    <div className="card-content">
+                        {/* Filters Section - Exact same as Product.jsx */}
+                        <div className="filters-product">
+                            <div className="search-container">
+                                <Search className="search-icon" />
+                                <input
+                                    type="search"
+                                    className="search-input"
+                                    placeholder="Tìm kiếm sản phẩm..."
+                                    value={filters.keyword || ''}
+                                    onChange={(e) => {
+                                        // Update local state immediately for UI responsiveness
+                                        const value = e.target.value;
 
-                {/* Danh sách sản phẩm */}
-                <ProductList
-                    products={products}
-                    isLoading={isLoading}
-                    categories={categories}
-                    onCategoryFilter={handleCategoryFilter}
-                    selectedCategory={selectedCategory}
-                    onSort={handleSort}
-                    sortBy={sortBy}
-                    sortOrder={sortOrder}
-                    onEdit={handleEditProduct}
-                    onView={handleViewProduct}
-                    onDelete={handleDelete}
-                    onMultipleDelete={handleMultipleDelete}
-                />
+                                        // Clear previous timeout
+                                        if (searchTimeout.current) {
+                                            clearTimeout(searchTimeout.current);
+                                        }
 
-                {/* Modal chi tiết sản phẩm */}
-                {isDetailModalOpen && selectedProduct && (
-                    <ProductDetailModal
-                        product={selectedProduct}
-                        onClose={() => setIsDetailModalOpen(false)}
-                        onEdit={handleEditProduct}
-                    />
-                )}
+                                        // Set new timeout for API call
+                                        searchTimeout.current = setTimeout(() => {
+                                            updateFilters({ keyword: value });
+                                        }, 50);
+                                    }}
+                                />
+                            </div>
+                            <div className="filter-actions">
+                                <div className="filter-dropdown-container">
+                                    <div className="filter-dropdown">
+                                        <div className="filter-dropdown-content">
+                                            <div className="filter-group">
+                                                <label>Danh mục</label>
+                                                <select
+                                                    value={localFilterState.topLevelCategory}
+                                                    onChange={(e) => setLocalFilterState(prev => ({
+                                                        ...prev,
+                                                        topLevelCategory: e.target.value,
+                                                        secondLevelCategory: '' // Reset subcategory when main category changes
+                                                    }))}
+                                                    className="filter-select"
+                                                >
+                                                    <option value="">Tất cả</option>
+                                                    {categories?.topLevel?.map(cat => (
+                                                        <option key={cat} value={cat}>{cat}</option>
+                                                    )) || []}
+                                                </select>
+                                            </div>
 
-                {/* Modal thêm/sửa sản phẩm */}
-                {isFormModalOpen && (
-                    <ProductFormModal
-                        product={isEditMode ? selectedProduct : null}
-                        categories={categories}
-                        onClose={() => setIsFormModalOpen(false)}
-                        onSave={handleSaveProduct}
-                    />
-                )}
+                                            <div className="filter-group">
+                                                <label>Danh mục con</label>
+                                                <select
+                                                    value={localFilterState.secondLevelCategory}
+                                                    onChange={(e) => setLocalFilterState(prev => ({
+                                                        ...prev,
+                                                        secondLevelCategory: e.target.value
+                                                    }))}
+                                                    className="filter-select"
+                                                    disabled={!localFilterState.topLevelCategory}
+                                                >
+                                                    <option value="">Tất cả</option>
+                                                    {localFilterState.topLevelCategory && categories?.secondLevel?.[localFilterState.topLevelCategory] &&
+                                                        categories.secondLevel[localFilterState.topLevelCategory].map(subcat => (
+                                                            <option key={subcat} value={subcat}>{subcat}</option>
+                                                        ))}
+                                                </select>
+                                            </div>
+
+                                            <div className="filter-group">
+                                                <label>Khoảng giá</label>
+                                                <div className="price-range">
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Từ"
+                                                        value={localFilterState.minPrice}
+                                                        onChange={(e) => setLocalFilterState(prev => ({
+                                                            ...prev,
+                                                            minPrice: e.target.value
+                                                        }))}
+                                                        className="filter-input"
+                                                    />
+                                                    <span> - </span>
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Đến"
+                                                        value={localFilterState.maxPrice}
+                                                        onChange={(e) => setLocalFilterState(prev => ({
+                                                            ...prev,
+                                                            maxPrice: e.target.value
+                                                        }))}
+                                                        className="filter-input"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="filter-group">
+                                                <label>Trạng thái</label>
+                                                <select
+                                                    value={localFilterState.status}
+                                                    onChange={(e) => setLocalFilterState(prev => ({
+                                                        ...prev,
+                                                        status: e.target.value
+                                                    }))}
+                                                    className="filter-select"
+                                                >
+                                                    <option value="all">Tất cả</option>
+                                                    <option value="inStock">Còn hàng</option>
+                                                    <option value="outOfStock">Hết hàng</option>
+                                                </select>
+                                            </div>
+
+                                            <div className="filter-group">
+                                                <label>Sắp xếp theo</label>
+                                                <select
+                                                    value={sortBy}
+                                                    onChange={(e) => handleSort(e.target.value)}
+                                                    className="filter-select"
+                                                >
+                                                    <option value="createdAt">Ngày thêm</option>
+                                                    <option value="id">ID</option>
+                                                    <option value="price">Giá bán</option>
+                                                    <option value="quantity">Kho hàng</option>
+                                                    <option value="quantitySold">Đã bán</option>
+                                                </select>
+                                            </div>
+
+                                            <div className="filter-group">
+                                                <label>Thứ tự</label>
+                                                <button
+                                                    className="filter-select sort-direction-btn"
+                                                    onClick={() => handleSort(sortBy)}
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        backgroundColor: 'white',
+                                                        border: '1px solid #ccc',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                >
+                                                    {sortOrder === 'asc' ? '↑' : '↓'}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="filter-dropdown-footer">
+                                            <button
+                                                className="button outline small"
+                                                onClick={handleClearFilters}
+                                            >
+                                                Xóa bộ lọc
+                                            </button>
+                                            <button
+                                                className="button primary small"
+                                                onClick={handleApplyFilters}
+                                            >
+                                                Lọc
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {error && <div className="error-message">{error}</div>}
+
+                        {/* Product List */}
+                        <ProductList
+                            products={products}
+                            isLoading={isLoading}
+                            categories={categories}
+                            onCategoryFilter={handleCategoryFilter}
+                            selectedCategory={selectedCategory}
+                            onSort={handleSort}
+                            sortBy={sortBy}
+                            sortOrder={sortOrder}
+                            onView={handleViewProduct}
+                            onDelete={handleDelete}
+                            onMultipleDelete={handleMultipleDelete}
+                        />
+
+                        <div className="pagination-container">
+                            <div className="pagination">
+                                <button
+                                    className={`button-product outline small ${pagination.currentPage === 0 ? 'active' : ''}`}
+                                    onClick={() => goToPage(0)}
+                                    disabled={pagination.currentPage === 0}
+                                >
+                                    Trang đầu
+                                </button>
+
+                                <button
+                                    className="button-product outline small"
+                                    disabled={!pagination.hasPrevious}
+                                    onClick={previousPage}
+                                >
+                                    Trang Trước
+                                </button>
+
+                                <div className="page-input-container">
+                                    <input
+                                        type="number"
+                                        value={pageInput}
+                                        onChange={handlePageInputChange}
+                                        onKeyPress={handlePageInputKeyPress}
+                                        placeholder={`${pagination.currentPage + 1}`}
+                                        min="1"
+                                        max={pagination.totalPages}
+                                        className="button-product outline small"
+                                    />
+                                </div>
+
+                                <button
+                                    className="button-product outline small"
+                                    disabled={!pagination.hasNext}
+                                    onClick={nextPage}
+                                >
+                                    Trang kế
+                                </button>
+
+                                <button
+                                    className={`button-product outline small ${pagination.currentPage === pagination.totalPages - 1 || pagination.totalPages === 0 ? 'active' : ''}`}
+                                    onClick={() => goToPage(pagination.totalPages - 1)}
+                                    disabled={pagination.currentPage === pagination.totalPages - 1 || pagination.totalPages === 0}
+                                >
+                                    Trang cuối
+                                </button>
+                            </div>
+
+                            <div className="pagination-info">
+                                Hiển thị {products?.length || 0} trên {pagination?.totalElements || 0} sản phẩm
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </Layout>
     );
 };
 
-// Wrapper với ToastProvider
+// Wrapper with ToastProvider
 const ProductManagement = () => {
     return (
         <ToastProvider>

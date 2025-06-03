@@ -70,7 +70,7 @@ const UserList = ({
                             <th>Email</th>
                             <th>Họ tên</th>
                             <th>Vai trò</th>
-                            <th>Ngày đăng ký</th> {/* Thêm cột mới */}
+                            <th>Ngày đăng ký</th>
                             <th>Trạng thái</th>
                             <th>Thao tác</th>
                         </tr>
@@ -90,13 +90,13 @@ const UserList = ({
                                 <td>
                                     <div className="status-toggle">
                                         <button
-                                            className={`status-btn ${user.active ? 'active' : 'inactive'}`}
+                                            className={`status-btn ${user.banned  ? 'inactive' : 'active'}`}
                                             onClick={(e) => {
                                                 e.stopPropagation(); // Ngăn sự kiện click lan tỏa
-                                                onToggleStatus(user.id, user.active);
+                                                onToggleStatus(user.id, !user.banned);
                                             }}
                                         >
-                                            {user.active ? 'Hoạt động' : 'Bị khóa'}
+                                            {user.banned  ? 'Bị khóa' : 'Hoạt động'}
                                         </button>
                                     </div>
                                 </td>

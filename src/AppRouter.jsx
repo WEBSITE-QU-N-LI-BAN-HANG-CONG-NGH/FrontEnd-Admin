@@ -34,7 +34,6 @@ const AppRouter = () => {
             <Route path="/admin/orders" element={<ProtectedRoute element={<OrdersManagement />} requiredRole="ADMIN" />} />
             <Route path="/admin/users" element={<ProtectedRoute element={<UserManagement />} requiredRole="ADMIN" />} />
 
-
             {/* Redirect và 404 */}
             <Route path="/" element={<Navigate to="/admin" replace />} />
             <Route path="*" element={<NotFound />} />

@@ -364,6 +364,66 @@
     background-color: rgba(244, 67, 54, 0.2);
 }
 
+.button-product {
+    padding: 8px;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    max-width: fit-content;
+    background-color: #3b82f6;
+    color: white;
+    border-color: white;
+}
+
+.button-product.outline:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.button-product.small {
+    padding: 8px;
+    font-size: 0.75rem;
+}
+
+.clear-btn {
+    padding: 10px 16px;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.button-product.primary {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+}
+
+.button-product.outline {
+    background-color: transparent;
+    border: 1px solid #e2e8f0;
+    color: inherit;
+}
+
+.button-product.active {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
 /* Status dropdown */
 .status-dropdown {
     position: absolute;

@@ -12,7 +12,8 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
         price: 0,
         discountedPrice: 0,
         quantity: 0,
-        category: "",
+        topLevelCategory: "",
+        secondLevelCategory: "",
         sizes: [],
         imageUrls: []
     });
@@ -22,7 +23,7 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
 
-    // Khi component mount hoặc product thay đổi
+    // Load product data when editing
     useEffect(() => {
         if (product) {
             setFormData({
@@ -32,26 +33,61 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
                 price: product.price || 0,
                 discountedPrice: product.discountedPrice || 0,
                 quantity: product.quantity || 0,
-                category: product.category?.id || "",
+                topLevelCategory: product.topLevelCategory || "",
+                secondLevelCategory: product.category?.name || "",
                 sizes: product.sizes || [],
-                imageUrls: product.imageUrls || []
+                imageUrls: product.imageUrls || product.images || []
             });
         }
     }, [product]);
 
+    // Debug categories structure
+    useEffect(() => {
+        console.log('Categories structure:', categories);
+    }, [categories]);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        
-        if (name === "category" && value === "add-new") {
+
+        if ((name === "topLevelCategory" || name === "secondLevelCategory") && value === "add-new") {
             setShowCategoryForm(true);
             return;
         }
-        
+
         setFormData(prev => ({
             ...prev,
             [name]: name === "price" || name === "discountedPrice" || name === "quantity"
                 ? Number(value)
                 : value
+        }));
+    };
+
+    const handleTopCategoryChange = (e) => {
+        const value = e.target.value;
+
+        if (value === "add-new") {
+            setShowCategoryForm(true);
+            return;
+        }
+
+        setFormData(prev => ({
+            ...prev,
+            topLevelCategory: value,
+            secondLevelCategory: '' // Reset sub category when main category changes
+        }));
+    };
+
+    const handleSubCategoryChange = (e) => {
+        const value = e.target.value;
+
+        if (value === "add-new") {
+            setShowCategoryForm(true);
+            return;
+        }
+
+        setFormData(prev => ({
+            ...prev,
+            secondLevelCategory: value
         }));
     };
 
@@ -100,25 +136,37 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
 
         setIsSubmitting(true);
 
-        // Trong thực tế, bạn sẽ cần upload ảnh lên server và lấy URL trước
-        // Ở đây chúng ta giả định đã upload thành công và nhận được URL
-
         const productData = {
             ...formData,
-            images: imageFiles // Thêm files ảnh
+            images: imageFiles,
+            // Send category information in the format backend expects
+            topLevelCategory: formData.topLevelCategory,
+            secondLevelCategory: formData.secondLevelCategory
         };
 
-        onSave(productData);
+        onSave(productData).finally(() => {
+            setIsSubmitting(false);
+        });
     };
-    
+
     const handleCategoryCreated = (newCategory) => {
         setShowCategoryForm(false);
-        setFormData(prev => ({
-            ...prev,
-            category: newCategory.id
-        }));
-        
-        // Thêm logic mấy cái category ở đây dùm =))
+
+        // If it's a top-level category
+        if (!newCategory.parent) {
+            setFormData(prev => ({
+                ...prev,
+                topLevelCategory: newCategory.name,
+                secondLevelCategory: ""
+            }));
+        } else {
+            // If it's a sub-category, set both top and sub
+            setFormData(prev => ({
+                ...prev,
+                topLevelCategory: newCategory.parent,
+                secondLevelCategory: newCategory.name
+            }));
+        }
     };
 
     return (
@@ -130,178 +178,208 @@ const ProductFormModal = ({ product, categories, onClose, onSave }) => {
                 </div>
 
                 {showCategoryForm ? (
-                    <ProductNewCategory 
-                        onSave={handleCategoryCreated} 
-                        onCancel={() => setShowCategoryForm(false)} 
+                    <ProductNewCategory
+                        onSave={handleCategoryCreated}
+                        onCancel={() => setShowCategoryForm(false)}
                     />
-                ) : (<form onSubmit={handleSubmit} className="product-form">
-                    <div className="modal-body">
-                        <div className="form-grid">
-                            <div className="form-left">
-                                <div className="form-group">
-                                    <label htmlFor="title">Tên sản phẩm <span className="required">*</span></label>
-                                    <input
-                                        type="text"
-                                        id="title"
-                                        name="title"
-                                        value={formData.title}
-                                        onChange={handleInputChange}
-                                        required
-                                    />
-                                    {errors.title && <div className="error-message">{errors.title}</div>}
-                                </div>
-
-                                <div className="form-group">
-                                    <label htmlFor="description">Mô tả sản phẩm</label>
-                                    <textarea
-                                        id="description"
-                                        name="description"
-                                        value={formData.description}
-                                        onChange={handleInputChange}
-                                        rows="5"
-                                    ></textarea>
-                                </div>
-
-                                <div className="form-row">
+                ) : (
+                    <form onSubmit={handleSubmit} className="product-form">
+                        <div className="modal-body">
+                            <div className="form-grid">
+                                <div className="form-left">
                                     <div className="form-group">
-                                        <label htmlFor="price">Giá bán <span className="required">*</span></label>
+                                        <label htmlFor="title">Tên sản phẩm <span className="required">*</span></label>
                                         <input
-                                            type="number"
-                                            id="price"
-                                            name="price"
-                                            value={formData.price}
+                                            type="text"
+                                            id="title"
+                                            name="title"
+                                            value={formData.title}
                                             onChange={handleInputChange}
-                                            min="0"
                                             required
                                         />
-                                        {errors.price && <div className="error-message">{errors.price}</div>}
+                                        {errors.title && <div className="error-message">{errors.title}</div>}
                                     </div>
 
                                     <div className="form-group">
-                                        <label htmlFor="discountedPrice">Giá khuyến mãi</label>
-                                        <input
-                                            type="number"
-                                            id="discountedPrice"
-                                            name="discountedPrice"
-                                            value={formData.discountedPrice}
+                                        <label htmlFor="description">Mô tả sản phẩm</label>
+                                        <textarea
+                                            id="description"
+                                            name="description"
+                                            value={formData.description}
                                             onChange={handleInputChange}
-                                            min="0"
-                                        />
-                                        {errors.discountedPrice && <div className="error-message">{errors.discountedPrice}</div>}
-                                    </div>
-                                </div>
-
-                                <div className="form-row">
-                                    <div className="form-group">
-                                        <label htmlFor="quantity">Số lượng <span className="required">*</span></label>
-                                        <input
-                                            type="number"
-                                            id="quantity"
-                                            name="quantity"
-                                            value={formData.quantity}
-                                            onChange={handleInputChange}
-                                            min="0"
-                                            required
-                                        />
-                                        {errors.quantity && <div className="error-message">{errors.quantity}</div>}
+                                            rows="5"
+                                        ></textarea>
                                     </div>
 
-                                    <div className="form-group">
-                                        <label htmlFor="category">Danh mục</label>
-                                        <select
-                                            id="category"
-                                            name="category"
-                                            value={formData.category}
-                                            onChange={handleInputChange}
-                                        >
-                                            <option value="">Chọn danh mục</option>
-                                            <option value="add-new">Thêm danh mục</option>
-                                            {categories.map((cat, index) => (
-                                                <option key={index} value={cat.id || cat}>{cat.name || cat}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label htmlFor="price">Giá bán <span className="required">*</span></label>
+                                            <input
+                                                type="number"
+                                                id="price"
+                                                name="price"
+                                                value={formData.price}
+                                                onChange={handleInputChange}
+                                                min="0"
+                                                required
+                                            />
+                                            {errors.price && <div className="error-message">{errors.price}</div>}
+                                        </div>
 
-                            <div className="form-right">
-                                <div className="form-group">
-                                    <label>Kích thước sản phẩm</label>
-                                    <div className="size-options">
-                                        {availableSizes.map((size) => (
-                                            <div
-                                                key={size}
-                                                className={`size-option ${formData.sizes.includes(size) ? 'selected' : ''}`}
-                                                onClick={() => handleSizeToggle(size)}
+                                        <div className="form-group">
+                                            <label htmlFor="discountedPrice">Giá khuyến mãi</label>
+                                            <input
+                                                type="number"
+                                                id="discountedPrice"
+                                                name="discountedPrice"
+                                                value={formData.discountedPrice}
+                                                onChange={handleInputChange}
+                                                min="0"
+                                            />
+                                            {errors.discountedPrice && <div className="error-message">{errors.discountedPrice}</div>}
+                                        </div>
+                                    </div>
+
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label htmlFor="quantity">Số lượng <span className="required">*</span></label>
+                                            <input
+                                                type="number"
+                                                id="quantity"
+                                                name="quantity"
+                                                value={formData.quantity}
+                                                onChange={handleInputChange}
+                                                min="0"
+                                                required
+                                            />
+                                            {errors.quantity && <div className="error-message">{errors.quantity}</div>}
+                                        </div>
+                                    </div>
+
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label htmlFor="topLevelCategory">Danh mục chính</label>
+                                            <select
+                                                id="topLevelCategory"
+                                                name="topLevelCategory"
+                                                value={formData.topLevelCategory}
+                                                onChange={handleTopCategoryChange}
                                             >
-                                                {size}
-                                            </div>
-                                        ))}
+                                                <option value="">Chọn danh mục chính</option>
+                                                <option value="add-new">+ Thêm danh mục mới</option>
+                                                {categories?.topLevel?.map((categoryName, index) => (
+                                                    <option key={index} value={categoryName}>
+                                                        {categoryName}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label htmlFor="secondLevelCategory">Danh mục con</label>
+                                            <select
+                                                id="secondLevelCategory"
+                                                name="secondLevelCategory"
+                                                value={formData.secondLevelCategory}
+                                                onChange={handleSubCategoryChange}
+                                                disabled={!formData.topLevelCategory || formData.topLevelCategory === 'add-new'}
+                                            >
+                                                <option value="">Chọn danh mục con (tùy chọn)</option>
+                                                <option value="add-new">+ Thêm danh mục con mới</option>
+                                                {formData.topLevelCategory &&
+                                                    categories?.secondLevel?.[formData.topLevelCategory]?.map((subCategory, index) => (
+                                                        <option key={index} value={subCategory}>
+                                                            {subCategory}
+                                                        </option>
+                                                    ))}
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label>Hình ảnh sản phẩm</label>
-                                    <div className="image-upload-container">
-                                        <input
-                                            type="file"
-                                            id="productImages"
-                                            multiple
-                                            accept="image/*"
-                                            onChange={handleFileChange}
-                                            className="image-upload-input"
-                                        />
-                                        <label htmlFor="productImages" className="image-upload-label">
-                                            <div className="upload-icon">+</div>
-                                            <div className="upload-text">Chọn ảnh</div>
-                                        </label>
+                                <div className="form-right">
+                                    <div className="form-group">
+                                        <label>Kích thước sản phẩm</label>
+                                        <div className="size-options">
+                                            {availableSizes.map((size) => (
+                                                <div
+                                                    key={size}
+                                                    className={`size-option ${formData.sizes.includes(size) ? 'selected' : ''}`}
+                                                    onClick={() => handleSizeToggle(size)}
+                                                >
+                                                    {size}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
 
-                                    <div className="image-preview-container">
-                                        {/* Hiển thị ảnh đã chọn từ máy tính */}
-                                        {imageFiles.map((file, index) => (
-                                            <div key={`new-${index}`} className="image-preview-item">
-                                                <img src={URL.createObjectURL(file)} alt={`New upload ${index + 1}`} />
-                                                <button
-                                                    type="button"
-                                                    className="remove-image-btn"
-                                                    onClick={() => removeImageFile(index)}
-                                                >
-                                                    ×
-                                                </button>
-                                            </div>
-                                        ))}
+                                    <div className="form-group">
+                                        <label>Hình ảnh sản phẩm</label>
+                                        <div className="image-upload-container">
+                                            <input
+                                                type="file"
+                                                id="productImages"
+                                                multiple
+                                                accept="image/*"
+                                                onChange={handleFileChange}
+                                                className="image-upload-input"
+                                            />
+                                            <label htmlFor="productImages" className="image-upload-label">
+                                                <div className="upload-icon">+</div>
+                                                <div className="upload-text">Chọn ảnh</div>
+                                            </label>
+                                        </div>
 
-                                        {/* Hiển thị ảnh đã có (trong trường hợp edit) */}
-                                        {formData.imageUrls && formData.imageUrls.map((image, index) => (
-                                            <div key={`existing-${index}`} className="image-preview-item">
-                                                <img src={image.downloadUrl} alt={`Existing ${index + 1}`} />
-                                                <button
-                                                    type="button"
-                                                    className="remove-image-btn"
-                                                    onClick={() => removeExistingImage(index)}
-                                                >
-                                                    ×
-                                                </button>
-                                            </div>
-                                        ))}
+                                        <div className="image-preview-container">
+                                            {/* Display newly selected images */}
+                                            {imageFiles.map((file, index) => (
+                                                <div key={`new-${index}`} className="image-preview-item">
+                                                    <img src={URL.createObjectURL(file)} alt={`New upload ${index + 1}`} />
+                                                    <button
+                                                        type="button"
+                                                        className="remove-image-btn"
+                                                        onClick={() => removeImageFile(index)}
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </div>
+                                            ))}
+
+                                            {/* Display existing images (for edit mode) */}
+                                            {formData.imageUrls && formData.imageUrls.map((image, index) => (
+                                                <div key={`existing-${index}`} className="image-preview-item">
+                                                    <img src={image.downloadUrl || image} alt={`Existing ${index + 1}`} />
+                                                    <button
+                                                        type="button"
+                                                        className="remove-image-btn"
+                                                        onClick={() => removeExistingImage(index)}
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn-secondary" onClick={onClose}>
+                                            Hủy
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="btn-primary"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? "Đang lưu..." : isEditing ? "Cập nhật" : "Thêm sản phẩm"}
+                                        </button>
                                     </div>
                                 </div>
+
                             </div>
-                        </div>
-                    </div>
 
-                    <div className="modal-footer">
-                        <button type="button" className="btn-secondary" onClick={onClose}>Hủy</button>
-                        <button
-                            type="submit"
-                            className="btn-primary"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? "Đang lưu..." : isEditing ? "Cập nhật" : "Thêm sản phẩm"}
-                        </button>
-                    </div>
-                </form>
+                        </div>
+
+
+                    </form>
                 )}
             </div>
         </div>

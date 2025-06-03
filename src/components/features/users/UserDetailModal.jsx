@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../../styles/admin/user/users.css";
-import { formatDate } from "../../../utils/format.js";
+import {formatCurrency, formatDate} from "../../../utils/format.js";
 
 const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleStatus }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -10,6 +10,10 @@ const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleSt
     });
 
     if (!user) return null;
+
+    // Lấy thông tin từ user object hoặc sử dụng giá trị mặc định nếu không có
+    const totalOrders = user.orderCount || 0;
+    const totalSpent = user.totalSpent || 0;
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -28,21 +32,21 @@ const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleSt
 
     const handleSave = () => {
         // Gọi hàm cập nhật người dùng
-        if (onUpdateUser) {
-            onUpdateUser(editedUser);
-        }
-
-        // Gọi hàm thay đổi vai trò nếu vai trò đã thay đổi
-        if (editedUser.role !== user.role && onChangeRole) {
-            onChangeRole(user.id, editedUser.role);
-        }
+        const updatedUser = {
+            id: user.id,
+            firstName: editedUser.firstName,
+            lastName: editedUser.lastName,
+            mobile: editedUser.mobile,
+            role: editedUser.role // Đảm bảo bạn đã bao gồm role
+        };
+        onUpdateUser(updatedUser);
 
         setIsEditing(false);
     };
 
     const handleToggleStatus = () => {
         if (onToggleStatus) {
-            onToggleStatus(user.id, user.active);
+            onToggleStatus(user.id, !user.banned);
         }
     };
 
@@ -56,14 +60,13 @@ const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleSt
                 </div>
 
                 <div className="modal-body">
-                    {/* Thống kê người dùng (nếu có) */}
                     <div className="user-stats-section">
                         <div className="user-stat-card">
-                            <div className="user-stat-value">0</div>
+                            <div className="user-stat-value">{totalOrders}</div>
                             <div className="user-stat-label">Đơn hàng</div>
                         </div>
                         <div className="user-stat-card">
-                            <div className="user-stat-value">0₫</div>
+                            <div className="user-stat-value">{formatCurrency(totalSpent)}</div>
                             <div className="user-stat-label">Đã chi tiêu</div>
                         </div>
                         <div className="user-stat-card">
@@ -169,8 +172,8 @@ const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleSt
                         <div className="info-group">
                             <div className="info-label">Trạng thái:</div>
                             <div className="info-value">
-                                <span className={`status-badge ${user.active ? 'active' : 'inactive'}`}>
-                                    {user.active ? 'Hoạt động' : 'Bị khóa'}
+                                <span className={`status-badge ${user.banned ? 'inactive' : 'active'}`}>
+                                    {user.banned  ? 'Bị khóa' : 'Hoạt động'}
                                 </span>
                             </div>
                         </div>
@@ -180,10 +183,10 @@ const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleSt
                 <div className="modal-footer">
                     <button className="btn-secondary" onClick={onClose}>Đóng</button>
                     <button
-                        className={`btn-${user.active ? 'danger' : 'primary'}`}
+                        className={`btn-${user.banned ? 'primary' : 'danger'}`}
                         onClick={handleToggleStatus}
                     >
-                        {user.active ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
+                        {user.banned ? 'Mở khóa tài khoản' : 'Khóa tài khoản'}
                     </button>
                     {isEditing && (
                         <button className="btn-primary" onClick={handleSave}>

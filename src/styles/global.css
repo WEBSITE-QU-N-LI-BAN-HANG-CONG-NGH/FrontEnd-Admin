@@ -14,6 +14,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -120,19 +121,15 @@ a {
 }
 
 .button {
-    padding: 10px 20px;
+    padding: 8px 8px;
     border-radius: 8px;
     border: none;
     background-color: var(--primary-color);
     color: white;
-    font-weight: 500;
+    font-size: 0.75rem;
     transition: all 0.3s ease;
 }
 
-.button:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-}
 
 .change-period {
     font-size: 12px;

@@ -7,32 +7,24 @@ export const deliverOrder = (orderId) => api.put(`/admin/orders/${orderId}/deliv
 export const cancelOrder = (orderId) => api.put(`/admin/orders/${orderId}/cancel`);
 export const deleteOrder = (orderId) => api.delete(`/admin/orders/${orderId}`);
 
-// export const getOrderStats = (startDate, endDate) => {
-//     // Tạo ngày mặc định là 30 ngày trước và ngày hiện tại
-//     const today = new Date();
-//     const defaultStart = new Date(today);
-//     defaultStart.setDate(today.getDate() - 30);
-//
-//     // Format thành YYYY-MM-DD
-//     const formatDate = (date) => {
-//         const year = date.getFullYear();
-//         const month = String(date.getMonth() + 1).padStart(2, '0');
-//         const day = String(date.getDate()).padStart(2, '0');
-//         return `${year}-${month}-${day}`;
-//     };
-//
-//     const start = startDate || formatDate(defaultStart);
-//     const end = endDate || formatDate(today);
-//
-//     return api.get(
-//         `/admin/orders/stats?startDate=${start}&endDate=${end}`
-//     );
-// }
+export const getOrderStats = (startDate, endDate) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
 
-export const getAllOrders = (startDate, endDate) => {
-    let url = "/admin/orders/all";
-    if (startDate && endDate) {
-        url += `?startDate=${startDate}&endDate=${endDate}`;
-    }
-    return api.get(url);
+    return api.get(`/admin/orders/stats?${params.toString()}`);
+};
+
+export const getAllOrders = (page = 0, size = 10, search = '', status = '', startDate = '', endDate = '') => {
+    const params = new URLSearchParams();
+
+    params.append('page', page.toString());
+    params.append('size', size.toString());
+
+    if (search) params.append('search', search);
+    if (status && status !== 'all') params.append('status', status.toUpperCase());
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+
+    return api.get(`/admin/orders/all?${params.toString()}`);
 };

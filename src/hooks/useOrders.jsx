@@ -1,9 +1,15 @@
-// src/hooks/useOrders.jsx
-import { useState, useEffect, useCallback } from "react";
-import {orderService} from "../services/index.js";
+
 
 export const useOrders = () => {
     const [orders, setOrders] = useState([]);
+    const [pagination, setPagination] = useState({
+        currentPage: 0,
+        pageSize: 10,
+        totalElements: 0,
+        totalPages: 0,
+        hasNext: false,
+        hasPrevious: false
+    });
     const [stats, setStats] = useState({
         totalOrders: 0,
         pendingOrders: 0,
@@ -18,33 +24,28 @@ export const useOrders = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [dateRange, setDateRange] = useState({ start: "", end: "" });
 
-    const fetchOrders = useCallback(async () => {
+    // Fetch orders with backend filtering
+    const fetchOrders = useCallback(async (page = 0) => {
         try {
             setIsLoading(true);
             setError(null);
 
-            // Lấy tất cả đơn hàng
-            const response = await orderService.getAllOrders();
+            // Convert filter status for API
+            const apiStatus = filter === "all" ? "" : filter;
+
+            const response = await orderService.getAllOrders(
+                page,
+                pagination.pageSize,
+                searchTerm,
+                apiStatus,
+                dateRange.start,
+                dateRange.end
+            );
+
             if (response.status === 200) {
-                const ordersData = response.data.data || [];
-                setOrders(ordersData);
-
-                // Tạo thống kê từ dữ liệu orders
-                const pendingOrders = ordersData.filter(order => order.orderStatus === "PENDING").length;
-                const completedOrders = ordersData.filter(order => order.orderStatus === "DELIVERED").length;
-                const cancelledOrders = ordersData.filter(order => order.orderStatus === "CANCELLED").length;
-                const totalRevenue = ordersData
-                    .filter(order => order.orderStatus === "DELIVERED")
-                    .reduce((sum, order) => sum + order.totalAmount, 0);
-
-                setStats({
-                    totalOrders: ordersData.length,
-                    pendingOrders,
-                    completedOrders,
-                    cancelledOrders,
-                    totalRevenue,
-                    averageOrderValue: completedOrders ? totalRevenue / completedOrders : 0
-                });
+                const responseData = response.data.data;
+                setOrders(responseData.orders || []);
+                setPagination(responseData.pagination || pagination);
             } else {
                 throw new Error("Không thể tải dữ liệu đơn hàng");
             }
@@ -52,24 +53,47 @@ export const useOrders = () => {
             console.error("Lỗi khi tải dữ liệu đơn hàng:", err);
             setError("Không thể tải danh sách đơn hàng. Vui lòng thử lại sau.");
             setOrders([]);
-            setStats({
-                totalOrders: 0,
-                pendingOrders: 0,
-                completedOrders: 0,
-                cancelledOrders: 0,
-                totalRevenue: 0,
-                averageOrderValue: 0
-            });
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [filter, searchTerm, dateRange, pagination.pageSize]);
+
+    // Fetch statistics separately
+    const fetchStats = useCallback(async () => {
+        try {
+            const response = await orderService.getOrderStats(dateRange.start, dateRange.end);
+            if (response.status === 200) {
+                setStats(response.data.data || stats);
+            }
+        } catch (err) {
+            console.error("Lỗi khi tải thống kê:", err);
+        }
+    }, [dateRange]);
+
+    // Fetch data when dependencies change
+    useEffect(() => {
+        fetchOrders(0); // Reset to first page when filters change
+    }, [filter, searchTerm, dateRange]);
 
     useEffect(() => {
-        fetchOrders();
+        fetchStats();
+    }, [fetchStats]);
+
+    // Handle search with immediate API call
+    const handleSearch = useCallback((term, startDate, endDate) => {
+        setSearchTerm(term);
+        if (startDate || endDate) {
+            setDateRange({ start: startDate || "", end: endDate || "" });
+        }
+        // fetchOrders will be triggered by useEffect
+    }, []);
+
+    // Handle pagination
+    const handlePageChange = useCallback((newPage) => {
+        fetchOrders(newPage);
     }, [fetchOrders]);
 
-    // Xử lý thay đổi trạng thái đơn hàng
+    // Handle status change
     const handleStatusChange = useCallback(async (orderId, action) => {
         try {
             let response;
@@ -92,11 +116,8 @@ export const useOrders = () => {
             }
 
             if (response.status === 200) {
-                // Cập nhật lại danh sách đơn hàng để thấy trạng thái mới
-                const updatedOrders = orders.map(order =>
-                    order.id === orderId ? response.data.data : order
-                );
-                setOrders(updatedOrders);
+                // Refresh current page to get updated data
+                fetchOrders(pagination.currentPage);
                 return true;
             }
             return false;
@@ -105,9 +126,9 @@ export const useOrders = () => {
             setError(`Không thể cập nhật trạng thái đơn hàng. Vui lòng thử lại sau.`);
             return false;
         }
-    }, [orders]);
+    }, [fetchOrders, pagination.currentPage]);
 
-    // Xử lý xóa đơn hàng
+    // Handle delete order
     const handleDeleteOrder = useCallback(async (orderId) => {
         if (!window.confirm("Bạn có chắc chắn muốn xóa đơn hàng này?")) {
             return false;
@@ -116,9 +137,8 @@ export const useOrders = () => {
         try {
             const response = await orderService.deleteOrder(orderId);
             if (response.status === 200) {
-                // Xóa đơn hàng khỏi danh sách
-                const updatedOrders = orders.filter(order => order.id !== orderId);
-                setOrders(updatedOrders);
+                // Refresh current page to get updated data
+                fetchOrders(pagination.currentPage);
                 return true;
             }
             return false;
@@ -127,56 +147,11 @@ export const useOrders = () => {
             setError(`Không thể xóa đơn hàng. Vui lòng thử lại sau.`);
             return false;
         }
-    }, [orders]);
-
-    // Hàm xử lý tìm kiếm
-    const handleSearch = useCallback((term, startDate, endDate) => {
-        setSearchTerm(term);
-        if (startDate && endDate) {
-            setDateRange({ start: startDate, end: endDate });
-        }
-    }, []);
-
-    // Hàm lọc đơn hàng
-    const getFilteredOrders = useCallback(() => {
-        return orders.filter(order => {
-            // Lọc theo trạng thái
-            if (filter !== "all" && order.orderStatus !== filter.toUpperCase()) {
-                return false;
-            }
-
-            // Lọc theo từ khóa tìm kiếm
-            if (searchTerm) {
-                const searchLower = searchTerm.toLowerCase();
-                const customerName = `${order.user?.firstName || ''} ${order.user?.lastName || ''}`.toLowerCase();
-                const orderId = order.id.toString();
-
-                if (!orderId.includes(searchLower) &&
-                    !customerName.includes(searchLower) &&
-                    !(order.user?.email || '').toLowerCase().includes(searchLower)) {
-                    return false;
-                }
-            }
-
-            // Lọc theo khoảng thời gian
-            if (dateRange.start && dateRange.end) {
-                const orderDate = new Date(order.orderDate);
-                const startDate = new Date(dateRange.start);
-                const endDate = new Date(dateRange.end);
-                endDate.setHours(23, 59, 59); // Đặt thời gian kết thúc là cuối ngày
-
-                if (orderDate < startDate || orderDate > endDate) {
-                    return false;
-                }
-            }
-
-            return true;
-        });
-    }, [orders, filter, searchTerm, dateRange]);
+    }, [fetchOrders, pagination.currentPage]);
 
     return {
         orders,
-        filteredOrders: getFilteredOrders(),
+        pagination,
         stats,
         isLoading,
         error,
@@ -185,6 +160,7 @@ export const useOrders = () => {
         handleSearch,
         handleStatusChange,
         handleDeleteOrder,
-        refreshOrders: fetchOrders
+        handlePageChange,
+        refreshOrders: () => fetchOrders(pagination.currentPage)
     };
 };
