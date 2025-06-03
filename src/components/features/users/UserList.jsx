@@ -77,7 +77,7 @@ const UserList = ({
                         </thead>
                         <tbody>
                         {users.map((user) => (
-                            <tr key={user.id} onClick={() => onViewDetail(user.id)} style={{cursor: 'pointer'}}>
+                            <tr>
                                 <td>{user.id}</td>
                                 <td>{user.email}</td>
                                 <td>
@@ -102,6 +102,21 @@ const UserList = ({
                                 </td>
                                 <td>
                                     <div className="action-buttons">
+                                        <button
+                                            className="action-btn view-btn"
+                                            title="Xem"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onViewDetail(user.id)
+                                            }}
+                                        >
+                                            <img
+                                                src="https://cdn-icons-png.flaticon.com/512/159/159604.png"
+                                                alt="Xem"
+                                                width={20}
+                                                height={20}
+                                            />
+                                        </button>
                                         <button
                                             className="action-btn delete-btn"
                                             onClick={(e) => {

@@ -20,6 +20,7 @@ const UserManagement = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedUser, setSelectedUser] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const fetchUsers = async () => {
         try {
@@ -87,6 +88,11 @@ const UserManagement = () => {
         setCurrentPage(0); // Reset về trang đầu tiên khi lọc
     };
 
+    const closeUserDetail = () => {
+        setIsModalOpen(false);
+        setSelectedUser(null);
+    };
+
     // Xử lý cập nhật thông tin người dùng
     const handleUpdateUser = async (updatedUser) => {
         try {
@@ -142,6 +148,18 @@ const UserManagement = () => {
         } catch (err) {
             console.error("Lỗi khi thay đổi vai trò người dùng:", err);
             setError("Không thể thay đổi vai trò người dùng. Vui lòng thử lại sau.");
+        }
+    };
+
+    const handleViewUser = async (userId) => {
+        try {
+            // Fetch order details if needed, or use existing order from list
+            const userToView = userId.find(user => user.id === userId);
+            setSelectedUser(userToView);
+            setIsModalOpen(true);
+        } catch (err) {
+            console.error("Error viewing user details:", err);
+            setError("Cannot load user details. Please try again.");
         }
     };
 
@@ -248,6 +266,15 @@ const UserManagement = () => {
                     onViewDetail={handleViewDetail}
                 />
 
+                {isModalOpen && selectedUser && (
+                <UserDetailModal
+                    user={selectedUser}
+                    onClose={closeUserDetail}
+                    onUpdateUser={handleUpdateUser}
+                    onChangeRole={handleChangeRole}
+                    onToggleStatus={handleToggleStatus}
+                />
+                )}
                 {/* Modal chi tiết người dùng */}
                 {selectedUser && (
                     <UserDetailModal
