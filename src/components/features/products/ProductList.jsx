@@ -42,13 +42,6 @@ const ProductList = ({
                 <table className="products-table">
                     <thead>
                     <tr>
-                        <th>
-                            {/*<input
-                                type="checkbox"
-                                checked={selectAll}
-                                onChange={handleSelectAll}
-                            />*/}
-                        </th>
                         <th>Sản phẩm</th>
                         <th>ID</th>
                         <th>Danh mục</th>

@@ -168,7 +168,6 @@ const OrderDetailModal = ({ order, onClose }) => {
 
                 <div className="modal-footer">
                     <button className="btn-secondary" onClick={onClose}>Đóng</button>
-                    <button className="btn-primary">In hóa đơn</button>
                 </div>
             </div>
         </div>
