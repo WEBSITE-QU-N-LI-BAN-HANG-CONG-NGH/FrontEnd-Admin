@@ -91,9 +91,6 @@ export const useOrders = () => {
 
         // Reset to first page when searching/clearing
         setPagination(prev => ({ ...prev, currentPage: 0 }));
-
-        // Force refetch with new params
-        fetchOrders(0, pagination.pageSize);
     }, [fetchOrders, pagination.pageSize]);
 
     // Handle pagination
