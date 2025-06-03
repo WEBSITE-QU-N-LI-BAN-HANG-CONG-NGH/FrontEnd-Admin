@@ -23,13 +23,6 @@ const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleSt
         }));
     };
 
-    const handleRoleChange = (e) => {
-        setEditedUser(prev => ({
-            ...prev,
-            role: e.target.value
-        }));
-    };
-
     const handleSave = () => {
         // Gọi hàm cập nhật người dùng
         const updatedUser = {
@@ -37,7 +30,6 @@ const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleSt
             firstName: editedUser.firstName,
             lastName: editedUser.lastName,
             mobile: editedUser.mobile,
-            role: editedUser.role // Đảm bảo bạn đã bao gồm role
         };
         onUpdateUser(updatedUser);
 
@@ -152,21 +144,10 @@ const UserDetailModal = ({ user, onClose, onUpdateUser, onChangeRole, onToggleSt
 
                         <div className="info-group">
                             <div className="info-label">Vai trò:</div>
-                            {isEditing ? (
-                                <select
-                                    className="role-select"
-                                    value={editedUser.role}
-                                    onChange={handleRoleChange}
-                                >
-                                    <option value="CUSTOMER">Khách hàng</option>
-                                    <option value="SELLER">Người bán</option>
-                                </select>
-                            ) : (
-                                <div className="info-value">
-                                    {user.role === "CUSTOMER" ? "Khách hàng" :
-                                        user.role === "SELLER" ? "Người bán" : user.role}
-                                </div>
-                            )}
+                            <div className="info-value">
+                                {user.role === "CUSTOMER" ? "Khách hàng" :
+                                    user.role === "SELLER" ? "Người bán" : user.role}
+                            </div>
                         </div>
 
                         <div className="info-group">
