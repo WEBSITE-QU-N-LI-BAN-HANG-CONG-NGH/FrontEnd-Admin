@@ -55,7 +55,7 @@ const ProductDetailModal = ({ product, onClose, onEdit }) => {
 
                             <div className="product-pricing">
                                 <div className="info-group">
-                                    <div className="info-label">Giá bán:</div>
+                                    <div className="info-label">Giá gốc:</div>
                                     <div className="info-value price">{formatCurrency(product.price)}</div>
                                 </div>
                                 {product.discountedPrice && product.discountedPrice < product.price && (

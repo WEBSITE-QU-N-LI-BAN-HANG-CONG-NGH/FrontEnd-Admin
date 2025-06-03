@@ -167,27 +167,6 @@ const ProductManagementContent = () => {
         }
     };
 
-    // Handle deleting multiple products
-    const handleMultipleDelete = async (productIds) => {
-        try {
-            const result = await handleDeleteMultipleProducts(productIds);
-            if (result.success) {
-                toast.success(`Đã xóa ${result.count} sản phẩm thành công!`);
-
-                // Check if current page becomes empty after deletion
-                const remainingItems = products.length - productIds.length;
-                if (remainingItems === 0 && pagination.currentPage > 0) {
-                    // Go to previous page if current page becomes empty
-                    goToPage(pagination.currentPage - 1);
-                }
-            } else {
-                toast.error(`Lỗi xóa sản phẩm: ${result.error}`);
-            }
-        } catch (err) {
-            toast.error(`Đã xảy ra lỗi: ${err.message}`);
-        }
-    };
-
     // If loading user information
     if (loading) {
         return <div>Đang tải...</div>;
@@ -201,11 +180,6 @@ const ProductManagementContent = () => {
     return (
         <Layout>
             <div className="products-container">
-                {/* Page Header */}
-                <div className="page-header">
-                    <h1 className="page-title">Quản lý sản phẩm</h1>
-                </div>
-
                 <div className="card">
                     <div className="card-content">
                         {/* Filters Section - Exact same as Product.jsx */}
@@ -384,7 +358,6 @@ const ProductManagementContent = () => {
                             sortOrder={sortOrder}
                             onView={handleViewProduct}
                             onDelete={handleDelete}
-                            onMultipleDelete={handleMultipleDelete}
                         />
 
                         <div className="pagination-container">

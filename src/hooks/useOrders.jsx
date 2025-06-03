@@ -82,14 +82,19 @@ export const useOrders = () => {
         fetchStats();
     }, [fetchStats]);
 
-    // Handle search with immediate API call
     const handleSearch = useCallback((term, startDate, endDate) => {
-        setSearchTerm(term);
-        if (startDate || endDate) {
-            setDateRange({ start: startDate || "", end: endDate || "" });
-        }
-        // fetchOrders will be triggered by useEffect
-    }, []);
+        setSearchTerm(term || ""); // Ensure empty string instead of undefined
+        setDateRange({
+            start: startDate || "",
+            end: endDate || ""
+        });
+
+        // Reset to first page when searching/clearing
+        setPagination(prev => ({ ...prev, currentPage: 0 }));
+
+        // Force refetch with new params
+        fetchOrders(0, pagination.pageSize);
+    }, [fetchOrders, pagination.pageSize]);
 
     // Handle pagination
     const handlePageChange = useCallback((newPage) => {

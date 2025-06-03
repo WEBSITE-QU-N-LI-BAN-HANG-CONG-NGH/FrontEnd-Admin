@@ -16,35 +16,6 @@ const ProductList = ({
                          onDelete,
                          onMultipleDelete
                      }) => {
-    const [selectedProducts, setSelectedProducts] = useState([]);
-    const [selectAll, setSelectAll] = useState(false);
-
-
-    // Xử lý khi chọn tất cả
-    const handleSelectAll = () => {
-        if (selectAll) {
-            setSelectedProducts([]);
-        } else {
-            setSelectedProducts(products.map(product => product.id));
-        }
-        setSelectAll(!selectAll);
-    };
-
-    // Xử lý khi chọn một sản phẩm
-    const handleSelectProduct = (e, productId) => {
-        // Ngăn sự kiện click lan tỏa đến hàng (để tránh mở modal chi tiết)
-        e.stopPropagation();
-
-        if (selectedProducts.includes(productId)) {
-            setSelectedProducts(selectedProducts.filter(id => id !== productId));
-            setSelectAll(false);
-        } else {
-            setSelectedProducts([...selectedProducts, productId]);
-            if (selectedProducts.length + 1 === products.length) {
-                setSelectAll(true);
-            }
-        }
-    };
 
     // Xác định trạng thái tồn kho
     const getStockStatus = (quantity) => {
@@ -53,38 +24,13 @@ const ProductList = ({
         return { label: "Còn hàng", className: "in-stock" };
     };
 
-    // Xử lý xóa nhiều sản phẩm
-    const handleDeleteSelected = () => {
-        if (selectedProducts.length === 0) return;
-
-        const confirmDelete = window.confirm(
-            `Bạn có chắc chắn muốn xóa ${selectedProducts.length} sản phẩm đã chọn?`
-        );
-
-        if (confirmDelete && onMultipleDelete) {
-            onMultipleDelete(selectedProducts);
-            setSelectedProducts([]);
-            setSelectAll(false);
-        }
-    };
-
     return (
         <div className="products-table-container">
             <div className="table-filters">
                 <div className="filter-left">
                     <div className="selected-count">
-                        {selectedProducts.length > 0 ? `Đã chọn ${selectedProducts.length} sản phẩm` : "Danh sách sản phẩm"}
+                        Danh sách sản phẩm
                     </div>
-                    {selectedProducts.length > 0 && (
-                        <div className="bulk-actions">
-                            <button
-                                className="bulk-action-btn danger"
-                                onClick={handleDeleteSelected}
-                            >
-                                Xóa {selectedProducts.length} sản phẩm
-                            </button>
-                        </div>
-                    )}
                 </div>
             </div>
 
@@ -117,14 +63,7 @@ const ProductList = ({
                         const stockStatus = getStockStatus(product.quantity || 0);
 
                         return (
-                            <tr key={product.id} onClick={() => onView(product)}>
-                                <td onClick={(e) => e.stopPropagation()}>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedProducts.includes(product.id)}
-                                        onChange={(e) => handleSelectProduct(e, product.id)}
-                                    />
-                                </td>
+                            <tr key={product.id}>
                                 <td>
                                     <div className="product-info">
                                         <div className="product-image">
