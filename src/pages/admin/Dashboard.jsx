@@ -11,7 +11,7 @@ import "../../styles/admin/dashboard/dashboard.css";
 
 const Dashboard = () => {
     const { user, loading, isAdmin } = useAuth();
-    const { dashboardData, isLoading, error } = useDashboard();
+    const { dashboardData, isLoading, error, isChartLoading, fetchRevenueForRange } = useDashboard();
 
     // Nếu đang tải thông tin người dùng
     if (loading) {
@@ -40,8 +40,9 @@ const Dashboard = () => {
 
                         <div className="dashboard-grid">
                             <RevenueByTime
-                                weeklyRevenue={dashboardData.weeklyRevenue || []}
-                                monthlyRevenue={dashboardData.monthlyRevenue || []}
+                                initialData={dashboardData.revenueChartData}
+                                isLoading={isChartLoading}
+                                onDateChange={fetchRevenueForRange}
                             />
                             <RevenueByCategory data={dashboardData.categoryRevenue} />
                         </div>

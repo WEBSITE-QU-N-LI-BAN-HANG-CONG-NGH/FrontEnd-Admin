@@ -158,3 +158,42 @@
 .custom-tooltip .info {
     color: #8884d8;
 }
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Cho phép xuống dòng trên màn hình nhỏ */
+}
+
+.date-range-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Khoảng cách giữa các phần tử */
+}
+
+.date-range-picker .date-input {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 110px; /* Điều chỉnh độ rộng nếu cần */
+}
+
+.date-range-picker .filter-btn {
+    padding: 6px 12px;
+    background-color: #8884d8; /* Màu giống biểu đồ */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.date-range-picker .filter-btn:hover {
+    background-color: #716cc7;
+}
+
+.date-range-picker .filter-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

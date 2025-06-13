@@ -6,13 +6,13 @@ import {dashboardService} from "../services/index.js";
 export const useDashboard = () => {
     const [dashboardData, setDashboardData] = useState({
         productStats: {},
-        weeklyRevenue: {},
-        monthlyRevenue: {},
         categoryRevenue: {},
         recentOrders: [],
-        topSellingProducts: []
+        topSellingProducts: [],
+        revenueChartData: []
     });
     const [isLoading, setIsLoading] = useState(true);
+    const [isChartLoading, setIsChartLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const fetchDashboardData = useCallback(async () => {
@@ -82,14 +82,49 @@ export const useDashboard = () => {
         }
     }, []);
 
+    const fetchRevenueForRange = useCallback(async (startDate, endDate) => {
+        try {
+            setIsChartLoading(true);
+            const chartData = await dashboardService.getRevenueByDateRange(startDate, endDate);
+            setDashboardData(prevData => ({
+                ...prevData,
+                revenueChartData: chartData || []
+            }));
+        } catch (err) {
+            console.error("Lỗi khi tải dữ liệu doanh thu:", err);
+        } finally {
+            setIsChartLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
-        fetchDashboardData();
-    }, [fetchDashboardData]);
+        const loadData = async () => {
+            try {
+                setIsLoading(true);
+                setError(null);
+                await fetchDashboardData();
+                const today = new Date();
+                const lastWeek = new Date(today);
+                lastWeek.setDate(today.getDate() - 6);
+                const formatDate = (date) => date.toISOString().split('T')[0]; // YYYY-MM-DD
+                await fetchRevenueForRange(formatDate(lastWeek), formatDate(today));
+            } catch (err) {
+                console.error(err);
+                setError("Không thể tải dữ liệu dashboard.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadData();
+    }, [fetchDashboardData, fetchRevenueForRange]);
 
     return {
         dashboardData,
         isLoading,
+        isChartLoading,
         error,
-        refreshData: fetchDashboardData
+        refreshData: fetchDashboardData,
+        fetchRevenueForRange
     };
 };
