@@ -13,11 +13,16 @@ import OrdersManagement from "./pages/admin/OrdersManagement";
 
 // Protected Route component đơn giản hóa
 const ProtectedRoute = ({ element, requiredRole }) => {
-    const { user, loading, hasRole } = useAuth();
+    const { user, loading, hasRole, logout } = useAuth();
 
     if (loading) return <div>Đang tải...</div>;
-    if (!user) return <Navigate to="/login" replace />;
-    if (requiredRole && !hasRole(requiredRole)) return <Navigate to="/unauthorized" replace />;
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+    if (requiredRole && !hasRole(requiredRole)) {
+        logout();
+        return null;
+    }
 
     return element;
 };
