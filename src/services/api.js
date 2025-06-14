@@ -1,8 +1,7 @@
 // src/services/api.js
 import axios from "axios";
 
-// Khởi tạo axios instance với cấu hình cơ bản
-const API_URL = "http://localhost:8080/api/v1"; // Thay đổi URL này theo cấu hình server của bạn
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
     baseURL: API_URL,
